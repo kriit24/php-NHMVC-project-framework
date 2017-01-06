@@ -20,18 +20,15 @@ class Index extends Controller{
 		//$this->inc( $this->toUrl(__DIR__) .'/inc/script.js' );
 	}
 
-	protected function Header(){
-	}
-
 	protected function Index(){
 
 		//$this->getModels()->view('Index');
-		echo 'Index';
+		echo 'Dashboard Index';
 	}
 
 	protected function Index_Admin(){
 
-		$this->getModels()->view('Index');
+		$this->getModels()->view('Index_Admin');
 	}
 }
 
