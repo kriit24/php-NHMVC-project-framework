@@ -2,3 +2,6 @@ body > .container-fluid > .container-fluid.content-bar > .row > .col{
 	padding:0px;
 	background:#ebebeb;
 }
+body > .container-fluid > .container-fluid.content-bar{
+	margin:0;
+}

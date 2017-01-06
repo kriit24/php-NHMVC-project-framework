@@ -270,7 +270,14 @@ trait Form{
 			if( $data[ $elem['name'] ] ){
 
 				$attr['value'] = $data[ $elem['name'] ];
-				$obj->_attr($attr, $elem['name']);
+				//$obj->_attr($attr, $elem['name']);
+
+				$elemKey = null;
+				list($elemKey, $elemArray) = $obj->getElement($elem['name']);
+				$elemClass = $obj->getClass($elemArray['type']);
+				$elemArray = $elemClass->attr($attr, $elemArray);
+				$obj->elemList[$elemKey] = $elemArray;
+				$obj->elemAttr[$elemKey][] = $attr;
 			}
 		}
 		return $obj;
