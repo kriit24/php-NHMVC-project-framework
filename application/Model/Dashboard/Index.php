@@ -20,10 +20,22 @@ class Index extends Controller{
 		//$this->inc( $this->toUrl(__DIR__) .'/inc/script.js' );
 	}
 
+	//THIS header is for title
+	protected function Header(){
+	}
+
+	public function title($title = '', $links = array(), $showDashboard = true, $goWithScroll = false){
+
+		$this->Title = $title;
+		$this->Links = $links;
+		$this->ShowDashboard = $showDashboard;
+		$this->GoWithScroll = $goWithScroll;
+		$this->view( 'Title');
+	}
+
 	protected function Index(){
 
-		//$this->getModels()->view('Index');
-		echo 'Dashboard Index';
+		$this->getModels( array('Loan') )->view('Index');
 	}
 
 	protected function Index_Admin(){
