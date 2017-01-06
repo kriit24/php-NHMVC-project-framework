@@ -4,7 +4,7 @@ $(document).ready(function(){
 
 		var routeName = $('[name="route"]').val();
 		$('[name="class"]').find('option').remove();
-		$.get(classUrl+'?routename='+routeName, function(data){
+		$.get( classUrl + '?routename=' + routeName + '&role_id=' + $('select[name="role_id"]').val(), function(data){
 
 			$.canJSON(data, function(data){
 
@@ -14,9 +14,18 @@ $(document).ready(function(){
 
 				$.each(data, function(key, value){
 
-					$('[name="class"]').append(
-						$('<option></option>').val(value).html(value)
-					);
+					if( $._POST['class'] == value ){
+
+						$('[name="class"]').append(
+							$('<option selected="selected"></option>').val(value).html(value)
+						);
+					}
+					else{
+
+						$('[name="class"]').append(
+							$('<option></option>').val(value).html(value)
+						);
+					}
 				});
 			});
 		});
@@ -29,7 +38,7 @@ $(document).ready(function(){
 		$('[name="method"]').find('option').remove();
 		if( !className )
 			return true;
-		$.get(methodUrl+'?routename='+routeName+'&classname='+className, function(data){
+		$.get( methodUrl + '?routename=' + routeName + '&classname=' + className + '&role_id=' + $('select[name="role_id"]').val(), function(data){
 
 			$.canJSON(data, function(data){
 
@@ -44,6 +53,11 @@ $(document).ready(function(){
 	};
 
 	setClass();
+	setTimeout(function(){
+
+		setMethod();
+	}, 300);
+
 	$('[name="route"]').on('change', function(){
 
 		setClass();

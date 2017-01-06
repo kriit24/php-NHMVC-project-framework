@@ -118,6 +118,8 @@ Project.clickEvent = [];
 
 	$.extend({
 
+		_POST: {},
+
 		//$.location( {'key' : 'value'} );
 		location: function( href, params ){
 
@@ -152,6 +154,14 @@ Project.clickEvent = [];
 					newHref += newHref ? '&'+item : item;
 			});
 			return (newHref.indexOf('?') == -1 && newHref.length > 0 ? '?' : '')+newHref;
+		},
+		
+		setPOST: function( jsonPost ){
+
+			if( this.canJSON( jsonPost ) ){
+
+				this._POST = $.parseJSON(jsonPost);
+			}
 		},
 
 		ucFirst: function(string) {

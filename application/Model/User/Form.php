@@ -149,6 +149,9 @@ class Form extends \Library{
 		$form->addElem('form', '', array(
 			'action' => $this->url( array('model' => 'User', 'method' => 'Account', 'id' => $row['id']) )
 		));
+		$form->addElem('hidden', 'is_enabled', array(
+			'force-value' => '1'
+		))->append('form');
 		
 		$form->addElem( array('first_name', 'last_name', 'name' => 'data', 'password' => 'password', 'email') , '', array(
 		));

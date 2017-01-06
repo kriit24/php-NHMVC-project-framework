@@ -7,11 +7,11 @@ abstract class _Abstract implements \Library_Interface_Abstract{
 
 		return array(
 			'public' => array(
-				//'Index' => array('position' => 'content', 'is_static' => false, 'is_first_page' => true, 'is_route' => false),
-				//'Header' => array('position' => 'content', 'is_static' => true, 'is_first_page' => false, 'is_route' => false),
+				'Index' => array('position' => 'content', 'is_static' => false, 'is_first_page' => true, 'is_route' => false),
+				'Header' => array('position' => 'content', 'is_static' => true, 'is_first_page' => false, 'is_route' => false),
 			),
 			'admin' => array(
-				'Index' => array('position' => 'content', 'is_static' => false, 'is_first_page' => true, 'is_route' => false),
+				'Index_Admin' => array('position' => 'content', 'is_static' => false, 'is_first_page' => true, 'is_route' => false),
 				'Header' => array('position' => 'content', 'is_static' => true, 'is_first_page' => false, 'is_route' => false),
 			),
 			'method_name_without_template' => array()
@@ -22,6 +22,7 @@ abstract class _Abstract implements \Library_Interface_Abstract{
 
 		return array(
 			'Index' => array('ADMIN', 'SUPERADMIN'),
+			'Index_Admin' => array('ADMIN', 'SUPERADMIN'),
 			'Header' => array('*'),
 		);
 	}

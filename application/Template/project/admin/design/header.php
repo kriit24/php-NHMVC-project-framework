@@ -29,6 +29,10 @@
 <script src="<?=$this->header['URI2']; ?>/js/project.autocomplete.js" type="text/javascript"></script>
 <script src="<?=$this->header['URI2']; ?>/js/project.required.js" type="text/javascript"></script>
 
+<script type="text/javascript">
+$.setPOST( '<?=json_encode($_POST);?>' );
+</script>
+
 <?=implode("", $this->header['JS']);?>
 </head>
 

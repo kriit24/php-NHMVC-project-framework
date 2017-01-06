@@ -7,6 +7,7 @@
 	body > .container-fluid > .container-fluid.content-bar{
 		display:table;
 		height:98%;
+		margin:0;
 	}
 
 	body > .container-fluid > .container-fluid.content-bar > .row{

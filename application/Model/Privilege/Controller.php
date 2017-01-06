@@ -13,6 +13,11 @@ class Controller extends \Library{
 		return $this;
 	}
 
+	private function getPrivilegeByFilter( $filter ){
+
+		return $this->getPrivilege()->privilege->where($filter)->fetchAll();
+	}
+
 	public function getRole(){
 
 		return $this->role->getForSelect();
@@ -21,10 +26,26 @@ class Controller extends \Library{
 	public function getClassListing(){
 
 		$scandir = self::SCANDIR.'/'.$_GET['routename'];
-		return json_encode( $this->scandir( $scandir, false, '', true ) );
+		$classRows = $this->scandir( $scandir, false, '', true );
+		$ret = array();
+		foreach($classRows as $className){
+
+			$_GET['classname'] = $className;
+			$rows = json_decode($this->getMethodListing(), true);
+			if( !empty($rows) && count($rows) > 0 )
+				$ret[] = $className;
+		}
+		return json_encode( $ret );
 	}
 
 	public function getMethodListing(){
+
+		$rows = $this->getPrivilegeByFilter( array('role_id = ?' => $_GET['role_id'], 'route = ?' => $_GET['routename'], 'class = ?' => $_GET['classname']) );
+		$methods = array();
+		foreach($rows as $row){
+
+			$methods[] = $row['method'];
+		}
 
 		$dir = self::SCANDIR.'/'.$_GET['routename'].'/'.$_GET['classname'];
 
@@ -36,10 +57,12 @@ class Controller extends \Library{
 		$class = '\\'.$_GET['routename'].'\\'.$_GET['classname'].'\\Index';
 		$array = array();
 		$reflection = \Library::reflection($class);
-		foreach( $reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $v ){
+		foreach( $reflection->getMethods(\ReflectionMethod::IS_PUBLIC | \ReflectionMethod::IS_PROTECTED) as $v ){
 
-			if( preg_match('/'.$_GET['classname'].'/i', str_replace('\\', '\\\\', $v->class)) && preg_match('/Index/i', str_replace('\\', '\\\\', $v->class)) && !in_array($v->name, array('__construct', '__destruct', 'Dashboard')) )
+			if( preg_match('/'.$_GET['classname'].'/i', str_replace('\\', '\\\\', $v->class)) && preg_match('/Index/i', str_replace('\\', '\\\\', $v->class)) && !in_array($v->name, array('__construct', '__destruct', 'Dashboard')) && !in_array($v->name, $methods) ){
+
 				$array[] = $v->name;
+			}
 		}
 		return json_encode( $array );
 	}

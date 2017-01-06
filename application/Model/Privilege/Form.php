@@ -35,9 +35,11 @@ class Form extends \Library{
 		$form->addElem('select', 'class', array(
 			'label' => 'Class'
 		));
+
 		$form->addElem('select', 'method', array(
 			'label' => 'Method'
 		));
+
 		$form->addElem('submit', Form::SUBMIT['add'], 'Add Privilege');
 
 		$form->errorLabel( $this->getError() );

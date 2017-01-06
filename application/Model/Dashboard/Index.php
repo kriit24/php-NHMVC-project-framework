@@ -20,19 +20,16 @@ class Index extends Controller{
 		//$this->inc( $this->toUrl(__DIR__) .'/inc/script.js' );
 	}
 
-	public function title($title = '', $links = array(), $showDashboard = true, $goWithScroll = false){
-
-		$this->Title = $title;
-		$this->Links = $links;
-		$this->ShowDashboard = $showDashboard;
-		$this->GoWithScroll = $goWithScroll;
-		$this->view( 'Title');
-	}
-
 	protected function Header(){
 	}
 
 	protected function Index(){
+
+		//$this->getModels()->view('Index');
+		echo 'Index';
+	}
+
+	protected function Index_Admin(){
 
 		$this->getModels()->view('Index');
 	}

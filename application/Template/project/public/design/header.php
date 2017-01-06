@@ -27,6 +27,10 @@
 <script src="<?=$this->header['URI2']; ?>/js/project.js" type="text/javascript"></script>
 <script src="<?=$this->header['URI2']; ?>/js/project.dialog.js" type="text/javascript"></script>
 
+<script type="text/javascript">
+$.setPOST( '<?=json_encode($_POST);?>' );
+</script>
+
 <?=implode("", $this->header['JS']);?>
 </head>
 
