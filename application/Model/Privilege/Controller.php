@@ -9,7 +9,7 @@ class Controller extends \Library{
 
 		$this->privilege->Select()
 			->column(array('id', 'role_id', '(SELECT name FROM role WHERE id = privilege.role_id)' => 'role_name', 'route', 'class', 'method'))
-			->order("route, class");
+			->order("role_id, route, class, method");
 		return $this;
 	}
 
@@ -20,7 +20,7 @@ class Controller extends \Library{
 
 	public function getRole(){
 
-		return $this->role->getForSelect();
+		return $this->role->getForSelect( array('level != 10') );
 	}
 
 	public function getClassListing(){
@@ -59,7 +59,7 @@ class Controller extends \Library{
 		$reflection = \Library::reflection($class);
 		foreach( $reflection->getMethods(\ReflectionMethod::IS_PUBLIC | \ReflectionMethod::IS_PROTECTED) as $v ){
 
-			if( preg_match('/'.$_GET['classname'].'/i', str_replace('\\', '\\\\', $v->class)) && preg_match('/Index/i', str_replace('\\', '\\\\', $v->class)) && !in_array($v->name, array('__construct', '__destruct', 'Dashboard')) && !in_array($v->name, $methods) ){
+			if( preg_match('/'.$_GET['classname'].'/i', str_replace('\\', '\\\\', $v->class)) && preg_match('/Index/i', str_replace('\\', '\\\\', $v->class)) && !in_array($v->name, array('__construct', '__destruct')) && !in_array($v->name, $methods) ){
 
 				$array[] = $v->name;
 			}
@@ -78,7 +78,28 @@ class Controller extends \Library{
 
 	public function addPrivilege(){
 
-		$this->privilege->Insert($_POST);
+		$this->privilege->fetch( $_POST );
+		if( $this->privilege->Numrows() == 0 )
+			$this->privilege->Insert($_POST);
+	}
+
+	public function clonePrivilege(){
+
+		$privilege2 = clone $this->privilege;
+		$privilege3 = clone $this->privilege;
+
+		$this->privilege->Select()
+			->where(array('role_id' => $_POST['from']));
+		while($row = $this->privilege->fetch()){
+
+			unset($row['id']);
+			$row['role_id'] = $_POST['to'];
+			$privilege2->fetch( $row );
+			if( $privilege2->Numrows() == 0 ){
+				
+				$privilege3->Insert($row);
+			}
+		}
 	}
 
 	public function updatePrivilege(){

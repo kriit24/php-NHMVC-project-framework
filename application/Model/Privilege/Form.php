@@ -6,6 +6,7 @@ class Form extends \Library{
 	const ROUTE = array('Api', 'Model');
 	const SUBMIT = array(
 		'add' => 'addPrivilege',
+		'clone' => 'clonePrivilege',
 		'update' => 'updatePrivilege'
 	);
 	var $roles = array();
@@ -22,6 +23,15 @@ class Form extends \Library{
 			'style' => ($_POST[Form::SUBMIT['add']] ? '' : 'display:none;'), 
 			'class' => 'add-privilege'
 		));
+		$form->addElem('span', '', array(
+			'value' => 'This change will overwrite method default privileges',
+			'class' => 'privilege-announce'
+		))->append('form');
+		$form->addElem('span', '', array(
+			'value' => 'This changes will not overwrite SUPERADMIN privileges',
+			'class' => 'privilege-announce'
+		))->append('form');
+
 		$form->addElem('select', 'role_id', array(
 			'label' => 'Role',
 			'option' => $this->roles
@@ -42,8 +52,40 @@ class Form extends \Library{
 
 		$form->addElem('submit', Form::SUBMIT['add'], 'Add Privilege');
 
-		$form->errorLabel( $this->getError() );
-		$form->messageLabel( $this->getMessage() );
+		if( $_POST[Form::SUBMIT['add']] ){
+
+			$form->errorLabel( $this->getError() );
+			$form->messageLabel( $this->getMessage() );
+		}
+
+		$form->setData( $_POST );
+		$form->toString();
+	}
+
+	public function clonePrivilegeForm(){
+
+		$form = new \Library\Form( 'list' );
+		$form->addElem('form', '', array(
+			'style' => ($_POST[Form::SUBMIT['clone']] ? '' : 'display:none;'), 
+			'class' => 'clone-privilege'
+		));
+		$form->addElem('select', 'from', array(
+			'label' => 'Role',
+			'option' => $this->roles
+		))->selected($_POST['from']);
+
+		$form->addElem('select', 'to', array(
+			'label' => 'Role',
+			'option' => $this->roles
+		))->selected($_POST['to']);
+
+		$form->addElem('submit', Form::SUBMIT['clone'], 'Clone Privilege');
+
+		if( $_POST[Form::SUBMIT['cone']] ){
+
+			$form->errorLabel( $this->getError() );
+			$form->messageLabel( $this->getMessage() );
+		}
 
 		$form->setData( $_POST );
 		$form->toString();
@@ -82,6 +124,14 @@ class Form extends \Library{
 		$validate->is_set('class')->message('Class is not set');
 		$validate->is_set('method')->message('Method is not set');
 		return $validate->isValid(Form::SUBMIT['add'], $_POST);
+	}
+
+	public function validateCloneData(){
+
+		$validate = new \Library\Validate();
+		$validate->is_set('from');
+		$validate->is_set('to');
+		return $validate->isValid(Form::SUBMIT['clone'], $_POST);
 	}
 }
 

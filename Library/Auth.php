@@ -99,7 +99,8 @@ class Auth extends Component\isPrivate{
 					}
 					$row['name'] = $row2['first_name'].' '.$row2['last_name'];
 				}
-				$row['privileges'] = $this->getPrivileges( $row['role_id'] );
+				if( $row['level'] != 10 )
+					$row['privileges'] = $this->getPrivileges( $row['role_id'] );
 
 				\Library\Session::clear('userData');
 				\Library\Session::userData($row);

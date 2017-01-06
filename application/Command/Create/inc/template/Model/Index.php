@@ -16,7 +16,7 @@ class Index extends Controller{
 
 	protected function Index(){
 
-		if( $this->Validate->isValidIndex() )
+		if( $this->Validate->validateIndexData() )
 			$this->POST(Form::SUBMIT['add'])->action();
 
 		$this->getData()->view('Index');
@@ -24,13 +24,13 @@ class Index extends Controller{
 
 	protected function Index_Admin(){
 
-		if( $this->Validate->isValidIndex() )
+		if( $this->Validate->validateIndexData() )
 			$this->POST(Form::SUBMIT['add'])->action();
 
 		$this->getData()->view('Index_Admin');
 	}
 
-	/*function Dashboard(){
+	/*public function Dashboard(){
 
 		$this->view('Dashboard');
 	}*/

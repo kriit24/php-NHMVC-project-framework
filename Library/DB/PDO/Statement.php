@@ -97,7 +97,7 @@ trait Statement{
 		$ret = array();
 		foreach($values as $k => $v){
 
-			list($column, ) = explode(' ', $k);
+			list($column, ) = explode(' ', (is_numeric($k) ? $v : $k));
 			if( in_array($column, $this->_validFields) )
 				$ret[$k] = $v;
 		}

@@ -162,14 +162,14 @@ trait Create{
 
 		if(is_array($error)){
 
-			$row[] = $this->addelem('div', '', array('class' => 'col', 'style' => 'background:#ffecec;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;'), true);
+			$row[] = $this->addelem('div', '', array('class' => 'col', 'style' => 'background:#ffecec;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;display: block;margin-bottom: 5px;padding: 10px 15px;'), true);
 
 			foreach($error as $k => $v){
 
 				$elem .= $elem ? ',[name='.str_replace(' ', '_', $k).']' : '[name='.str_replace(' ', '_', $k).']';
 				if($v && !in_array($v, $list)){
 
-					$row[] = $this->addelem('h4', '', array('style' => 'margin:0.5rem;', 'value' => $v), true);
+					$row[] = $this->addelem('h4', '', array('style' => 'margin:0.5rem;font-size:20px;font-weight:bold;', 'value' => $v), true);
 					$row[] = $row[] = $this->addelem('/h4', '', array(), true);
 				}
 				$list[] = $v;
@@ -207,14 +207,14 @@ trait Create{
 
 		if(is_array($message)){
 
-			$row[] = $this->addelem('div', '', array('class' => 'col', 'style' => 'background:#ecffec;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;'), true);
+			$row[] = $this->addelem('div', '', array('class' => 'col', 'style' => 'background:#ecffec;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;display: block;margin-bottom: 5px;padding: 10px 15px;'), true);
 
 			foreach($message as $k => $v){
 
 				$elem .= $elem ? ',[name='.str_replace(' ', '_', $k).']' : '[name='.str_replace(' ', '_', $k).']';
 				if($v && !in_array($v, $list)){
 
-					$row[] = $this->addelem('h4', '', array('style' => 'margin:0.5rem;', 'value' => $v), true);
+					$row[] = $this->addelem('h4', '', array('style' => 'margin:0.5rem;font-size:20px;font-weight:bold;', 'value' => $v), true);
 					$row[] = $row[] = $this->addelem('/h4', '', array(), true);
 				}
 				$list[] = $v;

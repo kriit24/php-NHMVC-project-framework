@@ -6,7 +6,7 @@ class Index extends Controller{
 	public function __construct(){
 
 		$this->inc( $this->toUrl(__DIR__) . '/inc/script.js' );
-		//$this->inc( $this->toUrl(__DIR__) . '/inc/style.css' );
+		$this->inc( $this->toUrl(__DIR__) . '/inc/style.css' );
 
 		$this->Form = new Form;
 
@@ -22,7 +22,12 @@ class Index extends Controller{
 
 		if( $this->Form->isValidaddPrivilege() )
 			$this->POST(Form::SUBMIT['add'])->action();
+
 		$this->POST(Form::SUBMIT['update'])->action();
+
+		if( $this->Form->validateCloneData() )
+			$this->POST(Form::SUBMIT['clone'])->action();
+
 		$this->GET('action=deletePrivilege')->action();
 
 		$this->getPrivilege()->view('Index');

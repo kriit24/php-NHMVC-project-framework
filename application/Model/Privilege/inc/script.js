@@ -68,4 +68,5 @@ $(document).ready(function(){
 		setMethod();
 	});
 	$('a.add-privilege').ptoggle(400);
+	$('a.clone-privilege').ptoggle(400);
 });

@@ -8,7 +8,7 @@ class Validate{
 		$this->Validate = new \Library\Validate;
 	}
 
-	public function isValidIndex(){
+	public function validateIndexData(){
 
 		$validate = $this->Validate;
 		$validate->is_set('name')->message();
