@@ -1,0 +1,15 @@
+GET METHOD PRIVILEGE, to know is it accessible or not
+
+//no point to show menu, if not accessible for current role
+if( \Library\Permission::get( 'Model'/*route*/, 'Client'/*class*/, 'Index'/*method*/ ) )
+	echo '<li><a href="'.$this->url(array('model' => 'Client')).'">'.$this->Language('Minu konto').'</a></li>';
+
+
+SET METHOD PRIVILEGE
+
+1. set method privilege in _Abstract class what located in each child application
+/application/Model/modelName/_Abstract.php
+2. set Index, Controller method to protected state
+
+now if u call child application method from another application then first thing system checks the privileges
+and then it will be accessed if possible

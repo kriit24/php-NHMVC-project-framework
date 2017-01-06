@@ -1,0 +1,28 @@
+#AddType text/cache-manifest .appcache
+
+RewriteEngine On
+
+<Files "command">
+    order allow,deny
+    deny from all
+    Redirect 301 /command /
+</Files>
+<Files "composer.json">
+    order allow,deny
+    deny from all
+    Redirect 301 / /
+</Files>
+
+# Zend rules
+RewriteCond %{REQUEST_FILENAME} -s [OR]
+RewriteCond %{REQUEST_FILENAME} -l [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+
+RewriteRule ^.*$ - [NC,L]
+#DYNAMIC ROUTES
+RewriteRule ^admin/(.*)$ /admin/index.php?route=/$1&%{QUERY_STRING} [NC,L]
+RewriteRule ^Template/(.*)$ /application/Template/project/$1 [NC,L]
+Redirect 301 /phpmyadmin /application/Package/phpMyAdmin
+
+RewriteRule ^test.php(.*)$ /test.php?%{QUERY_STRING}__$1 [NC,L]
+RewriteRule ^(.*)$ /index.php?route=/$1&%{QUERY_STRING} [NC,L]

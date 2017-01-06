@@ -1,0 +1,5 @@
+if u update library then clear cahce:
+/tmp/cache/LIBRARY
+
+if u dont cache istelf then u can clear all the cache data
+/tmp/cache

@@ -1,0 +1,9 @@
+TO GET TABLE OBJECT
+$tableName = new \Table\tablename;
+$tableName->Select();
+
+TO USE SINGLETON
+view additionally from Examples/Singleton
+
+$tableName = \Table\tablename::singleton();
+$tableName->Select();

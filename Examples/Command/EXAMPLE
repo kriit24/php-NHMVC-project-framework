@@ -1,0 +1,4 @@
+bash command
+
+add own command into /application/Command/Command/Index.php
+each command extension is method name, method name must be ucfirst

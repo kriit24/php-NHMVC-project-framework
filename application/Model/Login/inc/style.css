@@ -1,0 +1,45 @@
+.logged{
+	white-space: nowrap;
+	padding-right:20px;
+    font-size: 14px;
+}
+.logged.left{
+	display:inline-block;
+	padding:20px 10px 20px 10px;
+	color:#DFE4ED;
+	text-align:left;
+}
+.logged.left a{
+	color:#8095a8;
+}
+.logged.right{
+	margin-top:40px;
+	padding-right:10px;
+}
+.logged i{
+	margin:0px 5px 0px 15px;
+	color:#676a6c;
+}
+.logged a{
+	color:#999c9e;
+    font-size: 14px;
+}
+.logged .fa.fa-sort-desc{
+	display: inline-block;
+    height: 20px;
+	margin:0px 0px 0px 2px;
+    vertical-align: middle;
+}
+.login-box{
+	margin-top:-25px;
+	padding:50px;
+	background:#ffffff;
+}
+.logged-label .dropdown-item{
+	padding-top:5px;
+	padding-bottom:5px;
+}
+.login-form input{
+	display:inline-block;
+	width:auto;
+}

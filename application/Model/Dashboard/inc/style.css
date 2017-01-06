@@ -1,0 +1,21 @@
+.dashboard-box > .col{
+	padding:20px;
+	background:#ffffff;
+	border-left:10px solid #F5F5F5;
+	min-width:400px !important;
+	width:auto !important;
+}
+.dashboard-box > .col:first-child{
+	border-left:0px;
+}
+.dashboard{
+	border-bottom:1px solid #025AA5;
+	padding:10px;
+	margin-bottom:20px;
+}
+.dashboard > .col:first-child{
+	float:left;
+}
+.dashboard > .col{
+	float:right;
+}

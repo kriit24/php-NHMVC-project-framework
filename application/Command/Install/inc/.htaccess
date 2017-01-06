@@ -1,0 +1,9 @@
+<Files *.sql>
+    deny from all
+    ErrorDocument 403 /
+</Files>
+
+<Files *.tpl>
+    deny from all
+    ErrorDocument 403 /
+</Files>

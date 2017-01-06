@@ -1,0 +1,23 @@
+CREATE APPLICATION SUBDIRECTORY
+step 1 - create application subdirectory
+step 2 - create _Autoload.php and load class example "Examples/Api"
+step 3 - create Api.php file to load structur, example "Examples/Api"
+step 4 - create Subdirectory "Test"
+step 5 - create _Abstract.php and Index.php file, example "Examples/Api/Example"
+step 6 - other files are optional
+
+CREATE APPLICATION
+in framework is built in command "create".
+it will automatically create structur for desired application/subfolder/new sub application
+Abstract (template positioning, privileges and template)
+Index (sub application loader)
+Controller (sub application extender)
+view (views)
+inc (styles, scripts, etc. fro current sub application)
+
+TEMPLATE
+if route directory is below of the template directory then rename the template directory to XTemplate
+also rename it in 
+.htaccess
+Template/_Autoload
+Template/Template.php

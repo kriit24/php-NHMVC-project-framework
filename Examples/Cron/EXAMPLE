@@ -1,0 +1,6 @@
+//URL: www.domain.com/Cron?user=installed_superadmin&password=password&action=login - execute all crons
+//URL: www.domain.com/Cron/cronName/?user=installed_superadmin&password=password&action=login - execute current cron
+//URL: www.domain.com/Cron/cronName/?user=installed_superadmin&password=password&action=login&debug=cron - execute current cron and will stop next load - only in development mode
+
+//SHELL: bash command Cron - load all crons
+//SHELL: bash command Cron CronName - loads current cron

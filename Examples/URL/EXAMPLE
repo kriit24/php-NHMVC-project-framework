@@ -1,0 +1,19 @@
+<?
+
+//IF ADVANCED MODE IS TRUE THEN WILL BE URL PARAMETERS REGISTRERED INTO DATABASE, ELSE IT IS ONLY MATCH CASE URL
+
+//FULL EXAMPLE
+//if route is not declared then default route is Model
+$this->url(array('route' => 'Api'/*defines application subdir*/, 'api'/*the name must lowercase route name*/ => 'ApiName'/*defines Api subdir*/, 'method' => 'ApiMethodName'/*defines Api model method to execute*/));
+$this->url(array('route' => 'Command', 'command' => 'CommandName', 'method' => 'CommandMethodName'));
+
+//MODEL access
+$this->url(array('model' => 'Translate', 'method' => 'Edit'));//www.domain.com/Translate/Edit
+
+$this->url(array('model' => 'Translate', 'method' => 'Edit', 'name' => 'Product name', 'id' => $row['id']), array('id'));//www.domain.com/Translate/Edit - id will be hidden
+
+$this->url(array('model' => 'Translate', 'method' => 'Edit', '?id='.$row['id'].'&action=edit'));//www.domain.com/Translate/Edit/?id=1 - id will not be registered
+
+$this->url('?action=some');//www.domain.com/Translate/Edit/?action=some - url string will be added to current href
+
+?>

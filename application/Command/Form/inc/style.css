@@ -1,0 +1,8 @@
+.column-name{
+	width:150px;
+	display:inline-block;
+	margin-left:5px;
+}
+.column-name:first-child{
+	margin-left:0px;
+}

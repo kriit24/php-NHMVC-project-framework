@@ -1,0 +1,83 @@
+.dropdown-group{
+	height:74px;
+	margin:0;
+	padding:0;
+	display:inline-block;
+	/*overflow:hidden;*/
+}
+.dropdown-group .dropdown-menu{
+	top:0px;
+	left:0px;
+	display:block;
+	position:relative;
+	margin:0px;
+	border:0px;
+	padding:0px;
+	height:100%;
+	min-width: 2rem;
+}
+.dropdown-group .dropdown-minimenu{
+	display:none;
+}
+.dropdown-group .dropdown-maximenu{
+	display:inline-block;
+}
+.dropdown-group .dropdown-maximenu.dropdown-block{
+	top:100%;
+	display:none;
+	position:absolute;
+}
+.dropdown-group .dropdown-maximenu.dropdown-block .dropdown-menu{
+	width:100%;
+	display:block;
+	z-index:990;
+}
+.dropdown-group .dropdown-maximenu.dropdown-block .dropdown-menu:hover .dropdown-header{
+	background:#f9f9f9;
+}
+.dropdown-group .dropdown-maximenu.dropdown-block .dropdown-submenu{
+	top:0;
+	left:100%;
+}
+.dropdown-group .fa.fa-bars{
+    color: #FFFFFF;
+	font-size:20px;
+}
+.dropdown-group .dropdown-menu.active .dropdown-header,
+.dropdown-group .dropdown-menu.active .dropdown-header > a, 
+.dropdown-group .dropdown-menu.active .dropdown-header > a:link, 
+.dropdown-group .dropdown-menu.active .dropdown-header > a:visited, 
+.dropdown-group .dropdown-menu.active .dropdown-header > a:hover{
+	color:#1ab394;
+	font-weight:bold;
+}
+.dropdown-group .dropdown-menu .dropdown-header{
+	width:100%;
+	padding:28px 20px 28px 20px;
+}
+.dropdown-group .dropdown-minimenu .dropdown-header{
+	padding:16px 10px 16px 10px;
+}
+.dropdown-group .dropdown-menu .dropdown-header > a, 
+.dropdown-group .dropdown-menu .dropdown-header > a:link, 
+.dropdown-group .dropdown-menu .dropdown-header > a:visited, 
+.dropdown-group .dropdown-menu .dropdown-header > a:hover{
+	font-weight: 550;
+}
+.dropdown-group .dropdown-menu .dropdown-submenu{
+	background:inherit;
+	display:none;
+	position:absolute;
+	padding-top:0px;
+	border:1px solid #EAEAEA;
+	z-index:1000;
+}
+.dropdown-group .dropdown-menu .dropdown-submenu .dropdown-divider{
+	margin: 0.2rem 0;
+}
+.dropdown-group .dropdown-menu .dropdown-submenu > a{
+	padding:10px 20px;
+}
+.dropdown-group .dropdown-menu:hover .dropdown-submenu{
+	display:block;
+}

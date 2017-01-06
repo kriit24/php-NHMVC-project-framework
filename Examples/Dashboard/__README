@@ -1,0 +1,2 @@
+HOWTO implement dashboard functionality into model.
+Dashboard model will search through all models and seek for dashboard_content

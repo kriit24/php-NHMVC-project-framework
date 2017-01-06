@@ -1,0 +1,12 @@
+.phpmyadmin{
+	color:red !important;
+}
+body > .container-fluid{
+	width:40%;
+}
+.container-fluid.content-bar{
+	margin-bottom: 0px;
+}
+.form-control{
+	padding:.2rem .3rem;
+}

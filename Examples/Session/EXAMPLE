@@ -1,0 +1,13 @@
+//CREATE SESSION
+\Library\Session::sessionName( sessionValue );
+
+//UPDATE SESSION
+\Library\Session::sessionName( sessionValue );
+
+//VIEW SESSION
+pre( \Library\Session::sessionName() )
+//array
+pre( \Library\Session::sessionName(true) )
+
+//CLEAR SESSION
+\Library\Session::clear( 'sessionName' );

@@ -1,0 +1,12 @@
+.select-language-box{
+	margin-right:100px;
+}
+
+.select-language-box select[name="byLanguage"]{
+	display:inline-block;
+}
+
+.select-language-box .truncate.btn.btn-primary{
+	margin-left:5px;
+	margin-bottom:3px;
+}

@@ -1,0 +1,1 @@
+<div class="login"><? $this->Form->LoginForm(); ?></div>

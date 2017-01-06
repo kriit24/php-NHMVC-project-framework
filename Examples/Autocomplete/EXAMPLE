@@ -1,0 +1,17 @@
+<?
+
+//<INPUT ELEMENT AUTOCOMPLETE
+
+class model{
+
+	function __construct(){
+
+		$this->Autocomplete = new \Helper\Autocomplete;
+	}
+}
+
+//in VIEW
+//elem name, data
+$this->Autocomplete->create('test', array(array('value' => 1, 'text' => 'ada')));
+
+?>
