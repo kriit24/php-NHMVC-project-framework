@@ -23,12 +23,17 @@ class Controller extends \Library{
 			if( !$id )
 				return true;
 
-			while($row = $this->privilege->fetch("role_id = ".$id)){
+			$rows = $this->privilege->fetchAll("role_id = ".$id);
+			foreach($rows as $row){
 
 				unset($row['id']);
 				$row['role_id'] = $newRoleId;
 				$this->privilege2->Insert($row);
 			}
+		}
+		else{
+
+			$this->error('Role allready exists');
 		}
 		return $this;
 	}
