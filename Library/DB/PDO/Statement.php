@@ -12,6 +12,7 @@ trait Statement{
 		$this->preQuery = '';
 		$this->Query = '';
 		$this->methods = array();
+		$this->rebuildStatement = false;
 
 		if( empty($this->_validFields) )
 			new \Library\Component\Error( '<b style="color:red;">' . $this->_name .' Valid Fields is empty</b>', '', false, false );
@@ -172,8 +173,13 @@ trait Statement{
 
 	function Where($where, $params = array()){
 		
-		if( is_Array($where) || !empty($params) )
+		if( is_Array($where) || !empty($params) ){
+
+			if( is_array($where) && empty($params) && (!$this->stmtArray['JOIN'] && !$this->stmtArray['LEFT JOIN'] && !$this->stmtArray['RIGHT JOIN'] && !$this->stmtArray['INNER JOIN']) )
+				$where = $this->validFields($where);
+
 			list($where, $params) = $this->prepareWhere($where, (is_Array($params) ? $params : array($params)) );
+		}
 		if( !empty($where) ){
 
 			$this->stmtArray['WHERE'][] = $where;
