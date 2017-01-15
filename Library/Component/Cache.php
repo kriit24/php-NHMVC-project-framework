@@ -11,6 +11,13 @@ class Cache{
 			mkdir(_DIR.'/tmp/cache', 0775, true);
 	}
 
+	static function exists($name){
+
+		if( is_file(_DIR.'/tmp/cache/'.$name.self::FILE_EXT) )
+			return true;
+		return false;
+	}
+
 	static function get($name){
 
 		if( is_file(_DIR.'/tmp/cache/'.$name.self::FILE_EXT) ){
@@ -33,6 +40,12 @@ class Cache{
 			$fileContent = json_encode($content);
 
 		file_put_contents(_DIR.'/tmp/cache/'.$name.self::FILE_EXT, addslashes($fileContent));
+	}
+
+	static function delete($name){
+
+		if( is_file(_DIR.'/tmp/cache/'.$name.self::FILE_EXT) )
+			unlink(_DIR.'/tmp/cache/'.$name.self::FILE_EXT);
 	}
 }
 

@@ -30,7 +30,8 @@
 <script src="<?=$this->header['URI2']; ?>/js/project.required.js" type="text/javascript"></script>
 
 <script type="text/javascript">
-$.setPOST( '<?=json_encode($_POST);?>' );
+$.setGET( '<?=addslashes(json_encode($_GET));?>' );
+$.setPOST( '<?=addslashes(json_encode($_POST));?>' );
 </script>
 
 <?=implode("", $this->header['JS']);?>

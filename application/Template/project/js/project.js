@@ -1,3 +1,5 @@
+var $_POST = [];
+var $_GET = [];
 var Project = {};
 Project.clickEvent = [];
 (function($){
@@ -52,8 +54,12 @@ Project.clickEvent = [];
 				var answer = confirm(text);
 				if (answer){
 
-					window.location.href = $(this).attr('href');
-					return false;
+					if( $(this)[0].tagName.toUpperCase() == 'A' ){
+
+						window.location.href = $(this).attr('href');
+						return false;
+					}
+					return true;
 				}
 				else
 					return false;
@@ -118,8 +124,6 @@ Project.clickEvent = [];
 
 	$.extend({
 
-		_POST: {},
-
 		//$.location( {'key' : 'value'} );
 		location: function( href, params ){
 
@@ -155,12 +159,20 @@ Project.clickEvent = [];
 			});
 			return (newHref.indexOf('?') == -1 && newHref.length > 0 ? '?' : '')+newHref;
 		},
-		
+
+		setGET: function( jsonPost ){
+
+			if( this.canJSON( jsonPost ) ){
+
+				$_GET = $.parseJSON(jsonPost);
+			}
+		},
+
 		setPOST: function( jsonPost ){
 
 			if( this.canJSON( jsonPost ) ){
 
-				this._POST = $.parseJSON(jsonPost);
+				$_POST = $.parseJSON(jsonPost);
 			}
 		},
 

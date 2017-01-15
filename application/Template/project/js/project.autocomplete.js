@@ -1,13 +1,17 @@
-//Project.Autocomplete.setSource('car_id', ['some', 'some2', 'some3']);
-//Project.Autocomplete.setSource('car_id', [{ value: "1", label: "some" },{ value: "2", label: "some 2" },{ value: "3", label: "some 3" }]);
+//Project.Autocomplete.setSource('car_id', ['some', 'some2', 'some3'], minLength);
+//Project.Autocomplete.setSource('car_id', [{ value: "1", label: "some" },{ value: "2", label: "some 2" },{ value: "3", label: "some 3" }], minLength);
 
 Project.Autocomplete = {
 
 	source : {},
 
-	setSource: function( elemName, source ){
+	minLength : 3,
+
+	setSource: function( elemName, source, minLength ){
 
 		this.source[ elemName ] = source;
+		if( minLength != undefined )
+			this.minLength = minLength;
 	},
 
 	method: function(elem, origElem, item){
@@ -32,6 +36,7 @@ Project.Autocomplete = {
 			return;
 		}
 
+		var minLength = this.minLength;
 		var source = this.source[name] != undefined ? this.source[name] : $(elem).attr('rel');
 		var value  = $(elem).attr('autocomplete-value') != undefined ? $(elem).attr('autocomplete-value') : $(elem).val();
 		var newElem = $('<input type="hidden" name="' + name + '" value="' + $(elem).val() + '" />');
@@ -47,7 +52,7 @@ Project.Autocomplete = {
 
 		$( elem ).autocomplete({
 			'source': source,
-			'minLength' : 3,
+			'minLength' : minLength,
 			'select' : function (event, ui) {
 				return Project.Autocomplete.method(this, newElem, ui.item);
 			}

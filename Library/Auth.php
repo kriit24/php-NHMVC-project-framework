@@ -10,10 +10,8 @@ class Auth extends Component\isPrivate{
 
 		if( $_GET['action'] == 'logout' ){
 
-			\Library\Session::clear('userData');
-			\Library\Session::clear('initiated');
-			setcookie('PHPSESSID', 'false', time()+(60*60*24*1), '/');
-			setcookie('SESSION_LOGGED', 'false', time()+(60*60*24*1), '/');
+			\Library\Session::clear();
+			setcookie('SESSION_LOGGED', 'false', time()+(\Library\Session::SESSION_TIME), '/');
 			die(header('Location: ./'));
 		}
 
@@ -25,8 +23,14 @@ class Auth extends Component\isPrivate{
 
 			if( session_id() == $_POST['session_id'] ){
 
-				session_regenerate_id();
+				\Library\Session::reGenId();
 				$this->Privilege($_POST['user'], $_POST['password']);
+			}
+			else{
+
+				\Library\Session::clear();
+				setcookie('SESSION_LOGGED', 'false', time()+(\Library\Session::SESSION_TIME), '/');
+				die(header('Location: ./'));
 			}
 		}
 		else if( $user && $password ){
@@ -48,7 +52,7 @@ class Auth extends Component\isPrivate{
 		}
 	}
 
-	private function Privilege( $loginUser = '', $loginPassword = '' ){
+	private function Privilege( $loginUser = '', $loginPassword = ''  ){
 
 		if( $_GET['action'] != 'login' && $_POST['action'] != 'login' )
 			return false;
@@ -105,7 +109,7 @@ class Auth extends Component\isPrivate{
 				\Library\Session::clear('userData');
 				\Library\Session::userData($row);
 				\Library\Session::userData(array('logged' => true));
-				setcookie('SESSION_LOGGED', 'true', time()+(60*60*24*1), '/');
+				setcookie('SESSION_LOGGED', 'true', time()+(\Library\Session::SESSION_TIME), '/');
 
 				$log->Insert(
 					array(

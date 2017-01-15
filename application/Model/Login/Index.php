@@ -10,7 +10,7 @@ class Index extends Controller{
 		if( !\Session::userData()->logged )
 			$this->inc( '/Template/css/clear-content-bar.css' );
 
-		$this->Form = new Form;
+		$this->Form = new \Library\Form('');
 	}
 
 	protected function BoxLeftPublic(){

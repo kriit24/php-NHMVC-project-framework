@@ -38,8 +38,6 @@ class Conf{
 		//_URI - base uri
 		$this->error_reporting();
 
-		session_name('PHPSESSID');
-		session_start();
 		date_default_timezone_set('Europe/Tallinn');
 
 		define('_SHELL', (php_sapi_name() == 'cli' ? true : false));//for CRONJOB
@@ -48,11 +46,6 @@ class Conf{
 		//autoload, template, view
 		define('_DEBUG', (isset($_GET['debug']) && self::_DEV_MODE ? $_GET['debug'] : false));
 
-		if( !isset($_SESSION['initiated']) ){
-
-			session_regenerate_id();
-			$_SESSION['initiated'] = true;
-		}
 		if( !is_dir(_DIR.'/tmp') ){
 
 			mkdir(_DIR.'/tmp');

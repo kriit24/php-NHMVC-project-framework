@@ -1,4 +1,5 @@
 <?
+Library\Session::init();
 Library\Component\Cache::init();
 Library\Loader\Library::init();
 Library\Component\Register::register('ERROR', array(), Library\Component\Register::IS_ARRAY);

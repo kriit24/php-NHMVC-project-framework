@@ -15,6 +15,7 @@ class Html{
 		'div' => 'div',
 		'span' => 'span',
 		'a' => 'a',
+		'i' => 'i',
 		'h1' => 'h1',
 		'h2' => 'h2',
 		'h3' => 'h3',
@@ -32,6 +33,7 @@ class Html{
 		'/div' => '/div',
 		'/span' => '/span',
 		'/a' => '/a',
+		'/i' => '/i',
 		'/h1' => '/h1',
 		'/h2' => '/h2',
 		'/h3' => '/h3',
@@ -181,6 +183,11 @@ class Html{
 	}
 
 	private function _a($elem){
+
+		return $this->openCloseTag($elem);
+	}
+
+	private function _i($elem){
 
 		return $this->openCloseTag($elem);
 	}

@@ -72,7 +72,7 @@ class Form extends Component\isPrivate{
 
 	function label( $name ){
 
-		return ucfirst(str_replace( '_', ' ', $name ));
+		return ucfirst(str_replace( array('_', '-'), ' ', $name ));
 	}
 
 	function attr($attr, $name = ''){

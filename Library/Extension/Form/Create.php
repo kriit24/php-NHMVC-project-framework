@@ -17,14 +17,14 @@ trait Create{
 
 	private function createForm($attr){
 
-		if( isset($this->elemsType['form']) && isset($this->elemsType['file']) )
-			$this->_attr(array('enctype' => 'multipart/form-data'), 'form');
-
 		if( isset($this->elemsType['form']) ){
 
 			$name = $this->elemsType['form'][0];
 
 			list(, $e) = $this->getElement($name);
+			if( isset($this->elemsType['file']) )
+				$e['attr']['enctype'] = 'multipart/form-data';
+
 			$this->_remove($name);
 			return $this->Html->{'form'}($e);
 		}
@@ -162,7 +162,7 @@ trait Create{
 
 		if(is_array($error)){
 
-			$row[] = $this->addelem('div', '', array('class' => 'col', 'style' => 'background:#ffecec;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;display: block;margin-bottom: 5px;padding: 10px 15px;'), true);
+			$row[] = $this->addelem('div', '', array('class' => 'col error-label', 'style' => 'background:#ffecec;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;display: block;margin-bottom: 5px;padding: 10px 15px;'), true);
 
 			foreach($error as $k => $v){
 
@@ -181,7 +181,7 @@ trait Create{
 
 			if($elem){
 
-				$row[] = $this->addelem('script', '', '$(document).ready(function(){$("'.$elem.'").addClass("errorLabel");});', true);
+				$row[] = $this->addelem('script', '', 'window.onload = function(e){$("'.$elem.'").addClass("errorLabel");};', true);
 				$row[] = $this->addelem('/script', '', '', true);
 			}
 			$html = $this->createElement($row, array());
@@ -207,7 +207,7 @@ trait Create{
 
 		if(is_array($message)){
 
-			$row[] = $this->addelem('div', '', array('class' => 'col', 'style' => 'background:#ecffec;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;display: block;margin-bottom: 5px;padding: 10px 15px;'), true);
+			$row[] = $this->addelem('div', '', array('class' => 'col message-label', 'style' => 'background:#ecffec;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;display: block;margin-bottom: 5px;padding: 10px 15px;'), true);
 
 			foreach($message as $k => $v){
 
@@ -226,7 +226,7 @@ trait Create{
 
 			if($elem){
 
-				$row[] = $this->addelem('script', '', '$(document).ready(function(){$("'.$elem.'").addClass("messageLabel");});', true);
+				$row[] = $this->addelem('script', '', 'window.onload = function(e){$("'.$elem.'").addClass("messageLabel");};', true);
 				$row[] = $this->addelem('/script', '', '', true);
 			}
 			$html = $this->createElement($row, array());
@@ -314,7 +314,7 @@ trait Create{
 					$this->Form->setData( $htmlObject->data );
 					$this->Html->setData( $htmlObject->data );
 
-					$html .= $this->createRow( $attr, 0 );
+					$html .= $this->createRow( $attr, ( !isset($k) ? 0 : $k+1 ) );
 				}
 			}
 		}

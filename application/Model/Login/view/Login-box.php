@@ -32,6 +32,10 @@
 		<form class="m-t<?=($_POST['action'] == 'login' && !\Session::userData()->logged ? ' wrong-login' : '');?>" role="form" method="POST">
 			<input type="hidden" name="action" value="login"/>
 			<input type="hidden" name="session_id" value="<?=session_id();?>"/>
+			<?
+			if( $this->getError() )
+				$this->Form->errorLabel( $this->getError() );
+			?>
 			<div class="form-group">
 				<input type="text" name="user" class="form-control" placeholder="<?=$this->Language( 'UserName' );?>" required="">
 			</div>

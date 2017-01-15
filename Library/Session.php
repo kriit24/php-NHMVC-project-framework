@@ -3,21 +3,53 @@ namespace Library;
 
 class Session{
 
+	const SESSION_TIME = 60*60*2.5*1;
+	const SESSION_NAME = 'PHPSESSID';
+
 	private $_Session = null;
 
-	private function setSessionValue( $value ){
+	public static function init(){
 
-		$this->_Session = $value;
+		session_name( self::SESSION_NAME );
+		session_start();
+
+		if( !isset($_SESSION['initiated']) ){
+
+			session_regenerate_id();
+			$_SESSION['initiated'] = true;
+		}
+
+		self::set();
+		session_write_close();
 	}
 
-	static function clear($name = ''){
+	public static function reGenId(){
+
+		session_start();
+		session_regenerate_id();
+		session_write_close();
+	}
+
+	public static function set( $value = null, $path = '/' ){
+
+		if( !$value )
+			$value = session_id();
+
+		setcookie( self::SESSION_NAME, $value, time()+(self::SESSION_TIME), '/');
+	}
+
+	public static function clear($name = ''){
 
 		self::sessionStart();
 
 		if( $name )
 			unset($_SESSION[$name]);
-		else
-			unset($_SESSION);
+		else{
+
+			foreach($_SESSION as $key => $value)
+				unset($_SESSION[$key]);
+			self::set( 'false' );
+		}
 
 		session_write_close();
 	}
@@ -29,6 +61,11 @@ class Session{
 		//ini_set('session.use_trans_sid', false);
 		ini_set('session.cache_limiter', null);
 		session_start(); // second session_start
+	}
+
+	private function setSessionValue( $value ){
+
+		$this->_Session = $value;
 	}
 
 	/*
