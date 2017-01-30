@@ -22,7 +22,18 @@ trait Image{
 	* @param String $font='' AS Watermark font name font location is 'templates/templatename/fonts/'
 	* @param Array $color=array() AS Watermark RGB color
 	*/
-	function _imageresize($file, $img_name, $width, $height, $location_dir, $resize=true, $watermark=false, $watermarkText='', $font_size='', $font='', $color=array(0, 0, 0)){
+
+	function _resize($file, $width, $height, $location_dir){
+
+		return $this->_imageresize($file, basename($file), $width, $height, $location_dir, false);
+	}
+
+	function _crop($file, $width, $height, $location_dir){
+
+		return $this->_imageresize($file, basename($file), $width, $height, $location_dir, true);
+	}
+
+	private function _imageresize($file, $img_name, $width, $height, $location_dir, $resize=true, $watermark=false, $watermarkText='', $font_size='', $font='', $color=array(0, 0, 0)){
 
 		/*
 		pildi v�hendamine
@@ -33,6 +44,8 @@ trait Image{
 		kat - kataloog kuhu uus pilt teha
 		resize - kas p�rast pildi v�hendamist ka pilt l�igata
 		*/
+		if( !is_Dir($location_dir) )
+			mkdir($location_dir, 0755, true);
 
 		list($width_orig, $height_orig) = getimagesize($file);
 		$type = strtolower($this -> ImageType($file));
@@ -108,7 +121,7 @@ trait Image{
 					}
 				break;
 			}
-			return false;
+			return $location_dir.DIRECTORY_SEPARATOR.$img_name;
 		}
 
 		switch ($type) {
@@ -145,7 +158,7 @@ trait Image{
 				}
 			break;
 		}
-		return $size;
+		return $location_dir.DIRECTORY_SEPARATOR.$img_name;
 	}
 
 	private function compressSize($new_width, $new_height, $width_orig, $height_orig){

@@ -214,7 +214,6 @@ class Loader{
 
 			//add this if some problems
 			//$this->classMethod[$position][] = array('classname' => $class, 'method' => $method, 'class' => new $className());
-
 			$this->isMethodAccessible[$class][$method] = true;
 		}
 	}

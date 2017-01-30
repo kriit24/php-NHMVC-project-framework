@@ -30,15 +30,15 @@ class Form extends \Library{
 
 		$form = new \Library\Form( 'row' );
 		$form->addElem('data', 'clear_name', array(
-			'label' => 'Name',
+			'label' => $this->Language('Name'),
 			'label-attr' => array('class' => 'name')
 		));
 		$form->addElem('data', 'clear_value', array(
-			'label' => 'Content',
+			'label' => $this->Language('Content'),
 			'label-attr' => array('class' => 'value2')
 		));
 		$form->addElem('data', 'model2', array(
-			'label' => 'Model',
+			'label' => $this->Language('Model'),
 			'label-attr' => array('class' => 'model2')
 		));
 		return $form;
@@ -52,10 +52,10 @@ class Form extends \Library{
 		$form->addElem('hidden', 'model')->append('form');
 
 		$form->addElem('data', 'clear_name', array(
-			'label' => 'Name',
+			'label' => $this->Language('Name'),
 		));
 		$form->addElem('data', 'model', array(
-			'label' => 'Model'
+			'label' => $this->Language('Model')
 		));
 		foreach(\Conf\Conf::LANGUAGE as $lang)
 			$form->addElem('textarea', $lang, array(
@@ -82,18 +82,18 @@ class Form extends \Library{
 
 		$form = new \Library\Form( 'list' );
 		$form->addElem('text', 'name', array(
-			'label' => 'Name',
+			'label' => $this->Language('Name'),
 			'class' => 'autocomplete form-control',
 			'rel' => $this->url( array('route' => 'Helper', 'helper' => 'Autocomplete', 'method' => 'Index', 'action' => 'Translate', 'getBy' => 'name') )
 		));
 		$form->addElem('text', 'value2', array(
-			'label' => 'Value',
+			'label' => $this->Language('Value'),
 			'class' => 'autocomplete form-control',
 			'rel' => $this->url( array('route' => 'Helper', 'helper' => 'Autocomplete', 'method' => 'Index', 'action' => 'Translate', 'getBy' => 'value') )
 		));
 		$form->addElem('select', 'model2', array(
 			'option' => $models,
-			'label' => 'Model',
+			'label' => $this->Language('Model'),
 		));
 		return $form;
 	}

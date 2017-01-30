@@ -22,6 +22,7 @@ class Html{
 		'h4' => 'h4',
 		'h5' => 'h5',
 		'h6' => 'h6',
+		'img' => 'img',
 		'/script' => '/script',
 		'/form' => '/form',
 		'/table' => '/table',
@@ -40,6 +41,7 @@ class Html{
 		'/h4' => '/h4',
 		'/h5' => '/h5',
 		'/h6' => '/h6',
+		'/img' => '/',
 	);
 	const ELEMENT_DEFAULT_ATTR = array(
 		'form' => array('method' => 'POST'),
@@ -194,6 +196,11 @@ class Html{
 	}
 
 	private function _span($elem){
+
+		return $this->openCloseTag($elem);
+	}
+
+	private function _img($elem){
 
 		return $this->openCloseTag($elem);
 	}

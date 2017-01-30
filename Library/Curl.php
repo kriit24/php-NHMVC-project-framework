@@ -57,13 +57,13 @@ class Curl{
 	alternative for that is fil_get_contents
 	*/
 
-	public function sendContentCurl($url, $post_data=array()){
+	public function sendContentCurl($url, $post_data=array(), $method = 'POST'){
 
 		$postdata = http_build_query($post_data);
 
 		$opts = array('http' =>
 			array(
-				'method'  => 'POST',
+				'method'  => $method,
 				'header'  => 'Content-type: application/x-www-form-urlencoded',
 				'content' => $postdata
 			)

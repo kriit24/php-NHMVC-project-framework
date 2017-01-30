@@ -254,7 +254,7 @@ class Form{
 
 	private function createElem($elem){
 
-		if( $elem['type'] != 'submit' )
+		if( $elem['type'] != 'submit' && (!isset($elem['attr']['value']) || empty($elem['attr']['value'])) )
 			$elem = $this->getData($elem);
 
 		$checked = isset($this->checked[ $elem['name'] ]) ? array_shift($this->checked[ $elem['name'] ]) : array();
@@ -264,7 +264,7 @@ class Form{
 	}
 
 	private function _data($elem){
-		
+
 		$elem = $this->getData($elem);
 		return $this->buildSiblingElem($elem['before']) . $elem['attr']['value'] . $this->buildSiblingElem($elem['after']) . $this->buildSiblingElem($elem['append']);
 	}
@@ -276,7 +276,8 @@ class Form{
 
 	private function _textarea($elem){
 
-		$elem = $this->getData($elem);
+		if( !isset($elem['attr']['value']) || empty($elem['attr']['value']) )
+			$elem = $this->getData($elem);
 		$value = $elem['attr']['value'];
 		unset($elem['attr']['value']);
 		return $this->buildSiblingElem($elem['before']) . '<' . $elem['elem'] . $this->buildAttr($elem) . '>' . $value . '</' . $elem['elem'] . '>' . $this->buildSiblingElem($elem['after']) . $this->buildSiblingElem($elem['append']);

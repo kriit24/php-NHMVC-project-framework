@@ -18,10 +18,10 @@ class Form extends \Library{
 	);
 	const FORM_ATTR = array(
 		'role_id' => array(
-			'label' => 'Role',
+			'label' => $this->Language('Role'),
 		),
 		'is_enabled' => array(
-			'label' => 'Enabled',
+			'label' => $this->Language('Enabled'),
 			'force-value' => '1',
 		),
 		'password_expires_at' => array(
@@ -81,7 +81,7 @@ class Form extends \Library{
 		$form = new \Library\Form( 'list' );
 		$form->addElem('form', '', array('action' => $this->url( '?id='.$_GET['id'] )));
 		$form->addElem('data', 'name', array(
-			'label' => 'Name'
+			'label' => $this->Language('Name')
 		));
 		
 		$attr = self::FORM_ATTR;
@@ -112,27 +112,27 @@ class Form extends \Library{
 		$form = new \Library\Form( 'row' );
 		//$form->addElem('data', array('first_name', 'last_name', 'user_name', 'email', 'type', 'delete' => ''));
 		$form->addElem('data', 'first_name', array(
-			'label' => 'First name',
+			'label' => $this->Language('First name'),
 			'label-attr' => array('class' => 'first_name')
 		));
 
 		$form->addElem('data', 'last_name', array(
-			'label' => 'Last name',
+			'label' => $this->Language('Last name'),
 			'label-attr' => array('class' => 'last_name')
 		));
 
 		$form->addElem('data', 'user_name', array(
-			'label' => 'User name',
+			'label' => $this->Language('User name'),
 			'label-attr' => array('class' => 'user_name')
 		));
 
 		$form->addElem('data', 'email', array(
-			'label' => 'Email',
+			'label' => $this->Language('Email'),
 			'label-attr' => array('class' => 'email')
 		));
 
 		$form->addElem('data', 'type', array(
-			'label' => 'Type',
+			'label' => $this->Language('Type'),
 			'label-attr' => array('class' => 'type')
 		));
 
@@ -168,13 +168,13 @@ class Form extends \Library{
 	public function userFilter(){
 
 		$form = new \Library\Form( 'list' );
-		$form->addElem('text', 'first_name', array('label' => 'First name'));
-		$form->addElem('text', 'last_name', array('label' => 'Last name'));
-		$form->addElem('text', 'user_name', array('label' => 'User name'));
-		$form->addElem('text', 'email', array('label' => 'Email'));
+		$form->addElem('text', 'first_name', array('label' => $this->Language('First name')));
+		$form->addElem('text', 'last_name', array('label' => $this->Language('Last name')));
+		$form->addElem('text', 'user_name', array('label' => $this->Language('User name')));
+		$form->addElem('text', 'email', array('label' => $this->Language('Email')));
 		$form->addElem('select', 'type', array(
 			'option' => $this->arrayValues($this->roles, 'name'),
-			'label' => 'Type'
+			'label' => $this->Language('Type')
 		));
 		return $form;
 	}

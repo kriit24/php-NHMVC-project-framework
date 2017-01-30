@@ -46,12 +46,12 @@ $form->toString( $attrList );//create form and table elements
 $form->addElem('form');
 
 $form->addElem('text', 'name', array(
-	'label' => 'Name',
+	'label' => $this->Language('Name'),
 	'class' => 'some'
 ))->attr(array('style' => 'none'));
 
 $form->addElem('select', 'role_id', array(
-	'label' => 'Role',
+	'label' => $this->Language('Role'),
 	'label-attr' => array('class' => 'role'),
 	'option' => array(array(1, 's'), array(2, 'v'), array(3, 'x')),
 	'option-attr' => array('class' => 'option'),
@@ -61,7 +61,7 @@ $form->addElem('select', 'role_id', array(
 ->selected(2);
 
 $form->addElem('select', 'role_id2', array(
-	'label' => 'Role 2',
+	'label' => $this->Language('Role 2'),
 	'label-attr' => array('class' => 'role'),
 	'optgroup' => array(
 		'optgroup 1' => array(array(1, 's'), array(2, 'v'), array(3, 'x')),
@@ -77,23 +77,21 @@ $form->addElem('select', 'role_id2', array(
 ->selected(20);
 
 $form->addElem('radio', 'radio_elem', array(
-	'label' => 'Radio',
-	'value' => 1,
-	'force-value' => 1//this value will force all other values int this element
+	'label' => $this->Language('Radio'),
+	'value' => 1//this value will force all other values int this element
 ))->checked($_POST['radio_elem']);
 
 $form->addElem('radio', 'radio_elem', array(
-	'value' => 2,
-	'force-value' => 2//this value will force all other values int this element
+	'value' => 2//this value will force all other values int this element
 ))->checked($_POST['radio_elem']);
 
 $form->addElem('checkbox', 'some[]', array(
-	'label' => 'Some',
+	'label' => $this->Language('Some'),
 	'value' => 1
 ))->checked($_POST['some'][0])->after('Yes');
 
 $form->addElem('checkbox', 'some[]', array(
-	'label' => 'Some',
+	'label' => $this->Language('Some'),
 	'value' => 2
 ))->checked($_POST['some'][1])->after('No');
 

@@ -6,7 +6,7 @@ namespace Library;
 */
 class Image{
 
-	use Extension\Image, \Library\Component\Singleton;
+	use Extension\Image;
 
 	/**
 	* resize or crop image
@@ -22,9 +22,16 @@ class Image{
 	* @param String $font='' AS Watermark font name font location is 'templates/templatename/fonts/'
 	* @param Array $color=array() AS Watermark RGB color
 	*/
-	function imageResize($file, $img_name, $width, $height, $location_dir, $resize=true, $watermark=false, $watermarkText='', $font_size='', $font='', $color=array(0, 0, 0)){
+	public static function resize($file, $width, $height, $location_dir){
 
-		return $this->_imageResize($file, $img_name, $width, $height, $location_dir, $resize, $watermark, $watermarkText, $font_size, $font, $color);
+		$self = new self();
+		return $self->_resize($file, $width, $height, $location_dir);
+	}
+
+	public static function crop($file, $width, $height, $location_dir){
+
+		$self = new self();
+		return $self->_crop($file, $width, $height, $location_dir);
 	}
 }
 ?>

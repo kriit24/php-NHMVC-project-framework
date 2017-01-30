@@ -18,16 +18,16 @@ class Form extends \Library{
 		));
 
 		$form->addElem('text', 'name', array(
-			'label' => 'Name'
+			'label' => $this->Language('Name')
 		));
 		$form->addElem('text', 'level', array(
-			'label' => 'Level'
+			'label' => $this->Language('Level')
 		));
 		$form->addElem('text', 'type', array(
-			'label' => 'Type'
+			'label' => $this->Language('Type')
 		));
 		$form->addElem('textarea', 'description', array(
-			'label' => 'Description'
+			'label' => $this->Language('Description')
 		));
 		$form->addElem('submit', Form::SUBMIT['add'], array(
 			'class' => 'btn btn-primary',
@@ -47,16 +47,16 @@ class Form extends \Library{
 		$form = new \Library\Form( 'row' );
 		$form->addElem('form', '');
 		$form->addElem('data', 'name', array(
-			'label' => 'Name'
+			'label' => $this->Language('Name')
 		));
 		$form->addElem('data', 'level', array(
-			'label' => 'Level'
+			'label' => $this->Language('Level')
 		));
 		$form->addElem('data', 'type', array(
-			'label' => 'Type'
+			'label' => $this->Language('Type')
 		));
 		$form->addElem('data', 'description', array(
-			'label' => 'Description'
+			'label' => $this->Language('Description')
 		));
 		$form->addElem('data', Form::SUBMIT['update']);
 		return $form;

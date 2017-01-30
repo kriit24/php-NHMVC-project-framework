@@ -13,7 +13,7 @@ class Form extends \Library{
 
 		$form = new \Library\Form( 'row' );
 		$form->addElem('data', 'name', array(
-			'label' => 'Name'
+			'label' => $this->Language('Name')
 		));
 		return $form;
 	}

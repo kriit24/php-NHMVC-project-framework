@@ -30,11 +30,11 @@ class Form extends \Library{
 
 		$attr = array(
 			'folder' => array(
-				'label' => 'Application folder',
+				'label' => $this->Language('Application folder'),
 				'validators' => $validators
 			),
 			'create' => array(
-				'label' => 'Create by template',
+				'label' => $this->Language('Create by template'),
 				'option' => self::CREATE
 			),
 			'model_name' => array(

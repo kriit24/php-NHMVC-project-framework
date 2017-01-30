@@ -33,21 +33,21 @@ class Form extends \Library{
 		))->append('form');
 
 		$form->addElem('select', 'role_id', array(
-			'label' => 'Role',
+			'label' => $this->Language('Role'),
 			'option' => $this->roles
 		))->selected($_POST['role_id']);
 
 		$form->addElem('select', 'route', array(
-			'label' => 'Route',
+			'label' => $this->Language('Route'),
 			'option' => self::ROUTE
 		))->selected($_POST['route']);
 
 		$form->addElem('select', 'class', array(
-			'label' => 'Class'
+			'label' => $this->Language('Class')
 		));
 
 		$form->addElem('select', 'method', array(
-			'label' => 'Method'
+			'label' => $this->Language('Method')
 		));
 
 		$form->addElem('submit', Form::SUBMIT['add'], 'Add Privilege');
@@ -70,12 +70,12 @@ class Form extends \Library{
 			'class' => 'clone-privilege'
 		));
 		$form->addElem('select', 'from', array(
-			'label' => 'Role',
+			'label' => $this->Language('Role'),
 			'option' => $this->roles
 		))->selected($_POST['from']);
 
 		$form->addElem('select', 'to', array(
-			'label' => 'Role',
+			'label' => $this->Language('Role'),
 			'option' => $this->roles
 		))->selected($_POST['to']);
 
@@ -95,18 +95,18 @@ class Form extends \Library{
 
 		$form = new \Library\Form( 'row' );
 		$form->addElem('select', 'role_id', array(
-			'label' => 'Role',
+			'label' => $this->Language('Role'),
 			'option' => $this->roles
 		));
 
 		$form->addElem('data', 'route', array(
-			'label' => 'Route'
+			'label' => $this->Language('Route')
 		));
 		$form->addElem('data', 'class', array(
-			'label' => 'Class'
+			'label' => $this->Language('Class')
 		));
 		$form->addElem('data', 'method', array(
-			'label' => 'Method'
+			'label' => $this->Language('Method')
 		));
 		$form->addElem('submit', Form::SUBMIT['update'], 'Update');
 		$form->addElem('a', 'delete', array(

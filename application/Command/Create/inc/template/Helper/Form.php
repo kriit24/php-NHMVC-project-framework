@@ -16,7 +16,7 @@ class Form extends \Library{
 		));
 
 		$form->addElem('text', 'name', array(
-			'label' => 'Name',
+			'label' => $this->Language('Name'),
 			'value' => $_POST['name']
 		));
 

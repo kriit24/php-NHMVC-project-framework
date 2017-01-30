@@ -255,7 +255,7 @@ trait Form{
 		}
 	}
 
-	private function _getRow($data){
+	private function _getRow($data, $type){
 
 		$this->createFooter = false;
 		$obj = clone $this;

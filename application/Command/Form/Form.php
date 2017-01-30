@@ -16,24 +16,24 @@ class Form extends \Library{
 		$form->addElem('form');
 
 		$form->addElem('text', 'route_name', array(
-			'label' => 'Route name',
+			'label' => $this->Language('Route name'),
 			'required' => 'true',
 			'required-label' => $this->Language( 'Route name' )
 		));
 
 		$form->addElem('text', 'app_name', array(
-			'label' => 'App name',
+			'label' => $this->Language('App name'),
 			'required' => 'true'
 		));
 
 		$form->addElem('text', 'form_name', array(
-			'label' => 'Form name',
+			'label' => $this->Language('Form name'),
 			'required' => 'true'
 		));
 
 
 		$form->addElem('text', 'column_type', array(
-			'label' => 'Column type, name, label',
+			'label' => $this->Language('Column type, name, label'),
 			'class' => 'column-name form-control',
 			'required' => 'true'
 		));

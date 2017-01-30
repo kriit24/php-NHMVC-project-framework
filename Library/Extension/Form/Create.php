@@ -61,7 +61,8 @@ trait Create{
 
 		foreach($this->elemList as $elem){
 
-			$labelValue = $elem['label'] && strip_tags($elem['label']) == $elem['label'] ? $this->Language($elem['label']) : $elem['label'];
+			//$labelValue = $elem['label'] && strip_tags($elem['label']) == $elem['label'] ? $this->Language($elem['label']) : $elem['label'];
+			$labelValue = $elem['label'] && strip_tags($elem['label']) == $elem['label'] ? $elem['label'] : $elem['label'];
 			$labelAttr = array('value' => ($elem['label'] ? $labelValue : ''), 'attr' => $this->getHtmlElemAttr($elem, 'label-attr', $i));
 			if( !empty($attr) && $setLabelAttr = $this->getHtmlElemAttr($this->getHtmlElemAttr($attr, 'tr'), 'th', $i) ){
 
@@ -123,7 +124,8 @@ trait Create{
 			$elemHtml = $this->createElement(array($elem));
 
 			$trAttr = $this->getHtmlElemAttr($attrTbody, 'tr', $i);
-			$labelValue = $elem['label'] && strip_tags($elem['label']) == $elem['label'] ? $this->Language($elem['label']) : $elem['label'];
+			//$labelValue = $elem['label'] && strip_tags($elem['label']) == $elem['label'] ? $this->Language($elem['label']) : $elem['label'];
+			$labelValue = $elem['label'] && strip_tags($elem['label']) == $elem['label'] ? $elem['label'] : $elem['label'];
 			$thAttr = array_merge(array('value' => ($elem['label'] ? $labelValue : '')), $this->getHtmlElemAttr($elem, 'label-attr'));
 			$tdAttr = array_merge(array('value' => $elemHtml), $this->getHtmlElemAttr($trAttr, 'td'));
 
