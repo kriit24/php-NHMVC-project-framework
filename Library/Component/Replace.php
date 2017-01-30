@@ -17,6 +17,16 @@ class Replace{
 		ob_end_clean();
 		return $eval;
 	}
+
+	static function replacenl($content){
+
+		return str_replace(	array("\r\n", "\r", "\n", "\t"), "", $content );
+	}
+
+	static function correctnl($content){
+
+		return stripslashes(str_replace(array("\\r","\\n"), array("\r","\n"), $content));
+	}
 }
 
 ?>

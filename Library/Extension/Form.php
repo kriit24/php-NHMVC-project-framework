@@ -99,11 +99,6 @@ trait Form{
 			$this->htmlElemList['label'] = true;
 	}
 
-	private function _addRow( $elems ){
-
-		$this->htmlElemList['row'][] = $elems;
-	}
-
 	private function _setElemSibling($addToElement, $fromElem, $siblingType){
 
 		list($elemToKey, $elemTo) = $this->getElement($addToElement);

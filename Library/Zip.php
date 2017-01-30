@@ -13,7 +13,7 @@ class Zip extends Component\isPrivate{
 	function __construct(){
 
 		if(class_exists('ZipArchive'))
-			$this->zip = new ZipArchive;
+			$this->zip = new \ZipArchive;
 	}
 
 	/**
@@ -46,6 +46,9 @@ class Zip extends Component\isPrivate{
 	function extract($file, $location){
 
 		if($this->open($file) == true){
+
+			if( !is_dir($location) )
+				mkdir($location, 0755, true);
 
 			$this->zip->extractTo($location);
 		}

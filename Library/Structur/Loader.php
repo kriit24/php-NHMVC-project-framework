@@ -13,6 +13,7 @@ class Loader{
 	private $classTemplate = '';
 	private $isInstalled = false;
 	private $_Abstract;
+	private $_instance = array();
 	public $isMethodAccessible = array();
 
 	public function __construct( $autoload = true ){
@@ -205,7 +206,15 @@ class Loader{
 
 			$className = $this->getNamespace( $class.'\\Index' );
 			$position = $attributes['position'] ? $attributes['position'] : 'none';
-			$this->classMethod[$position][] = array('classname' => $class, 'method' => $method, 'class' => new $className());
+
+			//if some problems then remove
+			if( !$this->_instance[$className] )
+				$this->_instance[$className] = new $className();
+			$this->classMethod[$position][] = array('classname' => $class, 'method' => $method, 'class' => $this->_instance[$className]);
+
+			//add this if some problems
+			//$this->classMethod[$position][] = array('classname' => $class, 'method' => $method, 'class' => new $className());
+
 			$this->isMethodAccessible[$class][$method] = true;
 		}
 	}

@@ -254,7 +254,8 @@ class Form{
 
 	private function createElem($elem){
 
-		$elem = $this->getData($elem);
+		if( $elem['type'] != 'submit' )
+			$elem = $this->getData($elem);
 
 		$checked = isset($this->checked[ $elem['name'] ]) ? array_shift($this->checked[ $elem['name'] ]) : array();
 		if( $checked[ $elem['attr']['value'] ] )

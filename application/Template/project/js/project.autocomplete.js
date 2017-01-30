@@ -1,3 +1,4 @@
+//Project.Autocomplete.setSource('car_id', '<?=json_encode( array() );?>', minLength);
 //Project.Autocomplete.setSource('car_id', ['some', 'some2', 'some3'], minLength);
 //Project.Autocomplete.setSource('car_id', [{ value: "1", label: "some" },{ value: "2", label: "some 2" },{ value: "3", label: "some 3" }], minLength);
 

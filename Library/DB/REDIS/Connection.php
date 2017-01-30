@@ -13,7 +13,7 @@ class Connection{
 
 		//if( !$connection_REDIS instanceof \Redis && class_exists( '\\Redis', false ) ){
 
-			if( !empty($_CONN) ){
+			if( !empty($_CONN) && $_CONN['_host'] ){
 
 				try {
 

@@ -169,7 +169,8 @@ class Html{
 	private function closeTag($elem){
 
 		$elemAfter = $this->elemAfter[$elem['elem']] ? $this->elemAfter[$elem['elem']] : array();
-		$elemAfter = array_merge($elemAfter, ($elem['after'] ? $elem['after'] : array()));
+		if( json_encode($elem['after']) != json_encode($elemAfter))
+			$elemAfter = array_merge($elemAfter, ($elem['after'] ? $elem['after'] : array()));
 
 		return '<' . $elem['elem'] . '>' . $this->buildSiblingElem($elemAfter);
 	}

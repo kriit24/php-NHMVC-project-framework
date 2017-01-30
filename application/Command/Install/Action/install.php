@@ -61,7 +61,7 @@ abstract class install{
 		$db->query("INSERT INTO user (role_id, name, password, type) VALUES (1, '".$_POST['admin_user']."', '".md5($_POST['admin_password'])."', 'SUPERADMIN')");
 		$db->query("INSERT INTO client (user_id, first_name) VALUES (".$db->Insertid().", '".$_POST['admin_user']."')");
 
-		if( $redis->isConnected() )
+		if( $redis instanceof \Library\Redis && $redis->isConnected() )
 			$redis->delete('language');
 
 		unlink(dirname(__DIR__).'/inc/database.sql');

@@ -122,7 +122,7 @@ $i = 1;
  *
  * @global string $cfg['Servers'][$i]['host']
  */
-$cfg['Servers'][$i]['host'] = 'd22341.mysql.zone.ee';
+$cfg['Servers'][$i]['host'] = 'localhost';
 
 /**
  * MySQL port - leave blank for default port

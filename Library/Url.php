@@ -120,7 +120,7 @@ class Url extends classIterator{
 		$this->toOption('url', $url);
 	}
 
-	private function mergeUrl($url){
+private function mergeUrl($url){
 
 		$caller = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 4);
 		$ret = $url;
@@ -130,31 +130,62 @@ class Url extends classIterator{
 		$_route = array_shift(explode('/', $_parent));
 		$_method = $caller[3]['function'];
 
-		if( !$url['route'] && !$url[strtolower($_route)] && !$_GET['route'] && !$_GET[strtolower($_route)] ){
+		if( $_route ){
 
-			$ret['route'] = $_route;
-		}
-		if( !$url['route'] && !$url[strtolower($_route)] ){
+			if( !$url['route'] && !$url[strtolower($_route)] && !$_GET['route'] && !$_GET[strtolower($_route)] ){
 
-			$ret[strtolower($_route)] = explode('/', $_parent)[1];
+				$ret['route'] = $_route;
+			}
+			if( !$url['route'] && !$url[strtolower($_route)] && $_route ){
+
+				$ret[strtolower($_route)] = explode('/', $_parent)[1];
+			}
 		}
 		if( !$url['method'] && !in_array($_method, array('Index', 'Index_Admin', '__call')) ){
 
-			$directoriesAndFilename = explode('/', explode(_APPLICATION_PATH, $caller[3]['file'])[1]);
-			$nameAndExtension = explode('.', implode('\\', $directoriesAndFilename));
-			$className = array_shift($nameAndExtension);
-
-			$reflection = $this->reflection( $className );
-			$methodClassArray = $reflection->getMethod( $_method );
-			$methodClass = $methodClassArray->{'class'};
-			if( $methodClass[0] != '\\' )
-				$methodClass = '\\' . $methodClass;
-
-			//IF CONDITION CAN MAKE PROBLEMS
-			if( $methodClass == $className )
+			$_method = $this->findClassMethod( $caller, 0 );
+			if( $_method )
 				$ret['method'] = $_method;
 		}
 		return $ret;
+	}
+
+	private function findClassMethod( $caller, $subtracter ){
+
+		$callerFile = null;
+
+		for($i = 3; $i >= 0; $i--){
+
+			if( !$callerFile && preg_match('/' . _APPLICATION_PATH . '/i', $caller[$i]['file']) ){
+
+				$callerFile = $caller[$i]['file'];
+				$_method = $caller[ ($i - $subtracter) ]['function'];
+
+				$className = $this->getClassName( $callerFile );
+				$reflection = $this->reflection( $className );
+				if( $reflection->hasMethod( $_method ) ){
+
+					$methodClassArray = $reflection->getMethod( $_method );
+					$methodClass = $methodClassArray->{'class'};
+					if( $methodClass[0] != '\\' )
+						$methodClass = '\\' . $methodClass;
+
+					//IF CONDITION CAN MAKE PROBLEMS
+					if( $methodClass == $className ){
+
+						return $_method;
+					}
+				}
+			}
+		}
+		return;
+	}
+
+	private function getClassName( $callerFile ){
+
+		$directoriesAndFilename = explode('/', explode(_APPLICATION_PATH, $callerFile)[1]);
+		$nameAndExtension = explode('.', implode('\\', $directoriesAndFilename));
+		return array_shift($nameAndExtension);
 	}
 
 	private function writeUrl($logical_uri, $canonical_url){

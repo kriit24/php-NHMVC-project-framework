@@ -1,48 +1,27 @@
 <?
 namespace Library;
 
-class FileSystem{
+class FileSystem extends Component\FileSystem{
 
 	use \Library\Component\Singleton;
-
-	const PARENT_DIR = array('.', '..');
-	const IS_FILE = 'is_file';
-	const IS_DIR = 'is_dir';
-
-	//SAN DIR FOR FILES OR DIRECTORYS
-	private function scanSystem( $path, $filterMask = '*', $baseName = false, $returnType = '' ){
-
-		$dataRows = array();
-		if( !is_dir($path) )
-			die( 'Directory not found: '.$path );
-
-		if( $returnType == self::IS_FILE )
-			$tmpData = glob( $path.'/'.$filterMask, GLOB_BRACE );
-		if( $returnType == self::IS_DIR )
-			$tmpData = glob( $path.'/'.$filterMask, GLOB_BRACE|GLOB_ONLYDIR );
-
-		foreach($tmpData as $fileOrDirectory){
-
-			$dataRows[] = ($baseName ? basename($fileOrDirectory) : $fileOrDirectory);
-		}
-		return $dataRows;
-	}
 
 	//SEARCH FILES
 	//{name1,name2}*.jpg
 	//!name,!name2
 	//$baseName - return basename
-	function scanfile($path, $fileMask = '', $baseName = false){
+	function scanfile($path, $recursive = false, $fileMask = '', $baseName = false){
 
 		$path = $this->dir( $path );
-
 		if( !$fileMask )
 			$fileMask = '{}*';
 
+		if( $recursive )
+			return $this->scanFileRecursive( $path, $fileMask, $baseName );
+
 		if( substr($fileMask, 0, 1) == '!' )
-			return array_values( preg_grep( '/^((?!'.str_replace(array(',', '!'), array('|', ''), $fileMask).').)*$/', $this->scanSystem($path, $fileMask, $baseName, self::IS_FILE) ));
+			return array_values( preg_grep( '/^((?!'.str_replace(array(',', '!'), array('|', ''), $fileMask).').)*$/', $this->scanSystem($path, $fileMask, $baseName, Component\FileSystem::IS_FILE) ));
 		else
-			return $this->scanSystem($path, $fileMask, $baseName, self::IS_FILE);
+			return $this->scanSystem($path, $fileMask, $baseName, Component\FileSystem::IS_FILE);
 	}
 
 	function inc($file){
@@ -74,41 +53,18 @@ class FileSystem{
 			$dirMask = '{}*';
 
 		if( substr($dirMask, 0, 1) == '!' )
-			return array_values( preg_grep( '/^((?!'.str_replace(array(',', '!'), array('|', ''), $dirMask).').)*$/', $this->scanSystem($path, $dirMask, $baseName, self::IS_DIR) ));
+			return array_values( preg_grep( '/^((?!'.str_replace(array(',', '!'), array('|', ''), $dirMask).').)*$/', $this->scanSystem($path, $dirMask, $baseName, Component\FileSystem::IS_DIR) ));
 		else
-			return $this->scanSystem($path, $dirMask, $baseName, self::IS_DIR);
+			return $this->scanSystem($path, $dirMask, $baseName, Component\FileSystem::IS_DIR);
 	}
 	
-	private function scandirRecursive( $path ){
-
-		$dataRows = array();
-		$path = $this->dir( $path );
-		$tmpData = scandir( $path );
-		foreach($tmpData as $fileOrDirectory){
-
-			if( !in_array($fileOrDirectory, self::PARENT_DIR) ){
-
-				$dataRows[] = $fileOrDirectory;
-
-				if( is_dir($path.'/'.$fileOrDirectory) ){
-
-					foreach(self::scandirRecursive( $path.'/'.$fileOrDirectory ) as $list){
-
-						$dataRows[] = $fileOrDirectory.'/'.$list;
-					}
-				}
-			}
-		}
-		return $dataRows;
-	}
-
 	function mkdir( $path ){
 
 		$path = $this->dir( $path );
 		if( is_file($path) )
 			die('Cannot make dir: <b>'.$path.'</b> file with same name allready exists ');
 		if( !is_dir($path) )
-			mkdir($path, 0775, true);
+			mkdir($path, 0755, true);
 		return $path;
 	}
 
@@ -133,6 +89,65 @@ class FileSystem{
 		return true;
 	}
 
+	public function fileCopyRec( $path, $fileMask, $dest, $origPath = null ){
+
+		if( !$origPath )
+			$origPath = $path;
+
+		if( !$fileMask )
+			$fileMask = '*';
+
+		$files = $this->scanSystem( $path, $fileMask, false, Component\FileSystem::IS_FILE );
+		$files = array_merge(
+			$files, 
+			$this->scanSystem( $path, '.*', false, Component\FileSystem::IS_FILE )
+		);
+		foreach($files as $file){
+
+			$fileDest = $dest . (substr($dest, -1) == '/' ? '' : '/') . str_replace($origPath, '', $file);
+			if( !is_dir( dirname($fileDest) ) )
+				mkdir(dirname($fileDest), 0755, true);
+
+			copy($file, $fileDest);
+		}
+
+		$tmpData = $this->scanSystem( $path, '{}*', false, Component\FileSystem::IS_DIR );
+		if( !empty($tmpData) ){
+
+			foreach($tmpData as $newPath){
+
+				self::fileCopyRec( $newPath, $fileMask, $dest, $origPath );
+			}
+		}
+	}
+
+	public function unlinkRec( $path ){
+
+		if( !is_dir($path) )
+			return;
+
+		$files = $this->scanSystem( $path, '*', false, Component\FileSystem::IS_FILE );
+		$files = array_merge(
+			$files, 
+			$this->scanSystem( $path, '.*', false, Component\FileSystem::IS_FILE )
+		);
+		foreach($files as $file){
+
+			unlink($file);
+		}
+		$tmpData = $this->scanSystem( $path, '{}*', false, Component\FileSystem::IS_DIR );
+		if( !empty($tmpData) ){
+
+			foreach($tmpData as $newPath){
+
+				self::unlinkRec( $newPath );
+				if( is_dir($newPath) )
+					rmdir( $newPath );
+			}
+		}
+		rmdir( $path );
+	}
+
 	function uploadFile($fileName, $allowUpload = array(), $dir = ''){
 
 		if($_FILES[$fileName] && $_FILES[$fileName]['size'] > 0){
@@ -145,10 +160,11 @@ class FileSystem{
 			$ext = pathinfo($tmpFile['name'], PATHINFO_EXTENSION);
 			if( !in_array($ext, $allowUpload) ){
 
-				$this->error = 'Not allowed filetype';
+				new \Library\Component\Error('Not allowed filetype', '', true);
 				return false;
 			}
-			move_uploaded_file($tmpFile['tmp_name'], $dir.'/'.$tmpFile['name'] );
+			$dir = (substr($dir, -1) == '/' ? substr($dir, 0, -1) : $dir);
+			move_uploaded_file($tmpFile['tmp_name'], $dir .'/'. $tmpFile['name'] );
 			return $dir.'/'.$tmpFile['name'];
 		}
 	}
@@ -201,7 +217,7 @@ class FileSystem{
 		//First, see if the file exists
 		if (!is_file($file)) {
 
-			$this->error = '404 File not found! '.$file;
+			new \Library\Component\Error('404 File not found! '.$file, '', true);
 			return false;
 		}
 

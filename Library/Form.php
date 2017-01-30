@@ -45,11 +45,6 @@ class Form extends Component\isPrivate{
 		}
 	}
 
-	function addRow( $elemsFormObject ){
-
-		$this->_addRow( $elemsFormObject );
-	}
-
 	function createElem($type, $name, $class, $attr, $return = false){
 
 		$elemName = ($name ? $name : $type);
@@ -131,7 +126,7 @@ class Form extends Component\isPrivate{
 
 				if( $v != 'footer' ){
 
-					$this->_create($v, $attr[$v]);
+					$this->_create($v, $attr);
 				}
 				else{
 
@@ -158,7 +153,7 @@ class Form extends Component\isPrivate{
 
 				if( $v != 'footer' ){
 
-					$html .= $this->_create($v, $attr[$v], true);
+					$html .= $this->_create($v, $attr, true);
 				}
 				else{
 
