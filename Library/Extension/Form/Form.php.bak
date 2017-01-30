@@ -234,6 +234,11 @@ class Form{
 			}
 			return $elem;
 		}
+		if( $elem['attr']['force-value'] ){
+
+			$elem['attr']['value'] = $elem['attr']['force-value'];
+			unset($elem['attr']['force-value']);
+		}
 		return $elem;
 	}
 
