@@ -5,10 +5,14 @@ abstract class updateUser{
 
 	public static function init($data, $id){
 
+		$role_id = $data['role_id'] ? $data['role_id'] : \Session::userData()->role_id;
+		$type = \Table\role::singleton()->fetchColumn( 'type', array('id' => $role_id) );
+
 		$data['password'] = $data['password'] ? md5($data['password']) : \NULL;
 		$data['password_expires_at'] = $data['password_expires_at'] ?: 'NULL';
 		$data['account_expires_at'] = $data['account_expires_at'] ?: 'NULL';
 		$data['is_enabled'] = $data['is_enabled'] ?: 0;
+		$data['type'] = $type;
 		\Table\user::singleton()->Update($data, array('id' => $id));
 		\Table\client::singleton()->Update($data, array('user_id' => $id));
 

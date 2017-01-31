@@ -129,8 +129,16 @@ class Auth extends Component\isPrivate{
 
 	private function defaultPrivilege( $row = array() ){
 
-		if( \Library\Session::userData() )
+		if( \Library\Session::userData() ){
+
+			if( \Library\Session::userData()->level != 0 && \Conf\Conf::_DB_CONN == false ){
+
+				\Library\Session::clear();
+				setcookie('SESSION_LOGGED', 'false', time()+(\Library\Session::SESSION_TIME), '/');
+				die(header('Location: ./'));
+			}
 			return true;
+		}
 
 		if( empty($row) ){
 

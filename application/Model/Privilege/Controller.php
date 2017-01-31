@@ -4,107 +4,120 @@ namespace Model\Privilege;
 class Controller extends \Library{
 
 	const SCANDIR = _DIR.'/application';
+	var $privileges = array();
 
-	public function getPrivilege(){
+	public function __construct(){
 
-		$this->privilege->Select()
-			->column(array('id', 'role_id', '(SELECT name FROM role WHERE id = privilege.role_id)' => 'role_name', 'route', 'class', 'method'))
-			->order("role_id, route, class, method");
+		$this->privilege = new \Table\privilege;
+		$this->role = new \Table\role;
+	}
+
+	public function getRoles(){
+
+		$this->role->Select()->where( array('level <= ? ' => \Session::userData()->level, 'level != 10') );
 		return $this;
 	}
 
-	private function getPrivilegeByFilter( $filter ){
+	public function getPrivilege(){
 
-		return $this->getPrivilege()->privilege->where($filter)->fetchAll();
+		$rows = $this->privilege->Select()
+			->column(array('id', 'role_id', '(SELECT name FROM role WHERE id = privilege.role_id)' => 'role_name', 'route', 'class', 'method'))
+			->order("role_id, route, class, method")->fetchAll();
+		
+		$privileges = array();
+		foreach($rows as $row){
+
+			$privileges[$row['role_id']][$row['route']][$row['class']][$row['method']] = true;
+		}
+		$this->privileges = $privileges;
+
+		return $this;
 	}
 
-	public function getRole(){
+	public function getClassListing( $route = null ){
 
-		return $this->role->getForSelect( array('level != 10') );
-	}
-
-	public function getClassListing(){
-
-		$scandir = self::SCANDIR.'/'.$_GET['routename'];
+		$scandir = self::SCANDIR.'/'.$route;
 		$classRows = $this->scandir( $scandir, false, '', true );
 		$ret = array();
 		foreach($classRows as $className){
 
-			$_GET['classname'] = $className;
-			$rows = json_decode($this->getMethodListing(), true);
-			if( !empty($rows) && count($rows) > 0 )
-				$ret[] = $className;
-		}
-		return json_encode( $ret );
-	}
+			$rows = $this->getMethodListing($route, $className);
+			if( !empty($rows) && count($rows) > 0 ){
 
-	public function getMethodListing(){
-
-		$rows = $this->getPrivilegeByFilter( array('role_id = ?' => $_GET['role_id'], 'route = ?' => $_GET['routename'], 'class = ?' => $_GET['classname']) );
-		$methods = array();
-		foreach($rows as $row){
-
-			$methods[] = $row['method'];
-		}
-
-		$dir = self::SCANDIR.'/'.$_GET['routename'].'/'.$_GET['classname'];
-
-		if( is_file($dir.'/index.php') )
-			require_once $dir.'/index.php';
-		if( is_file($dir.'/Index.php') )
-			require_once $dir.'/Index.php';
-
-		$class = '\\'.$_GET['routename'].'\\'.$_GET['classname'].'\\Index';
-		$array = array();
-		$reflection = \Library::reflection($class);
-		foreach( $reflection->getMethods(\ReflectionMethod::IS_PUBLIC | \ReflectionMethod::IS_PROTECTED) as $v ){
-
-			if( preg_match('/'.$_GET['classname'].'/i', str_replace('\\', '\\\\', $v->class)) && preg_match('/Index/i', str_replace('\\', '\\\\', $v->class)) && !in_array($v->name, array('__construct', '__destruct')) && !in_array($v->name, $methods) ){
-
-				$array[] = $v->name;
+				$ret[] = array('class' => $className, 'methods' => $rows);
 			}
 		}
-		return json_encode( $array );
+		return $ret;
+	}
+
+	public function getMethodListing($route, $className){
+
+		$class = '\\'.$route.'\\'.$className.'\\_Abstract';
+		$register = $class::register();
+		$array = array();
+		
+		if( $register['admin'] ){
+
+			foreach($register['admin'] as $method => $prop){
+
+				if( !in_array($method, $array) )
+					$array[] = $method;
+			}
+		}
+		if( $register['public'] ){
+
+			foreach($register['public'] as $method => $prop){
+
+				if( !in_array($method, $array) )
+					$array[] = $method;
+			}
+		}
+		foreach($register as $method => $prop){
+
+			if( !in_array($method, array('public', 'admin', 'method_name_without_template')) && !in_array($method, $array) )
+				$array[] = $method;
+		}
+		return $array;
 	}
 
 	/*
 	ACTIONS
 	*/
 
-	public function deletePrivilege(){
+	function updatePrivilege(){
 
-		$this->privilege->Delete(array('id' => $_GET['id']));
-	}
+		if( empty($_POST['privilege']) )
+			return;
 
-	public function addPrivilege(){
+		$privilege = new \Table\privilege;
 
-		$this->privilege->fetch( $_POST );
-		if( $this->privilege->Numrows() == 0 )
-			$this->privilege->Insert($_POST);
-	}
+		foreach($_POST['privilege'] as $role_id => $routes){
 
-	public function clonePrivilege(){
+			if( !$role_id )
+				continue;
 
-		$privilege2 = clone $this->privilege;
-		$privilege3 = clone $this->privilege;
+			$privilege->Delete( array('role_id' => $role_id) );
 
-		$this->privilege->Select()
-			->where(array('role_id' => $_POST['from']));
-		while($row = $this->privilege->fetch()){
+			if( empty($routes) )
+				continue;
 
-			unset($row['id']);
-			$row['role_id'] = $_POST['to'];
-			$privilege2->fetch( $row );
-			if( $privilege2->Numrows() == 0 ){
-				
-				$privilege3->Insert($row);
+			foreach($routes as $route => $models){
+
+				if( empty($models) )
+					continue;
+
+				foreach($models as $model => $methods){
+
+					if( empty($methods) )
+						continue;
+
+					foreach($methods as $method => $true){
+
+						$privilege->Insert( array('role_id' => $role_id, 'route' => $route, 'class' => $model, 'method' => $method) );
+					}
+				}
 			}
 		}
-	}
-
-	public function updatePrivilege(){
-
-		$this->privilege->Update($_POST, array('id' => $_GET['id']));
 	}
 }
 

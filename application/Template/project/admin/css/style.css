@@ -53,6 +53,7 @@ a.btn, a:link.btn, a:visited.btn, a:hover.btn{
 .row{
 	display:table-row;
 	margin:0px;
+	width:auto;
 }
 .col{
 	display:table-cell;
@@ -109,4 +110,93 @@ a.btn, a:link.btn, a:visited.btn, a:hover.btn{
 .table-horizontal th{
 	background:#f9f9f9;
 	vertical-align:middle;
+}
+
+input[type="checkbox"]:checked + .checkbox, input[type="checkbox"] + .checkbox{
+	position:relative;
+	margin-left:-20px;
+	margin-top:-2px;
+	cursor: pointer;
+}
+
+input[type="checkbox"]:checked + .checkbox span, input[type="checkbox"] + .checkbox span{
+	background-color:#ffffff;
+    background-image: url('/Template/admin/images/checkbox.png');
+	background-repeat:no-repeat;
+    background-position: 0 0;
+	display: inline-block;
+    width: 22px;
+    height: 22px;
+    margin: 0px 3px 0px 0px;
+	padding: 0px;
+    vertical-align: middle;
+}
+
+input[type="checkbox"] + .checkbox:hover span{
+	background-position: -24px 0;
+}
+
+input[type="checkbox"]:checked + .checkbox span{
+	background-position: -48px 0;
+}
+
+.ibox {
+    clear: both;
+    margin-bottom: 25px;
+    margin-top: 0;
+    padding: 0;
+}
+.ibox:after, .ibox:before {
+    display: table;
+}
+
+.ibox-title {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #ffffff;
+    border-color: #e7eaec;
+    border-image: none;
+    border-style: none none solid none;
+    border-width: 2px 0px 1px 0px;
+    color: inherit;
+    margin-bottom: 0;
+    padding: 15px 15px 7px;
+    min-height: 48px;
+}
+
+.ibox-title h5 {
+    display: inline-block;
+    font-size: 14px;
+    margin: 0 0 7px;
+    padding: 0;
+    text-overflow: ellipsis;
+    float: left;
+}
+
+.ibox-tools {
+    display: block;
+    float: none;
+    margin-top: 0;
+    position: relative;
+    padding: 0;
+    text-align: right;
+}
+
+.ibox-tools a {
+    cursor: pointer;
+    margin-left: 5px;
+    color: #c4c4c4;
+}
+
+.ibox-content {
+    background-color: #ffffff;
+    color: inherit;
+    padding: 15px 20px 20px 20px;
+    border-color: #e7eaec;
+    border-image: none;
+    border-style: none none solid none;
+    border-width: 0px 0px 1px 0px;
+	clear: both;
 }

@@ -18,11 +18,11 @@ class Form extends \Library{
 	);
 	const FORM_ATTR = array(
 		'role_id' => array(
-			'label' => $this->Language('Role'),
+			'label' => 'Role',
 		),
 		'is_enabled' => array(
-			'label' => $this->Language('Enabled'),
-			'force-value' => '1',
+			'label' => 'Enabled',
+			'value' => '1',
 		),
 		'password_expires_at' => array(
 			'class' => 'datepicker form-control'
@@ -55,6 +55,8 @@ class Form extends \Library{
 		$attr['is_enabled']['checked'] = 'checked';
 
 		$form->addElem(self::FORM_ELEM, '', $attr);
+
+		$form->selected( $_POST['role_id'], 'role_id' );
 
 		$form->addElem('submit', Form::SUBMIT['add'], array(
 			'class' => 'btn btn-primary',
@@ -150,7 +152,7 @@ class Form extends \Library{
 			'action' => $this->url( array('model' => 'User', 'method' => 'Account', 'id' => $row['id']) )
 		));
 		$form->addElem('hidden', 'is_enabled', array(
-			'force-value' => '1'
+			'value' => '1'
 		))->append('form');
 		
 		$form->addElem( array('first_name', 'last_name', 'name' => 'data', 'password' => 'password', 'email') , '', array(

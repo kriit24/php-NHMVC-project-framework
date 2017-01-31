@@ -1,5 +1,3 @@
-var $_POST = [];
-var $_GET = [];
 var Project = {};
 Project.clickEvent = [];
 (function($){
@@ -54,17 +52,15 @@ Project.clickEvent = [];
 				var answer = confirm(text);
 				if (answer){
 
-					if( $(this)[0].tagName.toUpperCase() == 'A' ){
-
-						window.location.href = $(this).attr('href');
-						return false;
-					}
-					return true;
+					window.location.href = $(this).attr('href');
+					return false;
 				}
 				else
 					return false;
 			});
 		},
+		
+		//paragraph toggle
 		ptoggle : function(speed){
 
 			var sel = this.selector.split('.');
@@ -107,6 +103,18 @@ Project.clickEvent = [];
 				return false;
 			});
 		},
+		
+		//toggle checkbox elements
+		itoggle : function(){
+
+			$(this).live('click', function(){
+
+				$(this).parents('form').find('input[type="checkbox"]').not(this).prop( "checked", function( i, val ) {
+					return !val;
+				});
+			});
+		},
+
 		scrollTo( speed, posAdd ){
 
 			var selector = this.selector;
@@ -123,6 +131,8 @@ Project.clickEvent = [];
 	});
 
 	$.extend({
+
+		_POST: {},
 
 		//$.location( {'key' : 'value'} );
 		location: function( href, params ){
@@ -159,20 +169,12 @@ Project.clickEvent = [];
 			});
 			return (newHref.indexOf('?') == -1 && newHref.length > 0 ? '?' : '')+newHref;
 		},
-
-		setGET: function( jsonPost ){
-
-			if( this.canJSON( jsonPost ) ){
-
-				$_GET = $.parseJSON(jsonPost);
-			}
-		},
-
+		
 		setPOST: function( jsonPost ){
 
 			if( this.canJSON( jsonPost ) ){
 
-				$_POST = $.parseJSON(jsonPost);
+				this._POST = $.parseJSON(jsonPost);
 			}
 		},
 
@@ -249,7 +251,20 @@ $(document).ready(function(){
 		Project.clickEvent[$(this).attr('id')] = true;
 
 		var className = '.' + $(this).attr('id');
-		if( $(className) != undefined && $(className).length > 0 )
-			$(className).toggle();
+		var elem = this;
+		if( $(className) != undefined && $(className).length > 0 ){
+
+			//$(className).toggle(500);
+			$(className).animate({height: "toggle"}, 500, function(){
+
+				if( $(elem).has('i.fa-chevron-down') != undefined && $(elem).has('i.fa-chevron-down').length > 0 )
+					$('i', elem).removeClass('fa-chevron-down').addClass('fa-chevron-up');
+				else{
+
+					if( $(elem).has('i.fa-chevron-up') != undefined && $(elem).has('i.fa-chevron-up').length > 0 )
+						$('i', elem).removeClass('fa-chevron-up').addClass('fa-chevron-down');
+				}
+			});
+		}
 	});
 });

@@ -48,7 +48,7 @@ class Session{
 
 			foreach($_SESSION as $key => $value)
 				unset($_SESSION[$key]);
-			self::set( 'false' );
+			//self::set( 'false' );//it makes some problems
 		}
 
 		session_write_close();

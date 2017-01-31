@@ -10,37 +10,14 @@ class Index extends Controller{
 
 		$this->Form = new Form;
 
-		$this->privilege = new \Table\privilege;
-		$this->role = new \Table\role;
+		parent::__construct();
 	}
 
 	protected function Index_Admin(){
 
-		$this->Form->setRole(
-			$this->getRole()
-		);
+		$this->POST('updatePrivilege')->action();
 
-		if( $this->Form->isValidaddPrivilege() )
-			$this->POST(Form::SUBMIT['add'])->action();
-
-		$this->POST(Form::SUBMIT['update'])->action();
-
-		if( $this->Form->validateCloneData() )
-			$this->POST(Form::SUBMIT['clone'])->action();
-
-		$this->GET('action=deletePrivilege')->action();
-
-		$this->getPrivilege()->view('Index');
-	}
-
-	protected function getClass(){
-
-		echo $this->getClassListing();
-	}
-
-	protected function getMethod(){
-
-		echo $this->getMethodListing();
+		$this->getRoles()->getPrivilege()->view('Index_Admin');
 	}
 }
 
