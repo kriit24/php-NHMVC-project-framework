@@ -23,11 +23,6 @@ class Index extends \Library{
 
 		\Command\Table\Index::shell( Params::get() );
 	}
-
-	protected function Build(){
-
-		\Command\Build\Index::shell( Params::get() );
-	}
 }
 
 ?>

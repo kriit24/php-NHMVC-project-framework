@@ -31,7 +31,7 @@ Project.Dialog.Element = {
 
 		Project.Dialog.Object = this;
 		$(document.body).append('<div id="'+Project.Dialog.Object.dialog+'" style="display:none;"></div>');
-		$(document.body).append('<div id="'+Project.Dialog.Object.loader+'" style="'+style+'"><img src="/Template/admin/images/ajax-loader-big.gif" style="float:left;"/> <div style="float:left;margin-left:5px;margin-top:15px;">Loading ...</div></div>');
+		$(document.body).append('<div id="'+Project.Dialog.Object.loader+'" style="'+style+'"><img src="/Template/public/images/ajax-loader-big.gif" style="float:left;"/> <div style="float:left;margin-left:5px;margin-top:15px;">Loading ...</div></div>');
 		$('#'+Project.Dialog.Object.loader).center(window);
 	},
 
@@ -245,12 +245,10 @@ Project.Dialog.Element = {
 	properties : function(){
 
 		var title = Project.Dialog.Object.title;
-		return {'title' : title, 'display' : 'block', 'open' : function(){
-
-				var new_top = ( $(window).height()-$(".ui-dialog").height() )/2;
-				if(new_top <= 0) new_top = 10;
-				$( ".ui-dialog" ).css({"position" : "fixed", "top" : new_top+"px"});
-		}};
+		var new_top = ( $(window).height()-$(".ui-dialog").height() )/2;
+		var new_left = ( $(window).width()-$(".ui-dialog").width() )/2;
+		$( ".ui-dialog" ).css({"position" : "fixed", "top" : (new_top <= 0 ? 10 : new_top - 10)+"px", "left" : (new_left <= 0 ? 10 : new_left - 10)+"px"});
+		return {'title' : title, 'display' : 'block'};
 	},
 
 	clickAction: function(elem){
@@ -270,12 +268,10 @@ Project.Dialog.Element = {
 			href = $(elem).attr('href');
 		if( elem.selector == 'tr.dialog' )
 			href = $(elem).attr('rel');
-		if( elem.selector == 'td.dialog' )
-			href = $(elem).attr('rel');
 		if( $(elem).attr('title') != undefined )
 			title = $(elem).attr('title');
 
-		if( href == undefined || href.length == 0 ){
+		if( href.length == 0 ){
 
 			alert('DIALOG url missing: if A element then attr("href") if TR element attr("rel")');
 			return true;
@@ -296,18 +292,6 @@ Project.Dialog.Element = {
 						form
 					);
 					formData.append($(this).attr('name'), $(this).attr('value'));
-
-					var ckeditorObj = null;
-					if( typeof CKEDITOR != 'undefined' && typeof CKEDITOR.instances != 'undefined' ){
-
-						ckeditorObj = CKEDITOR.instances;
-
-						$(form).find('textarea:hidden').each(function(k, v){
-
-							if( ckeditorObj[ $(v).attr('name') ] != undefined )
-								formData.append($(v).attr('name'), ckeditorObj[ $(v).attr('name') ].getData());
-						});
-					}
 
 					$.dialog.ajax({'url' : elem.attr('action'), 'data' : formData, 'title' : title, 'complete' : function(data){
 						
@@ -346,17 +330,7 @@ $(document).ready(function(){
 		});
 	}
 
-	if( $('td.dialog,a.dialog').length > 0 ){
-
-		$('a', 'td.dialog').live('click', function(){
-
-			if( $(this).attr('class') != 'dialog' )
-				handlerClick = false;
-			return true;
-		});
-	}
-
-	$('tr.dialog,a.dialog,td.dialog').live('click', function(){
+	$('tr.dialog,a.dialog').live('click', function(){
 
 		if( handlerClick == true ){
 

@@ -1,8 +1,8 @@
 var getModelNames = function(elem, checked){
 
-	$('select[name="model_name"]').empty();
+	//$('select[name="model_name"]').empty();
 
-	if( $(elem).val() == 'Method' || $(elem).val() == 'Controller' ){
+	if( $(elem).val() == 'Method' || $(elem).val() == 'Action' ){
 
 		$.getJSON( "/Command/Create/getModels/" + '?folder='+$('input[name="folder"]').val(), function( data ) {
 

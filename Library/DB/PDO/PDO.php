@@ -43,6 +43,11 @@ class PDO extends Connection{
 		return $this->stmtArray;
 	}
 
+	public function getColumns(){
+
+		return $this->_validFields;
+	}
+
 	function getParams(){
 
 		return $this->params;

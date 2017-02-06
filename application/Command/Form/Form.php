@@ -33,7 +33,7 @@ class Form extends \Library{
 
 
 		$form->addElem('text', 'column_type', array(
-			'label' => $this->Language('Column type, name, label'),
+			'label' => 'Column type, name, label',
 			'class' => 'column-name form-control',
 			'required' => 'true'
 		));

@@ -50,6 +50,8 @@ class Form extends \Library{
 
 		$form->addElem($elem, '', $attr);
 
+		$form->selected( $_POST['create'], 'create' );
+
 		$form->errorLabel( $this->getError() );
 		$form->messageLabel( $this->getMessage() );
 

@@ -48,6 +48,13 @@ trait Query{
 
 	function numrows(){
 
+		if( !$this->stmt ){
+
+			$numrows = $this->fetchNumrows();
+			$this->rebuildStatement = false;
+			return $numrows;
+		}
+
 		return $this->stmt->rowCount();
 	}
 

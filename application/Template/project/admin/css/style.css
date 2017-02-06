@@ -191,12 +191,15 @@ input[type="checkbox"]:checked + .checkbox span{
 }
 
 .ibox-content {
+	margin:0 auto;
     background-color: #ffffff;
     color: inherit;
     padding: 15px 20px 20px 20px;
+	clear: both;
+}
+.ibox-content.border {
     border-color: #e7eaec;
     border-image: none;
     border-style: none none solid none;
     border-width: 0px 0px 1px 0px;
-	clear: both;
 }

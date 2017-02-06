@@ -104,23 +104,40 @@ trait Statement{
 		return $ret;
 	}
 
-	function Column($columns, $return = false){
+	function Column(){
 
-		if( is_array($columns) ){
+		$args = func_get_args();
+		$col = '';
+		foreach($args as $arg){
 
-			foreach($columns as $k => $v){
+			$columns = $arg;
 
-				if( !is_numeric($k) )
-					$col .= $col ? ','.$k.' AS '.$v : $k.' AS '.$v;
-				else
-					$col .= $col ? ','.$v : $v;
+			if( is_array($columns) ){
+
+				foreach($columns as $k => $v){
+
+					if( is_array($v) ){
+
+						foreach($v as $k1 => $v1){
+
+							if( !is_numeric($k1) )
+								$col .= $col ? ','.$k.'.'.$k1.' AS '.$v1 : $k.'.'.$k1.' AS '.$v1;
+							else
+								$col .= $col ? ','.$k.'.'.$v1 : $k.'.'.$v1;
+						}
+					}
+					else{
+
+						if( !is_numeric($k) )
+							$col .= $col ? ','.$k.' AS '.$v : $k.' AS '.$v;
+						else
+							$col .= $col ? ','.$v : $v;
+					}
+				}
 			}
+			else
+				$col .= $col ? ','.$columns : $columns;
 		}
-		else
-			$col = $columns;
-
-		if( $return )
-			return $col;
 
 		$this->stmtArray['COLUMN'] = $col;
 		return $this;
@@ -131,7 +148,7 @@ trait Statement{
 		$this->stmtArray['FROM'] = ($from ? $from : $this->_name) . ($as ? ' AS '.$as : '');
 		if( $as ){
 
-			if( $this->stmtArray['COLUMN'] && $this->stmtArray['COLUMN'] == $this->Column($this->_validFields, true) ){
+			if( $this->stmtArray['COLUMN'] && $this->stmtArray['COLUMN'] == $this->getColumns() ){
 
 				$columns = '';
 

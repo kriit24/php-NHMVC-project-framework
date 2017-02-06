@@ -195,6 +195,19 @@ class Loader{
 		return $this->_Abstract[$name];
 	}
 
+	public function loadClass( $class, $method, $attributes ){
+
+		$className = $this->getNamespace( $class.'\\Index' );
+		$position = $attributes['position'] ? $attributes['position'] : 'none';
+
+		//if some problems then remove
+		if( !$this->_instance[$className] ){
+
+			$this->_instance[$className] = new $className();
+		}
+		$this->classMethod[$position][] = array('classname' => $class, 'method' => $method, 'class' => $this->_instance[$className]);
+	}
+
 	public function loadAbstract( $abstractObj ){
 
 		return array($abstractObj::register(), $abstractObj::privilege());
@@ -204,13 +217,7 @@ class Loader{
 
 		if( \Library\Permission::getPrivilege( $privilege, $class, $method ) ){
 
-			$className = $this->getNamespace( $class.'\\Index' );
-			$position = $attributes['position'] ? $attributes['position'] : 'none';
-
-			//if some problems then remove
-			if( !$this->_instance[$className] )
-				$this->_instance[$className] = new $className();
-			$this->classMethod[$position][] = array('classname' => $class, 'method' => $method, 'class' => $this->_instance[$className]);
+			$this->loadClass($class, $method, $attributes);
 
 			//add this if some problems
 			//$this->classMethod[$position][] = array('classname' => $class, 'method' => $method, 'class' => new $className());

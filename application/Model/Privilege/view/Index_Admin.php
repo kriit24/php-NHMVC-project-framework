@@ -18,7 +18,7 @@ while($row = $this->role->fetch()){
 			</div>
 		</div>
 
-		<div class="ibox-content privilege-<?=$row['id'];?>" style="<?= isset( $_POST['privilege'][ $row['id'] ] ) ? '' : 'display: none;' ?>width:95%;margin:0 auto;">
+		<div class="ibox-content border privilege-<?=$row['id'];?>" style="<?= isset( $_POST['privilege'][ $row['id'] ] ) ? '' : 'display: none;' ?>width:95%;margin:0 auto;">
 
 			<form method="post">
 			<div style="margin-bottom:20px;">

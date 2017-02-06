@@ -161,7 +161,8 @@ class Html{
 
 	private function openTag($elem){
 
-		$elem = $this->getData($elem);
+		if( !isset($elem['value']) || empty($elem['value']) )
+			$elem = $this->getData($elem);
 		$retElem = $this->buildSiblingElem($elem['before']) . '<' . $elem['elem'] . $this->buildAttr($elem) . '>' . $this->buildSiblingElem($elem['append']) . $elem['value'];
 		if( $elem['after'] )
 			$this->elemAfter['/'.$elem['elem']] = $elem['after'];

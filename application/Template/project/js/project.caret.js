@@ -14,6 +14,15 @@ Project.Caret = function(selector){
 
 		getRange: function(begin, end){
 
+			if( typeof begin == 'number' )
+				this.range.begin = begin;
+
+			if( typeof end == 'number' )
+				this.range.end = end;
+
+			if( typeof begin == 'number' && typeof end == 'number' )
+				return this.range;
+
 			this.range = this.calcRange(begin, end);
 			return this.range;
 		},
@@ -54,10 +63,30 @@ Project.Caret = function(selector){
 			}
 		},
 
-		getText: function(){
+		getElementValue: function(){
 
-			var range = this.getRange();
-			var text = this.elem.val();
+			var elemTag = this.elem[0].tagName.toLowerCase();
+
+			if( elemTag == 'input' || elemTag == 'select' || elemTag == 'textarea' )
+				return this.elem.val();
+			else
+				return this.elem.html();
+		},
+
+		setElementValue: function( txt ){
+
+			var elemTag = this.elem[0].tagName.toLowerCase();
+
+			if( elemTag == 'input' || elemTag == 'select' || elemTag == 'textarea' )
+				return this.elem.val(txt);
+			else
+				return this.elem.html(txt);
+		},
+
+		getText: function(begin, end){
+
+			var range = this.getRange(begin, end);
+			var text = this.getElementValue();
 			var length = range.end - range.begin;
 			return text.substr(range.begin, length);
 		},
@@ -66,25 +95,25 @@ Project.Caret = function(selector){
 
 			if( begin != undefined && end != undefined ){
 
-				var text = this.elem.val();
+				var text = this.getElementValue();
 				var textStart = text.substr(0, begin);
 				var textEnd = text.substr(end);
 
 				if( returnText != undefined && returnText == true )
 					return textStart + replaceWith + textEnd;
-				this.elem.val( textStart + replaceWith + textEnd );
+				this.setElementValue( textStart + replaceWith + textEnd );
 
 				return;
 			}
 
 			var range = this.getRange();
-			var text = this.elem.val();
+			var text = this.getElementValue();
 			var textStart = text.substr(0, range.begin);
 			var textEnd = text.substr(range.end);
 
 			if( returnText != undefined && returnText == true )
 				return textStart + replaceWith + textEnd;
-			this.elem.val( textStart + replaceWith + textEnd );
+			this.setElementValue( textStart + replaceWith + textEnd );
 		}
 	}
 };

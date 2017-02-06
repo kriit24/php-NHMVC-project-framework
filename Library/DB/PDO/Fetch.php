@@ -96,8 +96,10 @@ trait Fetch{
 	private function executeMethod($row, $methods){
 
 		$ret = $row;
-		foreach( $methods as $method )
+		foreach( $methods as $method ){
+
 			$ret = call_user_func_array(array($method[0], $method[1]), array($ret, $method[2]));
+		}
 		return $ret;
 	}
 }

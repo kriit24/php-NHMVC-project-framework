@@ -46,6 +46,41 @@ class Editor4{
 		array( 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' )
 	);
 
+	const TOOLBAR_FULL = array(
+		array( 'name' =>  'clipboard',   'groups' =>  array( 'clipboard', 'undo' ) ),
+		array( 'name' =>  'editing',     'groups' =>  array( 'find', 'selection', 'spellchecker' ) ),
+		array( 'name' =>  'links' ),
+		array( 'name' =>  'insert' ),
+		array( 'name' =>  'forms' ),
+		array( 'name' =>  'tools' ),
+		array( 'name' =>  'document',	   'groups' =>  array( 'mode', 'document', 'doctools' ) ),
+		array( 'name' =>  'others' ),
+		'/',
+		array( 'name' =>  'basicstyles', 'groups' =>  array( 'basicstyles', 'cleanup' ) ),
+		array( 'name' =>  'paragraph',   'groups' =>  array( 'list', 'indent', 'blocks', 'align', 'bidi' ) ),
+		array( 'name' =>  'styles' ),
+		array( 'name' =>  'colors' ),
+		array( 'name' =>  'about' )
+	);
+
+	const TOOLBAR_CUSTOM = array(
+		array( 'name' =>  'document', 'groups' =>  array( 'mode', 'document', 'doctools' ), 'items' => array( 'Source', '-', 'Save', 'NewPage', 'Preview', 'Print', '-', 'Templates' ) ),
+		array( 'name' =>  'clipboard', 'groups' =>  array( 'clipboard', 'undo' ), 'items' => array( 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ) ),
+		array( 'name' =>  'editing', 'groups' =>  array( 'find', 'selection', 'spellchecker' ), 'items' => array( 'Find', 'Replace', '-', 'SelectAll', '-', 'Scayt' ) ),
+		array( 'name' =>  'forms', 'items' => array( 'Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField' ) ),
+		'/',
+		array( 'name' =>  'basicstyles', 'groups' =>  array( 'basicstyles', 'cleanup' ), 'items' => array( 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat' ) ),
+		array( 'name' =>  'paragraph', 'groups' =>  array( 'list', 'indent', 'blocks', 'align', 'bidi' ), 'items' => array( 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl', 'Language' ) ),
+		array( 'name' =>  'links', 'items' => array( 'Link', 'Unlink', 'Anchor' ) ),
+		array( 'name' =>  'insert', 'items' => array( 'Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe' ) ),
+		'/',
+		array( 'name' =>  'styles', 'items' => array( 'Styles', 'Format', 'Font', 'FontSize' ) ),
+		array( 'name' =>  'colors', 'items' => array( 'TextColor', 'BGColor' ) ),
+		array( 'name' =>  'tools', 'items' => array( 'Maximize', 'ShowBlocks' ) ),
+		array( 'name' =>  'others', 'items' => array( '-', 'ckeditor_wiris_formulaEditor', 'ckeditor_wiris_CAS', 'ckeditor_wiris_formulaEditorChemistry' ) ),
+		array( 'name' =>  'about', 'items' => array( 'About' ) )
+	);
+
 	function __construct(){
 
 		require_once __DIR__.'/Ckeditor4/ckeditor.php';
@@ -96,8 +131,13 @@ class Editor4{
 		if( !empty($setConfig) )
 			$config = array_merge($config, $setConfig);
 		
-		if( !empty($toolbar) )
-			$config['toolbar'] = $toolbar;
+		if( !empty($toolbar) ){
+
+			if( $toolbar == self::TOOLBAR_FULL )
+				$config['toolbarGroups'] = $toolbar;
+			else
+				$config['toolbar'] = $toolbar;
+		}
 
 		$ret .= $CKEditor->editor($name, $content, $config);
 		return $ret;

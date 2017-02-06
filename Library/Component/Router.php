@@ -23,31 +23,31 @@ class Router extends \Library\classIterator{
 		if( _SHELL )
 			$_GET['route'] = trim($_SERVER['argv'][1]);
 
-		$_GET = self::routeInjection($_GET);
-		$_POST = self::routeInjection($_POST);
+		Register::setRegister('HTTP_GET', self::routeInjection($_GET, false));
+		Register::setRegister('HTTP_POST', self::routeInjection($_POST, false));
 
-		Register::setRegister('HTTP_GET', $_GET);
-		Register::setRegister('HTTP_POST', $_POST);
-
-		$_GET = self::htmlInjection($_GET);
-		$_POST = self::htmlInjection($_POST);
+		$_GET = self::htmlInjection( self::routeInjection($_GET, true) );
+		$_POST = self::htmlInjection( self::routeInjection($_POST, true) );
 
 		self::checkRoute();
 	}
 
-	private static function routeInjection( $array ): array{
+	private static function routeInjection( $array, $escape = true ): array{
 
 		$ret = array();
 
 		foreach($array as $k => $v){
 
 			if( is_array($v) )
-				$ret[$k] = self::routeInjection($v);
+				$ret[$k] = self::routeInjection($v, $escape);
 			else{
 
 				if( !preg_match('/show tables/i', strtolower($v)) && !preg_match('/show columns/i', strtolower($v)) && !preg_match('/select(.*?)from/i', strtolower($v)) ){
 
-					$ret[$k] = self::escape($v);
+					if( $escape )
+						$ret[$k] = self::escape($v);
+					else
+						$ret[$k] = $v;
 				}
 			}
 		}
@@ -61,7 +61,7 @@ class Router extends \Library\classIterator{
 		foreach($array as $k => $v){
 
 			if( is_array($v) )
-				$ret[$k] = self::routeInjection($v);
+				$ret[$k] = self::htmlInjection($v);
 			else{
 
 				$ret[$k] = self::striptags($v);
@@ -265,6 +265,13 @@ class Router extends \Library\classIterator{
 
 		$search=array("\\","\0","\n","\r","\x1a","'",'"');
 		$replace=array("\\\\","\\0","\\n","\\r","\Z","\'",'\"');
+		return str_replace($search,$replace,html_entity_decode($str));
+	}
+
+	private static function reEscape($str){
+
+		$replace=array("\\","\0","\n","\r","\x1a","'",'"');
+		$search=array("\\\\","\\0","\\n","\\r","\Z","\'",'\"');
 		return str_replace($search,$replace,html_entity_decode($str));
 	}
 

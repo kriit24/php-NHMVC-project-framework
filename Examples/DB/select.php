@@ -28,6 +28,16 @@ $rows = $client->Select()
 ->id(2)
 ->fetchAll();
 
+$this->Select()
+->from('table_1 AS t1')
+->column( 
+	array('t1' => array_diff($this->_validFields, array('search'))),//exclude columns and reform column as t1.column_1
+	array('t2' => array_diff(\Table\table_2::singleton()->getColumns(), array('id', 'search', 'blank_update'))),
+	array("COALESCE( first_name, company)" => 'name')
+)
+->join("table_2", "t2", "t2.id = t1.related_id")
+->where( $filter );
+
 echo $client->getQuery();
 pre($rows);
 

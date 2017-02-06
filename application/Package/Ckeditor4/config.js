@@ -38,7 +38,7 @@ CKEDITOR.editorConfig = function( config ) {
 	config.removeDialogTabs = 'image:advanced;link:advanced';
 	*/
 
-	config.removeButtons = 'Underline,Subscript,Superscript';
+	//config.removeButtons = 'Underline,Subscript,Superscript';
 	config.format_tags = 'p;h1;h2;h3;pre';
 	config.enterMode = CKEDITOR.ENTER_BR;
 	config.skin = 'moonocolor';

@@ -39,7 +39,7 @@ if( !$this->command['-t'] ){
 	$this->command['-t'] = $templateName;
 }
 
-if( in_array($this->command['-t'], array('Method', 'Controller')) ){
+if( in_array($this->command['-t'], array('Method', 'Action')) ){
 
 	echo "Model Name: \e[93m";
 	$modelName = trim(fgets(STDIN));
@@ -50,8 +50,8 @@ if( in_array($this->command['-t'], array('Method', 'Controller')) ){
 
 if( !$this->command['-c'] ){
 
-	if( in_array($this->command['-t'], array('Method', 'Controller')) )
-		echo "Method/Controller Name: \e[93m";
+	if( in_array($this->command['-t'], array('Method', 'Action')) )
+		echo "Method/Action Name: \e[93m";
 	else
 		echo "Create App: \e[93m";
 
