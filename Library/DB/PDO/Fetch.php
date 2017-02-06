@@ -98,6 +98,10 @@ trait Fetch{
 		$ret = $row;
 		foreach( $methods as $method ){
 
+			$reflectionMethod = new \ReflectionMethod($method[0], $method[1]);
+			if( !$reflectionMethod->isPublic() )
+				die($method[1] . ' is not public');
+
 			$ret = call_user_func_array(array($method[0], $method[1]), array($ret, $method[2]));
 		}
 		return $ret;
