@@ -28,6 +28,7 @@
 <script src="<?=$this->header['URI2']; ?>/js/project.dialog.js" type="text/javascript"></script>
 <script src="<?=$this->header['URI2']; ?>/js/project.autocomplete.js" type="text/javascript"></script>
 <script src="<?=$this->header['URI2']; ?>/js/project.required.js" type="text/javascript"></script>
+<script src="<?=$this->header['URI2']; ?>/js/project.tabs.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 $.setGET( '<?=addslashes(json_encode($_GET));?>' );

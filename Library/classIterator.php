@@ -15,6 +15,19 @@ class classIterator extends Component\classIterator{
 		return $property->getValue($propertyObject);
 	}
 
+	public function getClassFrom( $class, $className ){
+
+		$reflection = new \ReflectionClass($class);
+		$namespace = $reflection->getNamespaceName();
+		if( $namespace )
+			$executeClassName = '\\' . $namespace . '\\' . $className;
+		else
+			$executeClassName = $className;
+
+		$siblingReflection = new \ReflectionClass($executeClassName);
+		return new $executeClassName( $args );
+	}
+
 	public static function getSiblingClass(){
 
 		return debug_backtrace(false, 2)[1]['class'];

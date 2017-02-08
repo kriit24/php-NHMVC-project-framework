@@ -80,18 +80,19 @@ trait Create{
 	private function createRow($attr, $k){
 
 		$attrTbody = $this->getHtmlElemAttr($attr, 'tbody');
+		$attrTr = $this->getHtmlElemAttr($attrTbody, 'tr', $k);
 
 		if( !$this->htmlElemList['tbody'] && $this->htmlElemList['table'] ){
 
 			$row = array(
 				$this->addelem('tbody', '', $attrTbody, true),
-				$this->addelem('tr', '', $this->getHtmlElemAttr($attrTbody, 'tr', $k), true)
+				$this->addelem('tr', '', $attrTr, true)
 			);
 			$this->htmlElemList['tbody'] = true;
 		}
 		else{
 
-			$row = array($this->addelem('tr', '', $this->getHtmlElemAttr($attrTbody, 'tr', $k), true));
+			$row = array($this->addelem('tr', '', $attrTr, true));
 		}
 
 		$i = 0;
@@ -101,7 +102,8 @@ trait Create{
 			$elem['attr'] = array_merge($elem['attr'], $elemAttr);
 			$elemHtml = $this->createElement(array($elem));
 
-			$tdAttr = array_merge(array('value' => $elemHtml), $this->getHtmlElemAttr($this->getHtmlElemAttr($attrTbody, 'tr', $k), 'td', $i));
+			$tdAttr = array_merge(array('value' => $elemHtml), $this->getHtmlElemAttr($attrTr, 'td', $i));
+
 			$row[] = $this->addelem('td', '', $tdAttr, true);
 			$row[] = $this->addelem('/td', '', array(), true);
 			$i++;
@@ -358,6 +360,7 @@ trait Create{
 		else{
 
 			$html .= $this->createRow( $attr, $k );
+			$k++;
 		}
 		return $html;
 	}

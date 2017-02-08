@@ -1,18 +1,14 @@
-//Project.Autocomplete.setSource('car_id', '<?=json_encode( array() );?>', minLength);
-//Project.Autocomplete.setSource('car_id', ['some', 'some2', 'some3'], minLength);
-//Project.Autocomplete.setSource('car_id', [{ value: "1", label: "some" },{ value: "2", label: "some 2" },{ value: "3", label: "some 3" }], minLength);
+//Project.Autocomplete.setSource('car_id', ['some', 'some2', 'some3']);
+//Project.Autocomplete.setSource('car_id', [{ value: "1", label: "some" },{ value: "2", label: "some 2" },{ value: "3", label: "some 3" }]);
+//GET values by input name, if u want to autofill input elements
 
 Project.Autocomplete = {
 
 	source : {},
 
-	minLength : 3,
-
-	setSource: function( elemName, source, minLength ){
+	setSource: function( elemName, source ){
 
 		this.source[ elemName ] = source;
-		if( minLength != undefined )
-			this.minLength = minLength;
 	},
 
 	method: function(elem, origElem, item){
@@ -21,6 +17,18 @@ Project.Autocomplete = {
 
 			$( elem ).val( item.label );
 			$( origElem ).val( item.value );
+			if( Object.keys(item).length > 2 ){
+
+				var form = $(origElem).parents('form');
+
+				$.each(item, function(k, v){
+
+					if( $('input[name="' + k + '"]', form) != undefined ){
+
+						$('input[name="' + k + '"]', form).val( v );
+					}
+				});
+			}
 			return false;
 		}
 		return true;
@@ -37,10 +45,12 @@ Project.Autocomplete = {
 			return;
 		}
 
-		var minLength = this.minLength;
 		var source = this.source[name] != undefined ? this.source[name] : $(elem).attr('rel');
 		var value  = $(elem).attr('autocomplete-value') != undefined ? $(elem).attr('autocomplete-value') : $(elem).val();
-		var newElem = $('<input type="hidden" name="' + name + '" value="' + $(elem).val() + '" />');
+		var newElem = $(elem).clone(true);
+		newElem.attr({'type' : 'hidden', 'rel' : ''});
+		//console.log(originalElement);
+		//var newElem = $('<input type="hidden" name="' + name + '" value="' + $(elem).val() + '" />');
 		$(elem).after(newElem);
 		$(elem).attr({'name' : name + '_autocomplete_label', 'value' : value});
 		
@@ -53,7 +63,7 @@ Project.Autocomplete = {
 
 		$( elem ).autocomplete({
 			'source': source,
-			'minLength' : minLength,
+			'minLength' : 3,
 			'select' : function (event, ui) {
 				return Project.Autocomplete.method(this, newElem, ui.item);
 			}

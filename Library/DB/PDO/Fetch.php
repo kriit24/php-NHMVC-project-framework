@@ -104,6 +104,8 @@ trait Fetch{
 
 			$ret = call_user_func_array(array($method[0], $method[1]), array($ret, $method[2]));
 		}
+		if( empty($ret) )
+			return $row;
 		return $ret;
 	}
 }

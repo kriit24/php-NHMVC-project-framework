@@ -48,7 +48,7 @@ trait Query{
 
 	function numrows(){
 
-		if( !$this->stmt ){
+		if( !$this->stmt && $this->stmtArray ){
 
 			$numrows = $this->fetchNumrows();
 			$this->rebuildStatement = false;

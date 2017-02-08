@@ -12,7 +12,7 @@ class PDO extends Connection{
 
 	public $_connName = '_default';
 	private $PDO;
-	private $stmt;
+	private $stmt = null;
 	private $preDefinedColumns = array();
 	private $stmtArray = array();
 	private $stmtQueye = array(

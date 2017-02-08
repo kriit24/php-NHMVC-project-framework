@@ -40,7 +40,7 @@ CREATE TABLE `language` (
   `name` longtext,
   `value` longtext,
   `language` char(10) DEFAULT NULL,
-  `model` varchar(25) NOT NULL,
+  `model` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `language` (`language`),
   KEY `model` (`model`),

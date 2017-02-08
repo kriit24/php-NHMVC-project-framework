@@ -6,6 +6,7 @@ trait Statement{
 	function StatementReConstruct(){
 
 		unset($this->stmtArray);
+		$this->stmt = null;
 		$this->preDefinedColumns = array();
 		$this->params = array();
 		$this->row = array();
