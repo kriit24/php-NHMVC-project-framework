@@ -28,7 +28,7 @@ trait Statement{
 
 		$this->StatementReConstruct();
 		$this->stmtArray['SELECT'] = '';
-		$this->Column($this->_validFields);
+		$this->Column( ($this->_aliasFields ? array_replace($this->_validFields, $this->_aliasFields) : $this->_validFields) );
 		$this->From($this->_name);
 		return $this;
 	}

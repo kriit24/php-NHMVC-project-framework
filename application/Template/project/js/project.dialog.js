@@ -293,6 +293,14 @@ Project.Dialog.Element = {
 					);
 					formData.append($(this).attr('name'), $(this).attr('value'));
 
+					if( CKEDITOR != undefined && CKEDITOR.instances != undefined ){
+
+						$.each(CKEDITOR.instances, function(k, v){
+
+							formData.append(k, CKEDITOR.instances[k].getData());
+						})
+					}
+
 					$.dialog.ajax({'url' : elem.attr('action'), 'data' : formData, 'title' : title, 'complete' : function(data){
 						
 						$.dialog.reload = true;

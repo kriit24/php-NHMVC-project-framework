@@ -7,7 +7,6 @@ abstract class install{
 
 		if( !is_file(dirname(__DIR__, 3).'/'.\Conf\Conf::_DB_ROOT_DIR.'/'.$_GET['table'].'.php') ){
 
-			$library = new \Library;
 			$sql = new \Library\Sql;
 			$database = \Conf\Conf::_DB_CONN['_default']['_database'];
 
@@ -26,7 +25,7 @@ abstract class install{
 			}
 
 			$content = file_get_contents(dirname(__FILE__, 2).'/inc/template.tpl');
-			$content = $library->replace($content, array('name' => $_GET['table'], 'fields' => $fields, 'indeger_fields' => $integerFields));
+			$content = \Library\Replace::replace($content, array('name' => $_GET['table'], 'fields' => $fields, 'indeger_fields' => $integerFields));
 			file_put_contents(dirname(__DIR__, 3).'/'.\Conf\Conf::_DB_ROOT_DIR.'/'.$_GET['table'].'.php', $content);
 			return array('msg' => 'Table installed');
 		}
