@@ -1,5 +1,5 @@
 <?
-(boolean)$autoload = true;
+(boolean)$autoload = (boolean)$die = true;
 
 class Autoload{
 
@@ -28,6 +28,18 @@ class Autoload{
 
 		global $autoload;
 		$autoload = false;
+	}
+
+	static function dieOnError(){
+
+		global $die;
+		$die = true;
+	}
+
+	static function undieOnError(){
+
+		global $die;
+		$die = false;
 	}
 
 	private function setOption( $name, $value ){
@@ -144,9 +156,14 @@ class Autoload{
 
 	private function require(){
 
+		global $die;
+
 		if( !is_file($this->getPath(). DIRECTORY_SEPARATOR .$this->getFile()) ){
 
-			die('AUTOLOAD NOT FOUND FILE:<br>'.implode('<br>', $this->require) . str_replace('/application', '<b style="color:red;">/application</b>', '<pre>'.\Library\Component\Trace::get() . '</pre>') );
+			if( $die )
+				die('AUTOLOAD NOT FOUND FILE:<br>'.implode('<br>', $this->require) . str_replace('/application', '<b style="color:red;">/application</b>', '<pre>'.\Library\Component\Trace::get() . '</pre>') );
+			else
+				return false;
 		}
 		unset($this->require);
 		require_once $this->getPath(). DIRECTORY_SEPARATOR .$this->getFile();

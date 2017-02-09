@@ -4,6 +4,7 @@ namespace Library\Structur;
 class Loader{
 
 	private $fileSystem;
+	private $abstractAutoload = true;
 	private $path;
 	private $route;
 	private $className;
@@ -16,11 +17,18 @@ class Loader{
 	private $_instance = array();
 	public $isMethodAccessible = array();
 
-	public function __construct( $autoload = true ){
+	public function __construct( $abstractAutoload = true, $autoload = true ){
+
+		if( $abstractAutoload == false )
+			\Autoload::undieOnError();
 
 		$this->fileSystem = new \Library\FileSystem;
+		$this->abstractAutoload = $abstractAutoload;
 		if( $autoload )
 			$this->load();
+
+		if( $abstractAutoload == false )
+			\Autoload::dieOnError();
 	}
 
 	public function getClass(){
@@ -143,7 +151,7 @@ class Loader{
 		//echo 'LOADER='.$classNamespaceName.'<br>';
 
 		//if its class not class namespace name
-		if( !$this->path && class_exists($classNamespaceName) ){
+		if( !$this->path && class_exists($classNamespaceName, true) ){
 
 			$reflection = new \ReflectionClass($classNamespaceName);
 			list($namespace, $classNamespaceName) = explode('\\', $reflection->getNamespaceName());
@@ -159,27 +167,20 @@ class Loader{
 				return false;
 		}
 
+		$notFound = false;
+		class_Exists($this->getNamespace( $classNamespaceName.'\\_Abstract' ), true) or ($notFound = true);
+
 		if( \Conf\Conf::_DEV_MODE ){
 
-			if( is_file($this->path . DIRECTORY_SEPARATOR . $name . '/composer.json') ){
-				
-				if( is_file($this->path . DIRECTORY_SEPARATOR . $name . '/_Abstract.php') ){
+			if( $notFound && $this->abstractAutoload )
+				die( '<b>'.$this->getNamespace( ''.$classNamespaceName.'\\_Abstract' ).'</b> not found <br><br>EXAMPLE:<br>namespace '.$this->getNamespace( $classNamespaceName ).';<br>abstract class _Abstract implements \Library_Interface_Abstract{' );
 
-					if( !class_Exists($this->getNamespace( $classNamespaceName.'\\_Abstract' )) )
-						return false;
-				}
-				else
-					return false;
-			}
-			else{
-
-				if( !class_Exists($this->getNamespace( $classNamespaceName.'\\_Abstract' )) )
-					die( '<b>'.$this->getNamespace( ''.$classNamespaceName.'\\_Abstract' ).'</b> not found <br><br>EXAMPLE:<br>namespace '.$this->getNamespace( $classNamespaceName ).';<br>abstract class _Abstract implements \Library_Interface_Abstract{' );
-			}
+			if( $notFound && !$this->abstractAutoload )
+				return false;
 		}
 		else{
 
-			if( !class_Exists($this->getNamespace( $classNamespaceName.'\\_Abstract' )) )
+			if( $notFound )
 				return false;
 		}
 

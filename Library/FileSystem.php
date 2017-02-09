@@ -148,24 +148,26 @@ class FileSystem extends Component\FileSystem{
 		rmdir( $path );
 	}
 
-	function uploadFile($fileName, $allowUpload = array(), $dir = ''){
+	function uploadFile($uploadName, $allowUpload = array(), $dir = '', $fileName = ''){
 
-		if($_FILES[$fileName] && $_FILES[$fileName]['size'] > 0){
+		if($_FILES[$uploadName] && $_FILES[$uploadName]['size'] > 0){
 
 			if( !$dir )
 				$dir = _DIR.'/tmp/upload';
 			$this->mkdir($dir);
-			$tmpFile = $_FILES[$fileName];
+			$tmpFile = $_FILES[$uploadName];
 
 			$ext = pathinfo($tmpFile['name'], PATHINFO_EXTENSION);
-			if( !in_array($ext, $allowUpload) ){
+			$fileNameExt = pathinfo($fileName, PATHINFO_EXTENSION);
+			if( !empty($allowUpload) && !in_array($ext, $allowUpload) ){
 
 				new \Library\Component\Error('Not allowed filetype', '', true);
 				return false;
 			}
 			$dir = (substr($dir, -1) == '/' ? substr($dir, 0, -1) : $dir);
-			move_uploaded_file($tmpFile['tmp_name'], $dir .'/'. $tmpFile['name'] );
-			return $dir.'/'.$tmpFile['name'];
+			$fileName = $fileName ? $fileName . '.' . ($fileNameExt ? $fileNameExt : $ext) : $tmpFile['name'];
+			move_uploaded_file($tmpFile['tmp_name'], $dir .'/'. $fileName );
+			return $dir.'/'.$fileName;
 		}
 	}
 
@@ -212,7 +214,7 @@ class FileSystem extends Component\FileSystem{
 	* download file from another domain
 	* @param String $file AS full url based file http://domain/image.png
 	*/
-	function downloadFile($file){
+	function downloadFile($file, $fileName = ''){
 
 		//First, see if the file exists
 		if (!is_file($file)) {
@@ -223,7 +225,8 @@ class FileSystem extends Component\FileSystem{
 
 		//Gather relevent info about file
 		$len = filesize($file);
-		$filename = basename($file);
+		if( !$fileName )
+			$fileName = basename($file);
 
 		//Begin writing headers
 		header("Pragma: public");
@@ -233,10 +236,10 @@ class FileSystem extends Component\FileSystem{
 		header("Content-Description: File Transfer");
 
 		//Use the switch-generated Content-Type
-		header("Content-Type: ".$this->getFileCType($filename));
+		header("Content-Type: ".$this->getFileCType($fileName));
 
 		//Force the download
-		$header="Content-Disposition: attachment; filename=".$filename.";";
+		$header="Content-Disposition: attachment; filename=".$fileName.";";
 		header($header );
 		header("Content-Transfer-Encoding: binary");
 		header("Content-Length: ".$len);

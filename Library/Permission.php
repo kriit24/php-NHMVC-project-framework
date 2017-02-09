@@ -14,7 +14,7 @@ class Permission {
 
 	public static function get( $route, $class, $method = 'Index' ){
 
-		$loader = new \Library\Structur\Loader(false);
+		$loader = new \Library\Structur\Loader( true, false );
 		$abstract = $loader->getAbstract( '\\'.$route.'\\'.$class.'\\Index' );
 		list(, $privilege) = $loader->loadAbstract( $abstract );
 		if( self::getPrivilege( $privilege, $class, $method ) )

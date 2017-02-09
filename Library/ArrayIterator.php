@@ -46,6 +46,11 @@ class ArrayIterator extends Component\arrayIterator{
 		return $val;
 	}
 
+	public static function diff( $arr1, $arr2 ){
+
+		return array_diff( $arr1, $arr2 );
+	}
+
 	function arrayValueToKey($array){
 
 		return array_combine (array_values($array), $array);

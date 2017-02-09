@@ -10,14 +10,18 @@ class Register{
 	public static function init(){
 
 		Component\Register::register('REGISTER_OBJECT', new self(), Component\Register::IS_OBJECT);
-		//pre(Component\Register::getRegister('REGISTER_OBJECT'));
-		//echo seeend;
-		//pre($GLOBALS);
 	}
 
 	private function setObject($name, $value){
 
 		$this->_object[$name] = $value;
+
+		if( Component\Register::inRegister('REGISTER_OBJECT') ){
+
+			$object = Component\Register::getRegister('REGISTER_OBJECT');
+			if( $object->_object[$name] )
+				$this->_object[$name] = array_replace($object->_object[$name], $this->_object[$name]);
+		}
 	}
 
 	public static function set($name, $value){
@@ -25,9 +29,6 @@ class Register{
 		$self = new self();
 		$self->setObject($name, $value);
 		Component\Register::setRegister('REGISTER_OBJECT', $self);
-	}
-
-	public static function append(){
 	}
 
 	public static function get($name = null){
