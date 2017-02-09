@@ -3,9 +3,10 @@ namespace {namespace};
 
 abstract class {name}{
 
-	public static function init($data){
+	public static function init(){
 
-		pre($data);
+		pre($_GET);
+		pre($_POST);
 	}
 }
 ?>

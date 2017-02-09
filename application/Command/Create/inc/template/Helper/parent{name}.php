@@ -1,6 +1,6 @@
 <?
-namespace Index;
+namespace Helper;
 
-class Index extends Index\Index{}
+class {uname} extends {uname}\Index{}
 
 ?>

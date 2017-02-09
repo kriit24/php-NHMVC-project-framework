@@ -3,9 +3,9 @@ namespace {namespace};
 
 abstract class add{uname}{
 
-	public static function init($data){
+	public static function init(){
 
-		pre($data);
+		pre($_POST);
 		//$insertId = \Table\tableName::singleton()->Insert($data);
 	}
 }

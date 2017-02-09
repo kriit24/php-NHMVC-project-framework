@@ -3,9 +3,10 @@ namespace {namespace};
 
 abstract class update{uname}{
 
-	public static function init($data, $id){
+	public static function init(){
 
-		pre($data);
+		pre($_POST);
+		pre($_GET);
 		//\Table\tableName::singleton()->Update($data, array('id' => $id));
 	}
 }

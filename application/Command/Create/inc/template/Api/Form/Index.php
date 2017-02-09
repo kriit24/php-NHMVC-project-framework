@@ -1,14 +1,9 @@
 <?
 namespace {namespace};
 
-class Form extends \Library{
+class Index extends \Library{
 
-	const SUBMIT = array(
-		'add' => 'add{uname}',
-		'update' => 'update{uname}'
-	);
-
-	public function IndexForm(){
+	public function addForm(){
 
 		$form = new \Library\Form( 'list' );
 		$form->addElem('form', '', array(
@@ -20,7 +15,7 @@ class Form extends \Library{
 			'value' => $_POST['name']
 		));
 
-		$form->addElem('submit', Form::SUBMIT['add'], array(
+		$form->addElem('submit', 'add', array(
 			'value' => $this->Language('Add')
 		));
 
@@ -28,7 +23,7 @@ class Form extends \Library{
 			'href' => './',
 			'value' => $this->Language('Cancel'),
 			'style' => 'margin-left:20px;'
-		))->after(Form::SUBMIT['add']);
+		))->after('add');
 
 		//use next lines in view
 		$form->errorLabel( $this->getError() );

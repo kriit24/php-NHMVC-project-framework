@@ -8,7 +8,6 @@ class Index extends Controller{
 		//$this->inc( $this->toUrl(__DIR__) . '/inc/script.js' );
 		//$this->inc( $this->toUrl(__DIR__) . '/inc/style.css' );
 
-		$this->Form = new Form;
 		$this->Validate = new Validate;
 
 		//$this->tableName = new \Table\tableName;
@@ -17,7 +16,7 @@ class Index extends Controller{
 	protected function Index(){
 
 		if( $this->Validate->validateIndexData() )
-			$this->POST(Form::SUBMIT['add'])->action();
+			$this->POST('add')->action();
 
 		$this->getData()->view('Index');
 	}
@@ -25,7 +24,7 @@ class Index extends Controller{
 	protected function Index_Admin(){
 
 		if( $this->Validate->validateIndexData() )
-			$this->POST(Form::SUBMIT['add'])->action();
+			$this->POST('add')->action();
 
 		$this->getData()->view('Index_Admin');
 	}

@@ -1,5 +1,1 @@
-<?
-
-$this->Form->{name}Form();
-
-?>
+Index

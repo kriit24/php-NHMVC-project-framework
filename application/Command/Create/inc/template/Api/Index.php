@@ -16,8 +16,11 @@ class Index extends Controller{
 
 	protected function Index(){
 
+		/*
 		if( $this->Validate->isValidIndex() )
-			$this->POST(Form::SUBMIT['add'])->action();
+			$this->POST('add')->action();
+		*/
+		$this->POST('add')->action();
 
 		$this->getData()->view('Index');
 	}

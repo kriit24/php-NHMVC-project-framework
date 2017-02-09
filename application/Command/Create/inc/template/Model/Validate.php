@@ -12,7 +12,7 @@ class Validate{
 
 		$validate = $this->Validate;
 		$validate->is_set('name')->message();
-		return $validate->isValid(Form::SUBMIT['add'], $_POST);
+		return $validate->isValid('add', $_POST);
 	}
 }
 
