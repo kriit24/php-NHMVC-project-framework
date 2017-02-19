@@ -5,6 +5,11 @@
  *
  * @package PhpMyAdmin
  */
+use PMA\libraries\Response;
+use PMA\libraries\URL;
+use PMA\libraries\Template;
+use PhpMyAdmin\SqlParser\Statements\CreateStatement;
+
 if (! defined('PHPMYADMIN')) {
     exit;
 }
@@ -54,11 +59,12 @@ function PMA_RTE_getList($type, $items)
         break;
     }
     $retval .= '">';
-    $retval .= PMA_URL_getHiddenInputs($GLOBALS['db'], $GLOBALS['table']);
+    $retval .= URL::getHiddenInputs($GLOBALS['db'], $GLOBALS['table']);
     $retval .= "<fieldset>\n";
     $retval .= "    <legend>\n";
     $retval .= "        " . PMA_RTE_getWord('title') . "\n";
-    $retval .= "        " . PMA_Util::showMySQLDocu(PMA_RTE_getWord('docu')) . "\n";
+    $retval .= "        "
+        . PMA\libraries\Util::showMySQLDocu(PMA_RTE_getWord('docu')) . "\n";
     $retval .= "    </legend>\n";
     $retval .= "    <div class='$class1' id='nothing2display'>\n";
     $retval .= "      " . PMA_RTE_getWord('nothing') . "\n";
@@ -113,10 +119,12 @@ function PMA_RTE_getList($type, $items)
     $retval .= "        </tr>\n";
     $retval .= "        <!-- TABLE DATA -->\n";
     $count = 0;
+    $response = Response::getInstance();
     foreach ($items as $item) {
-        $rowclass = ($count % 2 == 0) ? 'odd' : 'even';
-        if ($GLOBALS['is_ajax_request'] && empty($_REQUEST['ajax_page_request'])) {
-            $rowclass .= ' ajaxInsert hide';
+        if ($response->isAjax() && empty($_REQUEST['ajax_page_request'])) {
+            $rowclass = 'ajaxInsert hide';
+        } else {
+            $rowclass = '';
         }
         // Get each row from the correct function
         switch ($type) {
@@ -138,15 +146,20 @@ function PMA_RTE_getList($type, $items)
 
     if (count($items)) {
         $retval .= '<div class="withSelected">';
-        $retval .= PMA_Util::getWithSelected(
-            $GLOBALS['pmaThemeImage'], $GLOBALS['text_dir'], 'rteListForm'
-        );
-        $retval .= PMA_Util::getButtonOrImage(
-            'submit_mult', 'mult_submit', 'submit_mult_export',
+        $retval .= Template::get('select_all')
+            ->render(
+                array(
+                    'pmaThemeImage' => $GLOBALS['pmaThemeImage'],
+                    'text_dir'      => $GLOBALS['text_dir'],
+                    'formName'      => 'rteListForm',
+                )
+            );
+        $retval .= PMA\libraries\Util::getButtonOrImage(
+            'submit_mult', 'mult_submit',
             __('Export'), 'b_export.png', 'export'
         );
-        $retval .= PMA_Util::getButtonOrImage(
-            'submit_mult', 'mult_submit', 'submit_mult_drop',
+        $retval .= PMA\libraries\Util::getButtonOrImage(
+            'submit_mult', 'mult_submit',
             __('Drop'), 'b_drop.png', 'drop'
         );
         $retval .= '</div>';
@@ -163,7 +176,7 @@ function PMA_RTE_getList($type, $items)
  * Creates the contents for a row in the list of routines
  *
  * @param array  $routine  An array of routine data
- * @param string $rowclass Empty or one of ['even'|'odd']
+ * @param string $rowclass Additional class
  *
  * @return string HTML code of a row for the list of routines
  */
@@ -174,7 +187,7 @@ function PMA_RTN_getRowForList($routine, $rowclass = '')
     $sql_drop = sprintf(
         'DROP %s IF EXISTS %s',
         $routine['type'],
-        PMA_Util::backquote($routine['name'])
+        PMA\libraries\Util::backquote($routine['name'])
     );
     $type_link = "item_type={$routine['type']}";
 
@@ -193,9 +206,24 @@ function PMA_RTN_getRowForList($routine, $rowclass = '')
     $retval .= "                </strong>\n";
     $retval .= "            </td>\n";
     $retval .= "            <td>\n";
+
+    // this is for our purpose to decide whether to
+    // show the edit link or not, so we need the DEFINER for the routine
+    $where = "ROUTINE_SCHEMA " . PMA\libraries\Util::getCollateForIS() . "="
+        . "'" . $GLOBALS['dbi']->escapeString($db) . "' "
+        . "AND SPECIFIC_NAME='" . $GLOBALS['dbi']->escapeString($routine['name']) . "'"
+        . "AND ROUTINE_TYPE='" . $GLOBALS['dbi']->escapeString($routine['type']) . "'";
+    $query = "SELECT `DEFINER` FROM INFORMATION_SCHEMA.ROUTINES WHERE $where;";
+    $routine_definer = $GLOBALS['dbi']->fetchValue($query);
+
+    $curr_user = $GLOBALS['dbi']->getCurrentUser();
+
     // Since editing a procedure involved dropping and recreating, check also for
     // CREATE ROUTINE privilege to avoid lost procedures.
-    if (PMA_Util::currentUserHasPrivilege('CREATE ROUTINE', $db)) {
+    if ((PMA\libraries\Util::currentUserHasPrivilege('CREATE ROUTINE', $db)
+        && $curr_user == $routine_definer)
+        || $GLOBALS['is_superuser']
+    ) {
         $retval .= '                <a ' . $ajax_class['edit']
                                          . ' href="db_routines.php'
                                          . $url_query
@@ -210,7 +238,7 @@ function PMA_RTN_getRowForList($routine, $rowclass = '')
     $retval .= "            </td>\n";
     $retval .= "            <td>\n";
 
-    // There is a problem with PMA_Util::currentUserHasPrivilege():
+    // There is a problem with PMA\libraries\Util::currentUserHasPrivilege():
     // it does not detect all kinds of privileges, for example
     // a direct privilege on a specific routine. So, at this point,
     // we show the Execute link, hoping that the user has the correct rights.
@@ -221,22 +249,20 @@ function PMA_RTN_getRowForList($routine, $rowclass = '')
     // we will show a dialog to get values for these parameters,
     // otherwise we can execute it directly.
 
-    $parser = new SqlParser\Parser(
-        $GLOBALS['dbi']->getDefinition(
-            $db,
-            $routine['type'],
-            $routine['name']
-        )
+    $definition = $GLOBALS['dbi']->getDefinition(
+        $db, $routine['type'], $routine['name']
     );
+    if ($definition !== false) {
+        $parser = new PhpMyAdmin\SqlParser\Parser($definition);
 
-    /**
-     * @var CreateStatement $stmt
-     */
-    $stmt = $parser->statements[0];
+        /**
+         * @var CreateStatement $stmt
+         */
+        $stmt = $parser->statements[0];
 
-    $params = SqlParser\Utils\Routine::getParameters($stmt);
-    if ($routine !== false) {
-        if (PMA_Util::currentUserHasPrivilege('EXECUTE', $db)) {
+        $params = PhpMyAdmin\SqlParser\Utils\Routine::getParameters($stmt);
+
+        if (PMA\libraries\Util::currentUserHasPrivilege('EXECUTE', $db)) {
             $execute_action = 'execute_routine';
             for ($i = 0; $i < $params['num']; $i++) {
                 if ($routine['type'] == 'PROCEDURE'
@@ -262,14 +288,21 @@ function PMA_RTN_getRowForList($routine, $rowclass = '')
 
     $retval .= "            </td>\n";
     $retval .= "            <td>\n";
-    $retval .= '                <a ' . $ajax_class['export']
-                                     . ' href="db_routines.php'
-                                     . $url_query
-                                     . '&amp;export_item=1'
-                                     . '&amp;item_name='
-                                     . urlencode($routine['name'])
-                                     . '&amp;' . $type_link
-                                     . '">' . $titles['Export'] . "</a>\n";
+    if ((PMA\libraries\Util::currentUserHasPrivilege('CREATE ROUTINE', $db)
+        && $curr_user == $routine_definer)
+        || $GLOBALS['is_superuser']
+    ) {
+        $retval .= '                <a ' . $ajax_class['export']
+                                         . ' href="db_routines.php'
+                                         . $url_query
+                                         . '&amp;export_item=1'
+                                         . '&amp;item_name='
+                                         . urlencode($routine['name'])
+                                         . '&amp;' . $type_link
+                                         . '">' . $titles['Export'] . "</a>\n";
+    } else {
+        $retval .= "                {$titles['NoExport']}\n";
+    }
     $retval .= "            </td>\n";
     $retval .= "            <td>\n";
     $retval .= '                <a ' . $ajax_class['drop']
@@ -296,7 +329,7 @@ function PMA_RTN_getRowForList($routine, $rowclass = '')
  * Creates the contents for a row in the list of triggers
  *
  * @param array  $trigger  An array of routine data
- * @param string $rowclass Empty or one of ['even'|'odd']
+ * @param string $rowclass Additional class
  *
  * @return string HTML code of a cell for the list of triggers
  */
@@ -325,7 +358,7 @@ function PMA_TRI_getRowForList($trigger, $rowclass = '')
         $retval .= "            </td>\n";
     }
     $retval .= "            <td>\n";
-    if (PMA_Util::currentUserHasPrivilege('TRIGGER', $db, $table)) {
+    if (PMA\libraries\Util::currentUserHasPrivilege('TRIGGER', $db, $table)) {
         $retval .= '                <a ' . $ajax_class['edit']
                                          . ' href="db_triggers.php'
                                          . $url_query
@@ -347,7 +380,7 @@ function PMA_TRI_getRowForList($trigger, $rowclass = '')
                                          . '">' . $titles['Export'] . "</a>\n";
     $retval .= "            </td>\n";
     $retval .= "            <td>\n";
-    if (PMA_Util::currentUserHasPrivilege('TRIGGER', $db)) {
+    if (PMA\libraries\Util::currentUserHasPrivilege('TRIGGER', $db)) {
         $retval .= '                <a ' . $ajax_class['drop']
                                          . ' href="sql.php'
                                          . $url_query
@@ -375,7 +408,7 @@ function PMA_TRI_getRowForList($trigger, $rowclass = '')
  * Creates the contents for a row in the list of events
  *
  * @param array  $event    An array of routine data
- * @param string $rowclass Empty or one of ['even'|'odd']
+ * @param string $rowclass Additional class
  *
  * @return string HTML code of a cell for the list of events
  */
@@ -385,7 +418,7 @@ function PMA_EVN_getRowForList($event, $rowclass = '')
 
     $sql_drop = sprintf(
         'DROP EVENT IF EXISTS %s',
-        PMA_Util::backquote($event['name'])
+        PMA\libraries\Util::backquote($event['name'])
     );
 
     $retval  = "        <tr class='$rowclass'>\n";
@@ -406,7 +439,7 @@ function PMA_EVN_getRowForList($event, $rowclass = '')
     $retval .= "                 {$event['status']}\n";
     $retval .= "            </td>\n";
     $retval .= "            <td>\n";
-    if (PMA_Util::currentUserHasPrivilege('EVENT', $db)) {
+    if (PMA\libraries\Util::currentUserHasPrivilege('EVENT', $db)) {
         $retval .= '                <a ' . $ajax_class['edit']
                                          . ' href="db_events.php'
                                          . $url_query
@@ -428,7 +461,7 @@ function PMA_EVN_getRowForList($event, $rowclass = '')
                                      . '">' . $titles['Export'] . "</a>\n";
     $retval .= "            </td>\n";
     $retval .= "            <td>\n";
-    if (PMA_Util::currentUserHasPrivilege('EVENT', $db)) {
+    if (PMA\libraries\Util::currentUserHasPrivilege('EVENT', $db)) {
         $retval .= '                <a ' . $ajax_class['drop']
                                          . ' href="sql.php'
                                          . $url_query

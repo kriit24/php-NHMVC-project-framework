@@ -6,6 +6,8 @@
  * @package PhpMyAdmin
  */
 
+ use PMA\libraries\DatabaseInterface;
+
 if (! defined('PHPMYADMIN')) {
     exit;
 }
@@ -27,7 +29,8 @@ if (! empty($_REQUEST['master_connection'])) {
     );
     if ($server_slave_multi_replication) {
         $GLOBALS['dbi']->query(
-            "SET @@default_master_connection = '" . PMA_Util::sqlAddSlashes(
+            "SET @@default_master_connection = '"
+            . $GLOBALS['dbi']->escapeString(
                 $_REQUEST['master_connection']
             ) . "'"
         );
@@ -225,8 +228,8 @@ function PMA_extractDbOrTable($string, $what = 'db')
  */
 function PMA_Replication_Slave_control($action, $control = null, $link = null)
 {
-    $action = /*overload*/mb_strtoupper($action);
-    $control = /*overload*/mb_strtoupper($control);
+    $action = mb_strtoupper($action);
+    $control = mb_strtoupper($control);
 
     if ($action != "START" && $action != "STOP") {
         return -1;
@@ -292,13 +295,15 @@ function PMA_Replication_connectToMaster(
     $user, $password, $host = null, $port = null, $socket = null
 ) {
     $server = array();
-    $server["host"] = $host;
+    $server['user'] = $user;
+    $server['password'] = $password;
+    $server["host"] = PMA_sanitizeMySQLHost($host);
     $server["port"] = $port;
     $server["socket"] = $socket;
 
     // 5th parameter set to true means that it's an auxiliary connection
     // and we must not go back to login page if it fails
-    return $GLOBALS['dbi']->connect($user, $password, false, $server, true);
+    return $GLOBALS['dbi']->connect(databaseinterface::CONNECT_AUXILIARY, $server);
 }
 /**
  * Fetches position and file of current binary log on master

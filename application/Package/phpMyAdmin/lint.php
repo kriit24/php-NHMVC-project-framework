@@ -5,17 +5,16 @@
  *
  * @package PhpMyAdmin
  */
+use PMA\libraries\Linter;
+use PMA\libraries\Response;
+
+$_GET['ajax_request'] = 'true';
 
 /**
  * Loading common files. Used to check for authorization, localization and to
  * load the parsing library.
  */
 require_once 'libraries/common.inc.php';
-
-/**
- * Loads the linter.
- */
-require_once 'libraries/Linter.class.php';
 
 /**
  * The SQL query to be analyzed.
@@ -31,7 +30,7 @@ require_once 'libraries/Linter.class.php';
 $sql_query = !empty($_POST['sql_query']) ? $_POST['sql_query'] : '';
 
 // Disabling standard response.
-PMA_Response::getInstance()->disable();
+Response::getInstance()->disable();
 
 PMA_headerJSON();
 
@@ -41,10 +40,11 @@ if (! empty($_POST['options'])) {
     if (! empty($options['routine_editor'])) {
         $sql_query = 'CREATE PROCEDURE `a`() ' . $sql_query;
     } elseif (! empty($options['trigger_editor'])) {
-        $sql_query = 'CREATE TRIGGER `a` AFTER INSERT ON `b` FOR EACH ROW ' . $sql_query;
+        $sql_query = 'CREATE TRIGGER `a` AFTER INSERT ON `b` FOR EACH ROW '
+            . $sql_query;
     } elseif (! empty($options['event_editor'])) {
         $sql_query = 'CREATE EVENT `a` ON SCHEDULE EVERY MINUTE DO ' . $sql_query;
     }
 }
 
-echo json_encode(PMA_Linter::lint($sql_query));
+echo json_encode(Linter::lint($sql_query));

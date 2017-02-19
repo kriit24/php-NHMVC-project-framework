@@ -5,6 +5,9 @@
  *
  * @package PhpMyAdmin
  */
+use PMA\libraries\URL;
+use PMA\libraries\Response;
+
 if (! defined('PHPMYADMIN')) {
     exit;
 }
@@ -19,7 +22,9 @@ require_once './libraries/rte/rte_export.lib.php';
 require_once './libraries/rte/rte_list.lib.php';
 require_once './libraries/rte/rte_footer.lib.php';
 
-if ($GLOBALS['is_ajax_request'] != true) {
+$response = Response::getInstance();
+
+if (! $response->isAjax()) {
     /**
      * Displays the header and tabs
      */
@@ -39,7 +44,7 @@ if ($GLOBALS['is_ajax_request'] != true) {
             $tooltip_truename,
             $tooltip_aliasname,
             $pos
-        ) = PMA_Util::getDbInfo($db, isset($sub_part) ? $sub_part : '');
+        ) = PMA\libraries\Util::getDbInfo($db, isset($sub_part) ? $sub_part : '');
     }
 } else {
     /**
@@ -47,10 +52,10 @@ if ($GLOBALS['is_ajax_request'] != true) {
      * to manually select the required database and
      * create the missing $url_query variable
      */
-    if (/*overload*/mb_strlen($db)) {
+    if (strlen($db) > 0) {
         $GLOBALS['dbi']->selectDb($db);
         if (! isset($url_query)) {
-            $url_query = PMA_URL_getCommon(
+            $url_query = URL::getCommon(
                 array(
                     'db' => $db, 'table' => $table
                 )
@@ -74,7 +79,7 @@ $ajax_class = array(
 /**
  * Create labels for the list
  */
-$titles = PMA_Util::buildActionTitles();
+$titles = PMA\libraries\Util::buildActionTitles();
 
 /**
  * Keep a list of errors that occurred while

@@ -44,7 +44,7 @@ $strConfigBrowsePointerEnable_desc = __(
 );
 $strConfigBrowsePointerEnable_name = __('Highlight pointer');
 $strConfigBZipDump_desc = __(
-    'Enable [a@http://en.wikipedia.org/wiki/Bzip2]bzip2[/a] compression for'
+    'Enable bzip2 compression for'
     . ' import operations.'
 );
 $strConfigBZipDump_name = __('Bzip2');
@@ -56,7 +56,7 @@ $strConfigCharEditing_desc = __(
 $strConfigCharEditing_name = __('CHAR columns editing');
 $strConfigCodemirrorEnable_desc = __(
     'Use user-friendly editor for editing SQL queries '
-    . '([a@http://codemirror.net/]CodeMirror[/a]) with syntax highlighting and '
+    . '(CodeMirror) with syntax highlighting and '
     . 'line numbers.'
 );
 $strConfigCodemirrorEnable_name = __('Enable CodeMirror');
@@ -114,6 +114,9 @@ $strConfigEnableAutocompleteForTablesAndColumns_name = __(
 );
 $strConfigHideStructureActions_desc
     = __('Whether the table structure actions should be hidden.');
+$strConfigShowColumnComments_name = __('Show column comments');
+$strConfigShowColumnComments_desc
+    = __('Whether column comments should be shown in table structure view');
 $strConfigHideStructureActions_name = __('Hide table structure actions');
 $strConfigDisplayServersList_desc
     = __('Show server listing as a list instead of a drop down.');
@@ -161,7 +164,7 @@ $strConfigExport_latex_data_continued_caption_name = __('Continued table caption
 $strConfigExport_latex_data_label_name = __('Label key');
 $strConfigExport_latex_mime_name = __('MIME type');
 $strConfigExport_latex_null_name = __('Replace NULL with');
-$strConfigExport_latex_relation_name = __('Relations');
+$strConfigExport_latex_relation_name = __('Relationships');
 $strConfigExport_latex_structure_caption_name = __('Table caption');
 $strConfigExport_latex_structure_continued_caption_name
     = __('Continued table caption');
@@ -174,7 +177,7 @@ $strConfigExport_odt_columns_name = __('Put columns names in the first row');
 $strConfigExport_odt_comments_name = __('Comments');
 $strConfigExport_odt_mime_name = __('MIME type');
 $strConfigExport_odt_null_name = __('Replace NULL with');
-$strConfigExport_odt_relation_name = __('Relations');
+$strConfigExport_odt_relation_name = __('Relationships');
 $strConfigExport_odt_structure_or_data_name = __('Dump table');
 $strConfigExport_onserver_name = __('Save on server');
 $strConfigExport_onserver_overwrite_name = __('Overwrite existing file(s)');
@@ -215,7 +218,7 @@ $strConfigExport_sql_max_query_size_name = __('Maximal length of created query')
 $strConfigExport_sql_mime_name = __('MIME type');
 $strConfigExport_sql_procedure_function_name
     = sprintf(__('Add %s'), 'CREATE PROCEDURE / FUNCTION / EVENT');
-$strConfigExport_sql_relation_name = __('Relations');
+$strConfigExport_sql_relation_name = __('Relationships');
 $strConfigExport_sql_structure_or_data_name = __('Dump table');
 $strConfigExport_sql_type_name = __('Export type');
 $strConfigExport_sql_use_transaction_name = __('Enclose export in a transaction');
@@ -223,12 +226,6 @@ $strConfigExport_sql_utc_time_name = __('Export time in UTC');
 $strConfigExport_texytext_columns_name = __('Put columns names in the first row');
 $strConfigExport_texytext_null_name = __('Replace NULL with');
 $strConfigExport_texytext_structure_or_data_name = __('Dump table');
-$strConfigExport_xls_columns_name = __('Put columns names in the first row');
-$strConfigExport_xls_null_name = __('Replace NULL with');
-$strConfigExport_xlsx_columns_name = __('Put columns names in the first row');
-$strConfigExport_xlsx_null_name = __('Replace NULL with');
-$strConfigForceSSL_desc = __('Force secured connection while using phpMyAdmin.');
-$strConfigForceSSL_name = __('Force SSL connection');
 $strConfigForeignKeyDropdownOrder_desc = __(
     'Sort order for items in a foreign-key dropdown box; [kbd]content[/kbd] is '
     . 'the referenced data, [kbd]id[/kbd] is the key value.'
@@ -349,7 +346,7 @@ $strConfigForm_Warnings = __('Warnings');
 $strConfigForm_Warnings_desc
     = __('Disable some of the warnings shown by phpMyAdmin.');
 $strConfigGZipDump_desc = __(
-    'Enable [a@http://en.wikipedia.org/wiki/Gzip]gzip[/a] compression for import '
+    'Enable gzip compression for import '
     . 'and export operations.'
 );
 $strConfigGZipDump_name = __('GZip');
@@ -401,8 +398,6 @@ $strConfigImport_sql_compatibility_name = __('SQL compatibility mode');
 $strConfigImport_sql_no_auto_value_on_zero_name
     = __('Do not use AUTO_INCREMENT for zero values');
 $strConfigImport_sql_read_as_multibytes_name = __('Read as multibytes');
-$strConfigImport_xls_col_names_name = __('Column names in first row');
-$strConfigImport_xlsx_col_names_name = __('Column names in first row');
 $strConfigInitialSlidersState_name = __('Initial state for sliders');
 $strConfigInsertRows_desc = __('How many rows can be inserted at one time.');
 $strConfigInsertRows_name = __('Number of inserted rows');
@@ -548,6 +543,8 @@ $strConfigRowActionLinksWithoutUnique_desc = __(
     'Whether to show row links even in the absence of a unique key.'
 );
 $strConfigRowActionLinksWithoutUnique_name = __('Show row links anyway');
+$strConfigDisableShortcutKeys_name = __('Disable shortcut keys');
+$strConfigDisableShortcutKeys_desc = __('Disable shortcut keys');
 $strConfigNaturalOrder_desc
     = __('Use natural order for sorting table and database names.');
 $strConfigNaturalOrder_name = __('Natural order');
@@ -631,16 +628,10 @@ $strConfigServers_SessionTimeZone_desc = __(
 $strConfigServers_auth_http_realm_desc
     = __('HTTP Basic Auth Realm name to display when doing HTTP Auth.');
 $strConfigServers_auth_http_realm_name = __('HTTP Realm');
-$strConfigServers_auth_swekey_config_desc = __(
-    'The path for the config file for [a@http://swekey.com]SweKey hardware '
-    . 'authentication[/a] (not located in your document root; suggested: '
-    . '/etc/swekey.conf).'
-);
-$strConfigServers_auth_swekey_config_name = __('SweKey config file');
 $strConfigServers_auth_type_desc = __('Authentication method to use.');
 $strConfigServers_auth_type_name = __('Authentication type');
 $strConfigServers_bookmarktable_desc = __(
-    'Leave blank for no [a@http://wiki.phpmyadmin.net/pma/bookmark]bookmark[/a] '
+    'Leave blank for no [doc@bookmarks@]bookmark[/doc] '
     . 'support, suggested: [kbd]pma__bookmark[/kbd]'
 );
 $strConfigServers_bookmarktable_name = __('Bookmark table');
@@ -651,13 +642,10 @@ $strConfigServers_column_info_desc = __(
 $strConfigServers_column_info_name = __('Column information table');
 $strConfigServers_compress_desc = __('Compress connection to MySQL server.');
 $strConfigServers_compress_name = __('Compress connection');
-$strConfigServers_connect_type_desc
-    = __('How to connect to server, keep [kbd]tcp[/kbd] if unsure.');
-$strConfigServers_connect_type_name = __('Connection type');
 $strConfigServers_controlpass_name = __('Control user password');
 $strConfigServers_controluser_desc = __(
     'A special MySQL user configured with limited permissions, more information '
-    . 'available on [a@http://wiki.phpmyadmin.net/pma/controluser]wiki[/a].'
+    . 'available on [doc@linked-tables]documentation[/doc].'
 );
 $strConfigServers_controluser_name = __('Control user');
 $strConfigServers_controlhost_desc = __(
@@ -675,7 +663,7 @@ $strConfigServers_hide_db_desc
     = __('Hide databases matching regular expression (PCRE).');
 $strConfigServers_DisableIS_desc = __(
     'More information on [a@https://sourceforge.net/p/phpmyadmin/bugs/2606/]PMA ' .
-    'bug tracker[/a] and [a@http://bugs.mysql.com/19588]MySQL Bugs[/a]'
+    'bug tracker[/a] and [a@https://bugs.mysql.com/19588]MySQL Bugs[/a]'
 );
 $strConfigServers_DisableIS_name = __('Disable use of INFORMATION_SCHEMA');
 $strConfigServers_hide_db_name = __('Hide databases');
@@ -698,8 +686,8 @@ $strConfigServers_savedsearches_desc = __(
     'Leave blank for no QBE saved searches support, suggested: '
     . '[kbd]pma__savedsearches[/kbd].'
 );
-$strConfigServers_savedsearches_name = __('Export templates table');
-$strConfigServers_savedsearches_desc = __(
+$strConfigServers_export_templates_name = __('Export templates table');
+$strConfigServers_export_templates_desc = __(
     'Leave blank for no export template support, suggested: '
     . '[kbd]pma__export_templates[/kbd].'
 );
@@ -708,8 +696,6 @@ $strConfigServers_central_columns_desc = __(
     'Leave blank for no central columns support, suggested: '
     . '[kbd]pma__central_columns[/kbd].'
 );
-$strConfigServers_nopassword_desc = __('Try to connect without password.');
-$strConfigServers_nopassword_name = __('Connect without password');
 $strConfigServers_only_db_desc = __(
     'You can use MySQL wildcard characters (% and _), escape them if you want to '
     . 'use their literal instances, i.e. use [kbd]\'my\_db\'[/kbd] and not '
@@ -724,7 +710,7 @@ $strConfigServers_pdf_pages_desc = __(
 $strConfigServers_pdf_pages_name = __('PDF schema: pages table');
 $strConfigServers_pmadb_desc = __(
     'Database used for relations, bookmarks, and PDF features. See '
-    . '[a@http://wiki.phpmyadmin.net/pma/pmadb]pmadb[/a] for complete information. '
+    . '[doc@linked-tables]pmadb[/doc] for complete information. '
     . 'Leave blank for no support. Suggested: [kbd]phpmyadmin[/kbd].'
 );
 $strConfigServers_pmadb_name = __('Database name');
@@ -743,13 +729,13 @@ $strConfigServers_favorite_desc = __(
 $strConfigServers_favorite_name = __('Favorites table');
 $strConfigServers_relation_desc = __(
     'Leave blank for no '
-    . '[a@http://wiki.phpmyadmin.net/pma/relation]relation-links[/a] support, '
+    . '[doc@relations@]relation-links[/doc] support, '
     . 'suggested: [kbd]pma__relation[/kbd].'
 );
 $strConfigServers_relation_name = __('Relation table');
 $strConfigServers_SignonSession_desc = __(
-    'See [a@http://wiki.phpmyadmin.net/pma/auth_types#signon]authentication '
-    . 'types[/a] for an example.'
+    'See [doc@authentication-modes]authentication '
+    . 'types[/doc] for an example.'
 );
 $strConfigServers_SignonSession_name = __('Signon session name');
 $strConfigServers_SignonURL_name = __('Signon URL');
@@ -810,8 +796,8 @@ $strConfigServers_userconfig_desc = __(
 $strConfigServers_userconfig_name = __('User preferences storage table');
 $strConfigServers_users_desc = __(
     'Both this table and the user groups table are required to enable the ' .
-    'configurable menus feature; leaving either one of them blank will disable
-    this feature, suggested: [kbd]pma__users[/kbd].'
+    'configurable menus feature; leaving either one of them blank will disable ' .
+    'this feature, suggested: [kbd]pma__users[/kbd].'
 );
 $strConfigServers_users_name = __('Users table');
 $strConfigServers_usergroups_desc = __(
@@ -859,6 +845,10 @@ $strConfigShowDbStructureLastCheck_desc = __(
     'Show or hide a column displaying the Last check timestamp for all tables.'
 );
 $strConfigShowDbStructureLastCheck_name = __('Show last check timestamp');
+$strConfigShowDbStructureCharset_desc = __(
+    'Show or hide a column displaying the charset for all tables.'
+);
+$strConfigShowDbStructureCharset_name = __('Show table charset');
 $strConfigShowFieldTypesInDataEditView_desc = __(
     'Defines whether or not type fields should be initially displayed in ' .
     'edit/insert mode.'
@@ -871,7 +861,7 @@ $strConfigShowFunctionFields_name = __('Show function fields');
 $strConfigShowHint_desc = __('Whether to show hint or not.');
 $strConfigShowHint_name = __('Show hint');
 $strConfigShowPhpInfo_desc = __(
-    'Shows link to [a@http://php.net/manual/function.phpinfo.php]phpinfo()[/a] ' .
+    'Shows link to [a@https://php.net/manual/function.phpinfo.php]phpinfo()[/a] ' .
     'output.'
 );
 $strConfigShowPhpInfo_name = __('Show phpinfo() link');
@@ -974,7 +964,7 @@ $strConfigProxyPass_desc = __('The password for authenticating with the proxy.')
 $strConfigProxyPass_name = __('Proxy password');
 
 $strConfigZipDump_desc = __(
-    'Enable [a@http://en.wikipedia.org/wiki/ZIP_(file_format)]ZIP[/a] ' .
+    'Enable ZIP ' .
     'compression for import and export operations.'
 );
 $strConfigZipDump_name = __('ZIP');

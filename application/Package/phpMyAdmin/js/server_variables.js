@@ -50,7 +50,7 @@ AJAX.registerOnload('server_variables.js', function () {
 
     /* Filters the rows by the user given regexp */
     function filterVariables(textFilter) {
-        var mark_next = false, $row, odd_row = false;
+        var mark_next = false, $row;
         $('#serverVariables').find('.var-row').not('.var-header').each(function () {
             $row = $(this);
             if (mark_next || textFilter === null ||
@@ -59,14 +59,7 @@ AJAX.registerOnload('server_variables.js', function () {
                 // If current global value is different from session value
                 // (has class diffSession), then display that one too
                 mark_next = $row.hasClass('diffSession') && ! mark_next;
-
-                odd_row = ! odd_row;
                 $row.css('display', '');
-                if (odd_row) {
-                    $row.addClass('odd').removeClass('even');
-                } else {
-                    $row.addClass('even').removeClass('odd');
-                }
             } else {
                 $row.css('display', 'none');
             }
@@ -75,9 +68,10 @@ AJAX.registerOnload('server_variables.js', function () {
 
     /* Allows the user to edit a server variable */
     function editVariable(link) {
-        var $cell = $(link).parent();
-        var $valueCell = $(link).parents('.var-row').find('.var-value');
-        var varName = $cell.parent().find('.var-name').text().replace(/ /g, '_');
+        var $link = $(link);
+        var $cell = $link.parent();
+        var $valueCell = $link.parents('.var-row').find('.var-value');
+        var varName = $link.data('variable');
         var $mySaveLink = $saveLink.clone().show();
         var $myCancelLink = $cancelLink.clone().show();
         var $msgbox = PMA_ajaxShowMessage();
@@ -88,11 +82,12 @@ AJAX.registerOnload('server_variables.js', function () {
 
         $mySaveLink.click(function () {
             var $msgbox = PMA_ajaxShowMessage(PMA_messages.strProcessingRequest);
-            $.get($(this).attr('href'), {
+            $.post($(this).attr('href'), {
                     ajax_request: true,
                     type: 'setval',
                     varName: varName,
-                    varValue: $valueCell.find('input').val()
+                    varValue: $valueCell.find('input').val(),
+                    token: PMA_commonParams.get('token')
                 }, function (data) {
                     if (data.success) {
                         $valueCell
@@ -100,7 +95,11 @@ AJAX.registerOnload('server_variables.js', function () {
                             .data('content', data.variable);
                         PMA_ajaxRemoveMessage($msgbox);
                     } else {
-                        PMA_ajaxShowMessage(data.error, false);
+                        if (data.error == '') {
+                            PMA_ajaxShowMessage(PMA_messages.strRequestFailed, false);
+                        } else {
+                            PMA_ajaxShowMessage(data.error, false);
+                        }
                         $valueCell.html($valueCell.data('content'));
                     }
                     $cell.removeClass('edit').html($myEditLink);

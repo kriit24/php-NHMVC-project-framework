@@ -246,6 +246,11 @@ $(document).ready(function(){
 	   $(this).datepicker({dateFormat: "dd.mm.yy"});
 	});
 
+	$('.link').live('click', function(){
+
+		window.location.href = $(this).attr('rel');
+	});
+
 	$('.dropdown').live('click', function(){
 
 		Project.clickEvent[$(this).attr('id')] = true;
@@ -266,5 +271,39 @@ $(document).ready(function(){
 				}
 			});
 		}
+	});
+
+	/*
+	addelem('form', '', array('id' => 'uniq-id'))
+
+	addelem('submit', 'name', array(
+	'scrollto' => true,
+	'for' => 'uniq-id'
+	))
+	*/
+
+	if( Project.Session.get('scrolltoElemTop') ){
+
+		var top = Project.Session.get('scrolltoElemTop');
+		$('html, body').animate({scrollTop: top}, 500);
+		Project.Session.remove('scrolltoElemTop');
+	}
+
+	$('input[scrollto="true"], input[scrollto="1"]').live('click', function(){
+
+		var scrollTop = $(window).scrollTop();
+
+		if( $(this).attr('for') != undefined ){
+
+			var elem = '#' + $(this).attr('for');
+			if( $(elem) != undefined && $(elem).length > 0 ){
+
+				var pos = $(elem).offset();
+				var top = parseInt(pos.top);
+				scrollTop = top - 100;
+			}
+		}
+
+		Project.Session.set('scrolltoElemTop', scrollTop);
 	});
 });

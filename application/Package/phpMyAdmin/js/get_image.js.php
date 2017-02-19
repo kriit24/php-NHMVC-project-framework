@@ -6,34 +6,34 @@
  *
  * @package PhpMyAdmin
  */
-chdir('..');
 
-// Send correct type:
-header('Content-Type: text/javascript; charset=UTF-8');
-header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 3600) . ' GMT');
+if (!defined('TESTSUITE')) {
+    chdir('..');
 
-// Avoid loading the full common.inc.php because this would add many
-// non-js-compatible stuff like DOCTYPE
-define('PMA_MINIMUM_COMMON', true);
-require_once './libraries/common.inc.php';
+    // Send correct type:
+    header('Content-Type: text/javascript; charset=UTF-8');
+    header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 3600) . ' GMT');
 
-require_once './libraries/OutputBuffering.class.php';
-$buffer = PMA_OutputBuffering::getInstance();
+    // Avoid loading the full common.inc.php because this would add many
+    // non-js-compatible stuff like DOCTYPE
+    define('PMA_MINIMUM_COMMON', true);
+    define('PMA_PATH_TO_BASEDIR', '../');
+    require_once './libraries/common.inc.php';
+}
+
+$buffer = PMA\libraries\OutputBuffering::getInstance();
 $buffer->start();
-register_shutdown_function(
-    function () {
-        echo PMA_OutputBuffering::getInstance()->getContents();
-    }
-);
+if (!defined('TESTSUITE')) {
+    register_shutdown_function(
+        function () {
+            echo PMA\libraries\OutputBuffering::getInstance()->getContents();
+        }
+    );
+}
 
 // Get the data for the sprites, if it's available
-if (is_readable($_SESSION['PMA_Theme']->getPath() . '/sprites.lib.php')) {
-    include $_SESSION['PMA_Theme']->getPath() . '/sprites.lib.php';
-}
-$sprites = array();
-if (function_exists('PMA_sprites')) {
-    $sprites = PMA_sprites();
-}
+$sprites = $_SESSION['PMA_Theme']->getSpriteData();
+
 // We only need the keys from the array of sprites data,
 // since they contain the (partial) class names
 $keys = array();
@@ -69,7 +69,7 @@ function PMA_getImage(image, alternate, attributes) {
         return false;
     };
     var sprites = [
-        <?php echo implode($keys, ",\n        ") . "\n"; ?>
+        <?php echo implode($keys, ",\n        ") , "\n"; ?>
     ];
     // custom image object, it will eventually be returned by this functions
     var retval = {
@@ -110,15 +110,15 @@ function PMA_getImage(image, alternate, attributes) {
     }
     // set alt
     if (attributes.alt != undefined) {
-        retval.attr('alt', attributes.alt);
+        retval.attr('alt', escapeHtml(attributes.alt));
     } else {
-        retval.attr('alt', alternate);
+        retval.attr('alt', escapeHtml(alternate));
     }
     // set title
     if (attributes.title != undefined) {
-        retval.attr('title', attributes.title);
+        retval.attr('title', escapeHtml(attributes.title));
     } else {
-        retval.attr('title', alternate);
+        retval.attr('title', escapeHtml(alternate));
     }
     // set src
     var klass = image.replace('.gif', '').replace('.png', '');

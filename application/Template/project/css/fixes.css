@@ -45,3 +45,7 @@
 .table td, .table th{
 	vertical-align:middle;
 }
+
+.ui-tabs, .ui-tabs-panel{
+	padding:0px !important;
+}

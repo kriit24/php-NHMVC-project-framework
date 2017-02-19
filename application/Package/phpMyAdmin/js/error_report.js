@@ -64,6 +64,7 @@ var ErrorReport = {
             $('#error_report_dialog').remove();
         }
         var $div = $('<div id="error_report_dialog"></div>');
+        $div.css('z-index', '1000');
 
         var button_options = {};
 
@@ -166,17 +167,17 @@ var ErrorReport = {
      * @return String
      */
     _extractExceptionName: function (exception) {
-        if (exception.message === null || typeof(exception.message) == "undefined"){
+        if (exception.message === null || typeof(exception.message) == "undefined") {
             return "";
-        } else {
-            var reg = /([a-zA-Z]+):/;
-            var regex_result = null;
-            regex_result = reg.exec(exception.message);
-            if(regex_result && regex_result.length == 2)
-                return regex_result[1];
-            else
-                return "";
         }
+
+        var reg = /([a-zA-Z]+):/;
+        var regex_result = reg.exec(exception.message);
+        if (regex_result && regex_result.length == 2) {
+            return regex_result[1];
+        }
+
+        return "";
     },
     /**
      * Shows the modal dialog previewing the report

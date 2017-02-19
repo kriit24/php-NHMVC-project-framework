@@ -1,4 +1,5 @@
-
+//ADD BEFORE <div class="tabs"> element
+//<div class="tabs-loader"><img src="/Template/admin/images/ajax-loader-big.gif"/></div>
 
 Project.Tabs = function(selector){
 
@@ -19,7 +20,12 @@ Project.Tabs = function(selector){
 				return;
 			});
 
-			$(this.selector).tabs({'active' : self.getActiveTab()});
+			$(window).load(function(){
+
+				$(self.selector).show();
+				$(self.selector).tabs({'active' : self.getActiveTab()});
+				$('.tabs-loader').hide();
+			});
 		},
 		
 		getActiveTab : function(){

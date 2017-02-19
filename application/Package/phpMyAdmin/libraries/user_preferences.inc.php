@@ -5,6 +5,9 @@
  *
  * @package PhpMyAdmin
  */
+use PMA\libraries\Message;
+use PMA\libraries\Sanitize;
+
 if (!defined('PHPMYADMIN')) {
     exit;
 }
@@ -23,8 +26,7 @@ $tabs_icons = array(
     'Import'      => 'b_import.png',
     'Export'      => 'b_export.png');
 
-require_once './libraries/Template.class.php';
-$content = PMA_Util::getHtmlTab(
+$content = PMA\libraries\Util::getHtmlTab(
     array(
         'link' => 'prefs_manage.php',
         'text' => __('Manage your settings')
@@ -37,9 +39,10 @@ foreach (array_keys($forms) as $formset) {
         'text' => PMA_lang('Form_' . $formset),
         'icon' => $tabs_icons[$formset],
         'active' => ($script_name == 'prefs_forms.php' && $formset == $form_param));
-    $content .= PMA_Util::getHtmlTab($tab, array('form' => $formset)) . "\n";
+    $content .= PMA\libraries\Util::getHtmlTab($tab, array('form' => $formset))
+        . "\n";
 }
-echo PMA\Template::get('list/unordered')->render(
+echo PMA\libraries\Template::get('list/unordered')->render(
     array(
         'id' => 'topmenu2',
         'class' => 'user_prefs_tabs',
@@ -51,7 +54,7 @@ echo '<div class="clearfloat"></div>';
 
 // show "configuration saved" message and reload navigation panel if needed
 if (!empty($_GET['saved'])) {
-    PMA_Message::rawSuccess(__('Configuration has been saved.'))->display();
+    Message::rawSuccess(__('Configuration has been saved.'))->display();
 }
 
 /* debug code
@@ -64,7 +67,7 @@ $arr2 = implode(', ', $arr2);
 $arr2 .= '<br />Blacklist: ' . (empty($cfg['UserprefsDisallow'])
         ? '<i>empty</i>'
         : implode(', ', $cfg['UserprefsDisallow']));
-$msg = PMA_Message::notice('Settings: ' . $arr2);
+$msg = Message::notice('Settings: ' . $arr2);
 $msg->display();
 //*/
 
@@ -75,8 +78,8 @@ if (! $cfgRelation['userconfigwork']) {
         'Your preferences will be saved for current session only. Storing them '
         . 'permanently requires %sphpMyAdmin configuration storage%s.'
     );
-    $msg = PMA_sanitize(
+    $msg = Sanitize::sanitize(
         sprintf($msg, '[doc@linked-tables]', '[/doc]')
     );
-    PMA_Message::notice($msg)->display();
+    Message::notice($msg)->display();
 }

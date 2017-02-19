@@ -5,6 +5,10 @@
  *
  * @package PhpMyAdmin
  */
+use PMA\libraries\config\ConfigFile;
+use PMA\libraries\config\FormDisplay;
+use PMA\libraries\Response;
+use PMA\libraries\URL;
 
 /**
  * Gets some core libraries and displays a top message if required
@@ -13,9 +17,6 @@ require_once 'libraries/common.inc.php';
 require_once 'libraries/user_preferences.lib.php';
 require_once 'libraries/config/config_functions.lib.php';
 require_once 'libraries/config/messages.inc.php';
-require_once 'libraries/config/ConfigFile.class.php';
-require_once 'libraries/config/Form.class.php';
-require_once 'libraries/config/FormDisplay.class.php';
 require 'libraries/config/user_preferences.forms.php';
 
 $cf = new ConfigFile($GLOBALS['PMA_Config']->base_settings);
@@ -44,8 +45,8 @@ if (isset($_POST['revert'])) {
     // redirect
     $url_params = array('form' => $form_param);
     PMA_sendHeaderLocation(
-        $cfg['PmaAbsoluteUri'] . 'prefs_forms.php'
-        . PMA_URL_getCommon($url_params, 'text')
+        './prefs_forms.php'
+        . URL::getCommonRaw($url_params)
     );
     exit;
 }
@@ -71,7 +72,7 @@ if ($form_display->process(false) && !$form_display->hasErrors()) {
 }
 
 // display forms
-$response = PMA_Response::getInstance();
+$response = Response::getInstance();
 $header   = $response->getHeader();
 $scripts  = $header->getScripts();
 $scripts->addFile('config.js');

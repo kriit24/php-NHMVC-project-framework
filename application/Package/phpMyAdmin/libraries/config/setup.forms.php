@@ -32,17 +32,12 @@ $forms['Servers']['Server'] = array('Servers' => array(1 => array(
     'port',
     'socket',
     'ssl',
-    'connect_type',
-    'compress',
-    'nopassword')));
+    'compress')));
 $forms['Servers']['Server_auth'] = array('Servers' => array(1 => array(
     'auth_type',
     ':group:' . __('Config authentication'),
         'user',
         'password',
-        ':group:end',
-    ':group:' . __('Cookie authentication'),
-        'auth_swekey_config' => './swekey.conf',
         ':group:end',
     ':group:' . __('HTTP authentication'),
         'auth_http_realm',
@@ -105,7 +100,6 @@ $forms['Features']['Import_export'] = array(
     'CompressOnFly');
 $forms['Features']['Security'] = array(
     'blowfish_secret',
-    'ForceSSL',
     'CheckConfigurationPermissions',
     'TrustedProxies',
     'AllowUserDropDatabase',
@@ -151,7 +145,8 @@ $forms['Features']['Other_core_settings'] = array(
     'ProxyUser',
     'ProxyPass',
     'AllowThirdPartyFraming',
-    'ZeroConf'
+    'ZeroConf',
+    'DisableShortcutKeys'
 );
 $forms['Sql_queries']['Sql_queries'] = array(
     'ShowSQL',
@@ -210,12 +205,14 @@ $forms['Main_panel']['Startup'] = array(
     'ShowPhpInfo',
     'ShowChgPassword');
 $forms['Main_panel']['DbStructure'] = array(
+    'ShowDbStructureCharset',
     'ShowDbStructureComment',
     'ShowDbStructureCreation',
     'ShowDbStructureLastUpdate',
     'ShowDbStructureLastCheck');
 $forms['Main_panel']['TableStructure'] = array(
-    'HideStructureActions');
+    'HideStructureActions',
+    'ShowColumnComments');
 $forms['Main_panel']['Browse'] = array(
     'TableNavigationLinksMode',
     'ShowAll',

@@ -27,9 +27,9 @@ textarea {
 
 
 body {
-<?php if (! empty($GLOBALS['cfg']['FontFamily'])) { ?>
+<?php if (! empty($GLOBALS['cfg']['FontFamily'])) : ?>
     font-family: <?php echo $GLOBALS['cfg']['FontFamily']; ?>;
-<?php } ?>
+<?php endif; ?>
     padding: 0;
     margin: 0;
     margin-<?php echo $left; ?>: 240px;
@@ -45,15 +45,14 @@ body#loginform {
     margin: 0 .5em;
 }
 
-<?php if (! empty($GLOBALS['cfg']['FontFamilyFixed'])) { ?>
+<?php if (! empty($GLOBALS['cfg']['FontFamilyFixed'])) : ?>
     textarea,
     tt,
     pre,
     code {
     font-family: <?php echo $GLOBALS['cfg']['FontFamilyFixed']; ?>;
     }
-    <?php
-} ?>
+<?php endif; ?>
 
 
 h1 {
@@ -380,9 +379,9 @@ button {
 table caption,
 table th,
 table td {
-    padding: .3em;
+    padding: .1em .3em;
     margin: .1em;
-    vertical-align: top;
+    vertical-align: middle;
     text-shadow: 0 1px 0 #fff;
 }
 
@@ -540,48 +539,40 @@ button.mult_submit {
 }
 
 /* odd items 1,3,5,7,... */
-table tr.odd th,
-.odd {
+table tbody:first-of-type tr:nth-child(odd),
+table tbody:first-of-type tr:nth-child(odd) th {
     background: #fff;
-    <?php echo $_SESSION['PMA_Theme']->getCssIEClearFilter(); ?>
-}
+} 
 
 /* even items 2,4,6,8,... */
-/* (tested on CRTs and ACLs) */
-table tr.even th,
-.even {
+table tbody:first-of-type tr:nth-child(even),
+table tbody:first-of-type tr:nth-child(even) th {
     background: #DFDFDF;
-    <?php echo $_SESSION['PMA_Theme']->getCssIEClearFilter(); ?>
 }
 
-/* odd table rows 1,3,5,7,... */
-table tr.odd th,
-table tr.odd,
-table tr.even th,
-table tr.even {
+table tr th,
+table tr {
     text-align: <?php echo $left; ?>;
 }
 
 /* marked table rows */
 td.marked:not(.nomarker),
 table tr.marked:not(.nomarker) td,
-table tr.marked:not(.nomarker) th,
+table tbody:first-of-type tr.marked:not(.nomarker) th,
 table tr.marked:not(.nomarker) {
     <?php echo $_SESSION['PMA_Theme']->getCssGradient('ced6df', 'b6c6d7'); ?>
     color: <?php echo $GLOBALS['cfg']['BrowseMarkerColor']; ?>;
 }
 
 /* hovered items */
-.odd:not(.nopointer):hover,
-.even:not(.nopointer):hover,
+table tbody:first-of-type tr:not(.nopointer):hover,
+table tbody:first-of-type tr:not(.nopointer):hover th,
 .hover:not(.nopointer) {
     <?php echo $_SESSION['PMA_Theme']->getCssGradient('ced6df', 'b6c6d7'); ?>
     color: <?php echo $GLOBALS['cfg']['BrowsePointerColor']; ?>;
 }
 
 /* hovered table rows */
-table tr.odd:not(.nopointer):hover th,
-table tr.even:not(.nopointer):hover th,
 table tr.hover:not(.nopointer) th {
     <?php echo $_SESSION['PMA_Theme']->getCssGradient('ced6df', 'b6c6d7'); ?>
     color: <?php echo $GLOBALS['cfg']['BrowsePointerColor']; ?>;
@@ -608,13 +599,12 @@ tr:last-child td.condition {
     border-width: 0 1px 1px 1px;
 }
 
-<?php if ($GLOBALS['text_dir'] === 'ltr') { ?>
+<?php if ($GLOBALS['text_dir'] === 'ltr') : ?>
     /* for first th which must have right border set (ltr only) */
     .before-condition {
     border-right: 1px solid <?php echo $GLOBALS['cfg']['BrowseMarkerBackground']; ?>;
     }
-    <?php
-} ?>
+<?php endif; ?>
 
 /**
  * cells with the value NULL
@@ -622,6 +612,7 @@ tr:last-child td.condition {
 td.null {
     font-style: italic;
     text-align: <?php echo $right; ?>;
+    color: #7d7d7d;
 }
 
 table .valueHeader {
@@ -638,12 +629,11 @@ table [class=value] {
 }
 
 
-<?php if (! empty($GLOBALS['cfg']['FontFamilyFixed'])) { ?>
+<?php if (! empty($GLOBALS['cfg']['FontFamilyFixed'])) : ?>
     .value {
     font-family: <?php echo $GLOBALS['cfg']['FontFamilyFixed']; ?>;
     }
-    <?php
-} ?>
+<?php endif; ?>
 .attention {
     color: red;
     font-weight: bold;
@@ -717,16 +707,14 @@ div.error {
     margin: .5em 0 0.5em;
     border: 1px solid;
     background-repeat: no-repeat;
-    <?php
-    if ($GLOBALS['text_dir'] === 'ltr') { ?>
+    <?php if ($GLOBALS['text_dir'] === 'ltr') : ?>
         background-position: 10px 50%;
         padding: 10px 10px 10px 10px;
-        <?php
-    } else { ?>
+    <?php else : ?>
         background-position: 99% 50%;
         padding: 10px 35px 10px 10px;
         <?php
-    } ?>
+    endif; ?>
 
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
@@ -797,6 +785,10 @@ fieldset.confirmation legend {
 }
 
 /* end messageboxes */
+
+.new_central_col{
+    width: 100%;
+}
 
 .tblcomment {
     font-size: 70%;
@@ -1293,7 +1285,7 @@ h3#serverstatusqueries span {
 
 /* Also used for the variables page */
 fieldset#tableFilter {
-    margin-bottom: 1em;
+    padding: 0.1em 1em;
 }
 
 div#serverStatusTabs {
@@ -1515,16 +1507,13 @@ p.notice {
     margin: 1.5em 0;
     border: 1px solid #000;
     background-repeat: no-repeat;
-    <?php
-    if ($GLOBALS['text_dir'] === 'ltr') { ?>
+    <?php if ($GLOBALS['text_dir'] === 'ltr') : ?>
         background-position: 10px 50%;
         padding: 10px 10px 10px 25px;
-        <?php
-    } else { ?>
+    <?php else : ?>
         background-position: 99% 50%;
         padding: 25px 10px 10px 10px
-        <?php
-    } ?>
+    <?php endif; ?>
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     border-radius: 5px;
@@ -1595,32 +1584,25 @@ div#profilingchart {
 #sectionlinks a,
 .buttonlinks a,
 a.button {
-    font-size: .88em;
     font-weight: bold;
     text-shadow: 0 1px 0 #fff;
     line-height: 35px;
     margin-<?php echo $left; ?>: 7px;
     border: 1px solid #aaa;
-    padding: 5px 10px;
-    color: #111;
+    padding: 3px 7px;
+    color: #111 !important;
     text-decoration: none;
     background: #ddd;
     white-space: nowrap;
     border-radius: 20px;
     -webkit-border-radius: 20px;
     -moz-border-radius: 20px;
-    box-shadow: <?php echo $GLOBALS['text_dir'] === 'rtl' ? '-' : ''; ?>1px 1px 2px rgba(0,0,0,.5);
-    /*
-    -webkit-box-shadow: <?php echo $GLOBALS['text_dir'] === 'rtl' ? '-' : ''; ?>1px 1px 2px rgba(0,0,0,.5);
-    -moz-box-shadow: <?php echo $GLOBALS['text_dir'] === 'rtl' ? '-' : ''; ?>1px 1px 2px rgba(0,0,0,.5);
-    text-shadow: #fff 0 1px 0;
-    */
-    <?php echo $_SESSION['PMA_Theme']->getCssGradient('ffffff', 'cccccc'); ?>
+    <?php echo $_SESSION['PMA_Theme']->getCssGradient('f8f8f8', 'd8d8d8'); ?>
 }
 #sectionlinks a:hover,
 .buttonlinks a:hover,
 a.button:hover {
-    <?php echo $_SESSION['PMA_Theme']->getCssGradient('cccccc', 'dddddd'); ?>
+    <?php echo $_SESSION['PMA_Theme']->getCssGradient('ffffff', 'dddddd'); ?>
 }
 
 div#sqlquerycontainer {
@@ -1801,6 +1783,16 @@ label.desc sup {
     position: absolute;
 }
 
+code.php {
+    display: block;
+    padding-left: 1em;
+    margin-top: 0;
+    margin-bottom: 0;
+    max-height: 10em;
+    overflow: auto;
+    direction: ltr;
+}
+
 code.sql,
 div.sqlvalidate {
     display: block;
@@ -1814,7 +1806,14 @@ div.sqlvalidate {
 
 .result_query div.sqlOuter {
     background: <?php echo $GLOBALS['cfg']['BgOne']; ?>;
-    padding: 1em;
+}
+
+.result_query .success, .result_query .error {
+    margin-bottom: 0;
+    border-bottom: none !important;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    padding-bottom: 5px;
 }
 
 #PMA_slidingMessage code.sql,
@@ -2139,6 +2138,10 @@ input#input_import_file {
 
 .formelementrow {
     margin: 5px 0 5px 0;
+}
+
+#filterText {
+    vertical-align: baseline;
 }
 
 #popup_background {
@@ -2881,7 +2884,8 @@ fieldset .disabled-field td {
 }
 
 .cEdit .edit_box {
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: scroll;
     padding: 0;
     margin: 0;
 }
@@ -2962,10 +2966,6 @@ body .ui-widget {
 
 div#page_content div#tableslistcontainer table.data {
     border-top: 0.1px solid #EEEEEE;
-}
-
-div#page_content form#db_search_form.ajax fieldset {
-    margin-top: -0.3em;
 }
 
 div#page_content div#tableslistcontainer, div#page_content div.notice, div#page_content div.result_query {
@@ -3349,9 +3349,6 @@ html.ie7 #pma_console .query_input {
     min-height: initial;
     max-height: initial;
 }
-.firefox .cm-s-pma.CodeMirror {
-    font-size: 120%;
-}
 .cm-s-pma .CodeMirror-scroll {
     cursor: text;
 }
@@ -3492,6 +3489,16 @@ span.drag_icon {
 
 .topmargin {
     margin-top: 1em;
+}
+
+meter[value="1"]::-webkit-meter-optimum-value {
+    background: linear-gradient(white 3%, #E32929 5%, transparent 10%, #E32929);
+}
+meter[value="2"]::-webkit-meter-optimum-value {
+    background: linear-gradient(white 3%, #FF6600 5%, transparent 10%, #FF6600);
+}
+meter[value="3"]::-webkit-meter-optimum-value {
+    background: linear-gradient(white 3%, #FFD700 5%, transparent 10%, #FFD700);
 }
 
 /* styles for sortable tables created with tablesorter jquery plugin */

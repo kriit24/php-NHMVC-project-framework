@@ -119,7 +119,15 @@ input[type="checkbox"]:checked + .checkbox, input[type="checkbox"] + .checkbox{
 	cursor: pointer;
 }
 
-input[type="checkbox"]:checked + .checkbox span, input[type="checkbox"] + .checkbox span{
+input[type="radio"]:checked + .checkbox, input[type="radio"] + .checkbox{
+	position:absolute;
+	margin-left:-5px;
+	margin-top:-17px;
+	cursor: pointer;
+}
+
+input[type="checkbox"]:checked + .checkbox span, input[type="checkbox"] + .checkbox span,
+input[type="radio"]:checked + .checkbox span, input[type="radio"] + .checkbox span{
 	background-color:#ffffff;
     background-image: url('/Template/admin/images/checkbox.png');
 	background-repeat:no-repeat;
@@ -132,11 +140,13 @@ input[type="checkbox"]:checked + .checkbox span, input[type="checkbox"] + .check
     vertical-align: middle;
 }
 
-input[type="checkbox"] + .checkbox:hover span{
+input[type="checkbox"] + .checkbox:hover span,
+input[type="radio"] + .checkbox:hover span{
 	background-position: -24px 0;
 }
 
-input[type="checkbox"]:checked + .checkbox span{
+input[type="checkbox"]:checked + .checkbox span,
+input[type="radio"]:checked + .checkbox span{
 	background-position: -48px 0;
 }
 
@@ -164,6 +174,10 @@ input[type="checkbox"]:checked + .checkbox span{
     margin-bottom: 0;
     padding: 15px 15px 7px;
     min-height: 48px;
+}
+
+.ibox-title:hover{
+	background-color:#ebebeb;
 }
 
 .ibox-title h5 {

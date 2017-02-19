@@ -7,7 +7,9 @@ AJAX.registerOnload('server_plugins.js', function () {
     var $tables = $('#plugins_plugins table:has(tbody tr + tr)');
     $tables.tablesorter({
         sortList: [[0, 0]],
-        widgets: ['zebra']
+        headers: {
+            1: {sorter: false}
+        }
     });
     $tables.find('thead th')
         .append('<div class="sorticon"></div>');

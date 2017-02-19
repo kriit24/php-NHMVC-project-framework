@@ -6,10 +6,14 @@
  *
  * @package PhpMyAdmin
  */
+use PMA\libraries\Encoding;
+use PMA\libraries\Message;
+use PMA\libraries\plugins\ExportPlugin;
+use PMA\libraries\Table;
+use PMA\libraries\ZipFile;
+use PMA\libraries\URL;
+use PMA\libraries\Sanitize;
 
-if (! defined('PHPMYADMIN')) {
-    exit;
-}
 
 /**
  * Sets a session variable upon a possible fatal error during export
@@ -18,14 +22,10 @@ if (! defined('PHPMYADMIN')) {
  */
 function PMA_shutdownDuringExport()
 {
-    $a = error_get_last();
-    if ($a != null
-        && /*overload*/mb_strpos($a['message'], "execution time")
-    ) {
-        //write in partially downloaded file for future reference of user
-        print_r($a);
+    $error = error_get_last();
+    if ($error != null && mb_strpos($error['message'], "execution time")) {
         //set session variable to check if there was error while exporting
-        $_SESSION['pma_export_error'] = $a['message'];
+        $_SESSION['pma_export_error'] = $error['message'];
     }
 }
 
@@ -83,7 +83,7 @@ function PMA_exportOutputHandler($line)
 
     // Kanji encoding convert feature
     if ($GLOBALS['output_kanji_conversion']) {
-        $line = PMA_Kanji_strConv(
+        $line = Encoding::kanjiStrConv(
             $line,
             $GLOBALS['knjenc'],
             isset($GLOBALS['xkana']) ? $GLOBALS['xkana'] : ''
@@ -96,11 +96,11 @@ function PMA_exportOutputHandler($line)
         $dump_buffer .= $line;
         if ($GLOBALS['onfly_compression']) {
 
-            $dump_buffer_len += /*overload*/mb_strlen($line);
+            $dump_buffer_len += strlen($line);
 
             if ($dump_buffer_len > $GLOBALS['memory_limit']) {
                 if ($GLOBALS['output_charset_conversion']) {
-                    $dump_buffer = PMA_convertString(
+                    $dump_buffer = Encoding::convertString(
                         'utf-8',
                         $GLOBALS['charset'],
                         $dump_buffer
@@ -118,7 +118,7 @@ function PMA_exportOutputHandler($line)
                     // Here, use strlen rather than mb_strlen to get the length
                     // in bytes to compare against the number of bytes written.
                     if ($write_result != strlen($dump_buffer)) {
-                        $GLOBALS['message'] = PMA_Message::error(
+                        $GLOBALS['message'] = Message::error(
                             __('Insufficient space to save the file %s.')
                         );
                         $GLOBALS['message']->addParam($save_filename);
@@ -140,20 +140,20 @@ function PMA_exportOutputHandler($line)
     } else {
         if ($GLOBALS['asfile']) {
             if ($GLOBALS['output_charset_conversion']) {
-                $line = PMA_convertString(
+                $line = Encoding::convertString(
                     'utf-8',
                     $GLOBALS['charset'],
                     $line
                 );
             }
-            if ($GLOBALS['save_on_server'] && /*overload*/mb_strlen($line) > 0) {
+            if ($GLOBALS['save_on_server'] && mb_strlen($line) > 0) {
                 $write_result = @fwrite($GLOBALS['file_handle'], $line);
                 // Here, use strlen rather than mb_strlen to get the length
                 // in bytes to compare against the number of bytes written.
                 if (! $write_result
                     || $write_result != strlen($line)
                 ) {
-                    $GLOBALS['message'] = PMA_Message::error(
+                    $GLOBALS['message'] = Message::error(
                         __('Insufficient space to save the file %s.')
                     );
                     $GLOBALS['message']->addParam($save_filename);
@@ -248,7 +248,7 @@ function PMA_getMemoryLimitForExport()
  * @param string       $compression       compression asked
  * @param string       $filename_template the filename template
  *
- * @return array the filename template and mime type
+ * @return string[] the filename template and mime type
  */
 function PMA_getExportFilenameAndMimetype(
     $export_type, $remember_template, $export_plugin, $compression,
@@ -279,22 +279,22 @@ function PMA_getExportFilenameAndMimetype(
             );
         }
     }
-    $filename = PMA_Util::expandUserString($filename_template);
+    $filename = PMA\libraries\Util::expandUserString($filename_template);
     // remove dots in filename (coming from either the template or already
     // part of the filename) to avoid a remote code execution vulnerability
-    $filename = PMA_sanitizeFilename($filename, $replaceDots = true);
+    $filename = Sanitize::sanitizeFilename($filename, $replaceDots = true);
 
     // Grab basic dump extension and mime type
     // Check if the user already added extension;
     // get the substring where the extension would be if it was included
-    $extension_start_pos = /*overload*/mb_strlen($filename) - /*overload*/mb_strlen(
+    $extension_start_pos = mb_strlen($filename) - mb_strlen(
         $export_plugin->getProperties()->getExtension()
     ) - 1;
-    $user_extension = /*overload*/mb_substr(
-        $filename, $extension_start_pos, /*overload*/mb_strlen($filename)
+    $user_extension = mb_substr(
+        $filename, $extension_start_pos, mb_strlen($filename)
     );
     $required_extension = "." . $export_plugin->getProperties()->getExtension();
-    if (/*overload*/mb_strtolower($user_extension) != $required_extension) {
+    if (mb_strtolower($user_extension) != $required_extension) {
         $filename  .= $required_extension;
     }
     $mime_type  = $export_plugin->getProperties()->getMimeType();
@@ -324,7 +324,7 @@ function PMA_openExportFile($filename, $quick_export)
     $file_handle = null;
     $message = '';
 
-    $save_filename = PMA_Util::userDir($GLOBALS['cfg']['SaveDir'])
+    $save_filename = PMA\libraries\Util::userDir($GLOBALS['cfg']['SaveDir'])
         . preg_replace('@[/\\\\]@', '_', $filename);
 
     if (file_exists($save_filename)
@@ -332,15 +332,15 @@ function PMA_openExportFile($filename, $quick_export)
         || ($quick_export
         && $_REQUEST['quick_export_onserver_overwrite'] != 'saveitover'))
     ) {
-        $message = PMA_Message::error(
+        $message = Message::error(
             __(
                 'File %s already exists on server, '
                 . 'change filename or check overwrite option.'
             )
         );
         $message->addParam($save_filename);
-    } elseif (is_file($save_filename) && ! @is_writable($save_filename)) {
-        $message = PMA_Message::error(
+    } elseif (@is_file($save_filename) && ! @is_writable($save_filename)) {
+        $message = Message::error(
             __(
                 'The web server does not have permission '
                 . 'to save the file %s.'
@@ -348,7 +348,7 @@ function PMA_openExportFile($filename, $quick_export)
         );
         $message->addParam($save_filename);
     } elseif (! $file_handle = @fopen($save_filename, 'w')) {
-        $message = PMA_Message::error(
+        $message = Message::error(
             __(
                 'The web server does not have permission '
                 . 'to save the file %s.'
@@ -366,7 +366,7 @@ function PMA_openExportFile($filename, $quick_export)
  * @param string   $dump_buffer   the current dump buffer
  * @param string   $save_filename the export filename
  *
- * @return object $message a message object (or empty string)
+ * @return Message $message a message object (or empty string)
  */
 function PMA_closeExportFile($file_handle, $dump_buffer, $save_filename)
 {
@@ -374,18 +374,18 @@ function PMA_closeExportFile($file_handle, $dump_buffer, $save_filename)
     fclose($file_handle);
     // Here, use strlen rather than mb_strlen to get the length
     // in bytes to compare against the number of bytes written.
-    if (/*overload*/mb_strlen($dump_buffer) > 0
+    if (strlen($dump_buffer) > 0
         && (! $write_result || $write_result != strlen($dump_buffer))
     ) {
-        $message = new PMA_Message(
+        $message = new Message(
             __('Insufficient space to save the file %s.'),
-            PMA_Message::ERROR,
+            Message::ERROR,
             array($save_filename)
         );
     } else {
-        $message = new PMA_Message(
+        $message = new Message(
             __('Dump has been saved to file %s.'),
-            PMA_Message::SUCCESS,
+            Message::SUCCESS,
             array($save_filename)
         );
     }
@@ -395,9 +395,9 @@ function PMA_closeExportFile($file_handle, $dump_buffer, $save_filename)
 /**
  * Compress the export buffer
  *
- * @param string $dump_buffer the current dump buffer
- * @param string $compression the compression mode
- * @param string $filename    the filename
+ * @param array|string $dump_buffer the current dump buffer
+ * @param string       $compression the compression mode
+ * @param string       $filename    the filename
  *
  * @return object $message a message object (or empty string)
  */
@@ -465,7 +465,7 @@ function PMA_saveObjectInBuffer($object_name, $append = false)
  * @param string $db          the database name
  * @param string $table       the table name
  *
- * @return array the generated HTML and back button
+ * @return string[] the generated HTML and back button
  */
 function PMA_getHtmlForDisplayedExportHeader($export_type, $db, $table)
 {
@@ -477,11 +477,11 @@ function PMA_getHtmlForDisplayedExportHeader($export_type, $db, $table)
      */
     $back_button = '<p>[ <a href="';
     if ($export_type == 'server') {
-        $back_button .= 'server_export.php' . PMA_URL_getCommon();
+        $back_button .= 'server_export.php' . URL::getCommon();
     } elseif ($export_type == 'database') {
-        $back_button .= 'db_export.php' . PMA_URL_getCommon(array('db' => $db));
+        $back_button .= 'db_export.php' . URL::getCommon(array('db' => $db));
     } else {
-        $back_button .= 'tbl_export.php' . PMA_URL_getCommon(
+        $back_button .= 'tbl_export.php' . URL::getCommon(
             array(
                 'db' => $db, 'table' => $table
             )
@@ -553,9 +553,9 @@ function PMA_exportServer(
         $tmp_select = '|' . $tmp_select . '|';
     }
     // Walk over databases
-    foreach ($GLOBALS['pma']->databases as $current_db) {
+    foreach ($GLOBALS['dblist']->databases as $current_db) {
         if (isset($tmp_select)
-            && /*overload*/mb_strpos(' ' . $tmp_select, '|' . $current_db . '|')
+            && mb_strpos(' ' . $tmp_select, '|' . $current_db . '|')
         ) {
             $tables = $GLOBALS['dbi']->getTables($current_db);
             PMA_exportDatabase(
@@ -624,7 +624,7 @@ function PMA_exportDatabase(
     $views = array();
 
     foreach ($tables as $table) {
-        $_table = new PMA_Table($table, $db);
+        $_table = new Table($table, $db);
         // if this is a view, collect it for later;
         // views must be exported after the tables
         $is_view = $_table->isView();
@@ -657,8 +657,8 @@ function PMA_exportDatabase(
                     // This obtains the current table's size
                     $query = 'SELECT data_length + index_length
                           from information_schema.TABLES
-                          WHERE table_schema = "' . $db . '"
-                          AND table_name = "' . $table . '"';
+                          WHERE table_schema = "' . $GLOBALS['dbi']->escapeString($db) . '"
+                          AND table_name = "' . $GLOBALS['dbi']->escapeString($table) . '"';
 
                     $size = $GLOBALS['dbi']->fetchValue($query);
                     //Converting the size to MB
@@ -680,13 +680,17 @@ function PMA_exportDatabase(
 
         }
         // if this is a view or a merge table, don't export data
-        if (($whatStrucOrData == 'data'
-            || $whatStrucOrData == 'structure_and_data')
+        if (($whatStrucOrData == 'data' || $whatStrucOrData == 'structure_and_data')
             && in_array($table, $table_data)
             && ! ($is_view)
         ) {
-            $local_query  = 'SELECT * FROM ' . PMA_Util::backquote($db)
-                . '.' . PMA_Util::backquote($table);
+            $tableObj = new PMA\libraries\Table($table, $db);
+            $nonGeneratedCols = $tableObj->getNonGeneratedColumns(true);
+
+            $local_query  = 'SELECT ' . implode(', ', $nonGeneratedCols)
+                .  ' FROM ' . PMA\libraries\Util::backquote($db)
+                . '.' . PMA\libraries\Util::backquote($table);
+
             if (! $export_plugin->exportData(
                 $db, $table, $crlf, $err_url, $local_query, $aliases
             )) {
@@ -819,7 +823,7 @@ function PMA_exportTable(
         $add_query  = '';
     }
 
-    $_table = new PMA_Table($table, $db);
+    $_table = new Table($table, $db);
     $is_view = $_table->isView();
     if ($whatStrucOrData == 'structure'
         || $whatStrucOrData == 'structure_and_data'
@@ -865,8 +869,13 @@ function PMA_exportTable(
             $local_query = $sql_query . $add_query;
             $GLOBALS['dbi']->selectDb($db);
         } else {
-            $local_query  = 'SELECT * FROM ' . PMA_Util::backquote($db)
-                . '.' . PMA_Util::backquote($table) . $add_query;
+            // Data is exported only for Non-generated columns
+            $tableObj = new PMA\libraries\Table($table, $db);
+            $nonGeneratedCols = $tableObj->getNonGeneratedColumns(true);
+
+            $local_query  = 'SELECT ' . implode(', ', $nonGeneratedCols)
+                .  ' FROM ' . PMA\libraries\Util::backquote($db)
+                . '.' . PMA\libraries\Util::backquote($table) . $add_query;
         }
         if (! $export_plugin->exportData(
             $db, $table, $crlf, $err_url, $local_query, $aliases
@@ -991,8 +1000,8 @@ function PMA_lockTables($db, $tables, $lockType = "WRITE")
 {
     $locks = array();
     foreach ($tables as $table) {
-        $locks[] = PMA_Util::backquote($db) . "." . PMA_Util::backquote($table)
-            . " " . $lockType;
+        $locks[] = PMA\libraries\Util::backquote($db) . "."
+            . PMA\libraries\Util::backquote($table) . " " . $lockType;
     }
 
     $sql = "LOCK TABLES " . implode(", ", $locks);
@@ -1012,7 +1021,7 @@ function PMA_unlockTables()
 /**
  * Returns all the metadata types that can be exported with a database or a table
  *
- * @return array metadata types.
+ * @return string[] metadata types.
  */
 function PMA_getMetadataTypesToExport()
 {

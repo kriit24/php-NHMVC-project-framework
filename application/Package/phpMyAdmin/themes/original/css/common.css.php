@@ -258,22 +258,17 @@ button.mult_submit {
 }
 
 /* odd items 1,3,5,7,... */
-table tr.odd th,
-.odd {
-    background: <?php echo $GLOBALS['cfg']['BgOne']; ?>;
+table tr:nth-child(odd) {
+        background: <?php echo $GLOBALS['cfg']['BgOne']; ?>; 
 }
 
 /* even items 2,4,6,8,... */
-table tr.even th,
-.even {
-    background: <?php echo $GLOBALS['cfg']['BgTwo']; ?>;
+table tr:nth-child(even) {
+        background: <?php echo $GLOBALS['cfg']['BgTwo']; ?>;
 }
 
-/* odd table rows 1,3,5,7,... */
-table tr.odd th,
-table tr.odd,
-table tr.even th,
-table tr.even {
+table tr th,
+table tr {
     text-align:         <?php echo $left; ?>;
 }
 
@@ -287,16 +282,13 @@ table tr.marked:not(.nomarker) {
 }
 
 /* hovered items */
-.odd:not(.nopointer):hover,
-.even:not(.nopointer):hover,
+table tr:not(.nopointer):hover,
 .hover:not(.nopointer) {
     background: <?php echo $GLOBALS['cfg']['BrowsePointerBackground']; ?>;
     color: <?php echo $GLOBALS['cfg']['BrowsePointerColor']; ?>;
 }
 
 /* hovered table rows */
-table tr.odd:not(.nopointer):hover th,
-table tr.even:not(.nopointer):hover th,
 table tr.hover:not(.nopointer) th {
     background:   <?php echo $GLOBALS['cfg']['BrowsePointerBackground']; ?>;
     color:   <?php echo $GLOBALS['cfg']['BrowsePointerColor']; ?>;
@@ -316,6 +308,7 @@ th.condition {
 td.null {
     font-style: italic;
     text-align: <?php echo $right; ?>;
+    color: #7d7d7d;
 }
 
 table .valueHeader {
@@ -418,17 +411,25 @@ div.error {
     margin:             0.3em 0 0 0;
     border:             2px solid;
     background-repeat:  no-repeat;
+    clear:              both;
     <?php
     if ($GLOBALS['text_dir'] === 'ltr') { ?>
         background-position: 10px 50%;
-        padding:            0.1em 0.1em 0.1em 36px;
+        padding:            0.1em 0.1em 0.1em 42px;
     <?php
     } else { ?>
         background-position: 99% 50%;
-        padding:            0.1em 46px 0.1em 0.1em;
+        padding:            0.1em 40px 0.1em 0.1em;
         <?php
     }
 ?>
+}
+div.success img.icon,
+div.notice img.icon,
+div.error img.icon {
+    display: block;
+    float:              <?php echo $left; ?>;
+    margin-<?php echo $left; ?>: -22px;
 }
 
 .success {
@@ -494,6 +495,9 @@ fieldset.confirmation legend {
 }
 /* end messageboxes */
 
+.new_central_col{
+    width:              100%;
+}
 
 .tblcomment {
     font-size:          70%;
@@ -878,7 +882,7 @@ div#tablestatistics table {
 #fieldset_add_user_login label {
     float:              <?php echo $left; ?>;
     display:            block;
-    width:              10em;
+    width:              15em;
     max-width:          100%;
     text-align:         <?php echo $right; ?>;
     padding-<?php echo $right; ?>:      0.5em;
@@ -961,7 +965,7 @@ h3#serverstatusqueries span {
 
 /* Also used for the variables page */
 fieldset#tableFilter {
-    margin-bottom:1em;
+    padding: 0.1em 1em;
 }
 
 div#serverStatusTabs {
@@ -1248,7 +1252,7 @@ div#queryboxcontainer div#bookmarkoptions {
 
 li.no_bullets {
     list-style-type:none !important;
-    margin-left: -25px !important;      //align with other list items which have bullets
+    margin-<?php echo $left; ?>: -25px !important;      //align with other list items which have bullets
 }
 
 /* end iconic view for ul items */
@@ -1345,6 +1349,16 @@ label.desc {
 
 label.desc sup {
     position: absolute;
+}
+
+code.php {
+    display: block;
+    padding-left: 0.3em;
+    margin-top: 0;
+    margin-bottom: 0;
+    max-height: 10em;
+    overflow: auto;
+    direction: ltr;
 }
 
 code.sql,
@@ -1625,6 +1639,10 @@ input#input_import_file {
 
 .formelementrow {
     margin: 5px 0 5px 0;
+}
+
+#filterText {
+    vertical-align: baseline;
 }
 
 #popup_background {
@@ -2313,7 +2331,8 @@ fieldset .disabled-field td {
 }
 
 .cEdit .edit_box {
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: scroll;
     padding: 0;
 }
 
@@ -2647,10 +2666,6 @@ div.jqplot-noData-container {
 
 div#page_content div#tableslistcontainer table.data {
     border-top: 0.1px solid #EEEEEE;
-}
-
-div#page_content form#db_search_form.ajax fieldset {
-    margin-top: -0.3em;
 }
 
 div#page_content div#tableslistcontainer, div#page_content div.notice, div#page_content div.result_query {
@@ -3033,9 +3048,6 @@ html.ie7 #pma_console .query_input {
     width: 100%;
     min-height: initial;
     max-height: initial;
-}
-.firefox .cm-s-pma.CodeMirror {
-    font-size: 120%;
 }
 .cm-s-pma .CodeMirror-scroll {
     cursor: text;

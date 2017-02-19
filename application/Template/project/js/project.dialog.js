@@ -32,7 +32,10 @@ Project.Dialog.Element = {
 		Project.Dialog.Object = this;
 		$(document.body).append('<div id="'+Project.Dialog.Object.dialog+'" style="display:none;"></div>');
 		$(document.body).append('<div id="'+Project.Dialog.Object.loader+'" style="'+style+'"><img src="/Template/public/images/ajax-loader-big.gif" style="float:left;"/> <div style="float:left;margin-left:5px;margin-top:15px;">Loading ...</div></div>');
-		$('#'+Project.Dialog.Object.loader).center(window);
+		var new_top = ( $(window).height()-$("#" + +Project.Dialog.Object.loade).height() )/2;
+		var new_left = ( $(window).width()-$(".ui-dialog").width() )/2;
+		//$('#'+Project.Dialog.Object.loader).center(window);
+		$('#'+Project.Dialog.Object.loader).css({'top' : new_top + 'px', 'left' : new_left + 'px'});
 	},
 
 	close : function(){
@@ -285,7 +288,7 @@ Project.Dialog.Element = {
 				var elem = $(this).parents('form');
 				$.dialog.closeImmediately = $(this).attr('class') != undefined && $(this).attr('class').indexOf('dialog-close') > -1 ? true : false;
 
-				if( elem.attr('action').length > 0 ){
+				if( elem.attr('action') != undefined && elem.attr('action').length > 0 ){
 
 					var form = $(this).parents('form')[0];
 					var formData = new FormData(
@@ -305,7 +308,7 @@ Project.Dialog.Element = {
 						
 						$.dialog.reload = true;
 						if( scroll_t )
-							$.cookie('scroll', scroll_t);
+							Project.Session.set('dialogScrollto', scroll_t);
 					}}).create();
 					return false;
 				}
@@ -322,10 +325,10 @@ $(document).ready(function(){
 	var handlerClick = true;
 
 	//set scroll position after reload
-	if( $.cookie('scroll') ){
+	if( Project.Session.get('dialogScrollto') ){
 
-		$('body').scrollTop( $.cookie('scroll') );
-		$.removeCookie('scroll');
+		$('html, body').animate({scrollTop: Project.Session.get('dialogScrollto')}, 500);
+		Project.Session.remove('dialogScrollto');
 	}
 
 	if( $('tr.dialog,a.dialog').length > 0 ){

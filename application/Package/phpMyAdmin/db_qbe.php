@@ -5,16 +5,17 @@
  *
  * @package PhpMyAdmin
  */
+use PMA\libraries\SavedSearches;
+use PMA\libraries\URL;
+use PMA\libraries\Response;
 
 /**
  * requirements
  */
 require_once 'libraries/common.inc.php';
-require_once 'libraries/DBQbe.class.php';
-require_once 'libraries/bookmark.lib.php';
 require_once 'libraries/sql.lib.php';
 
-$response = PMA_Response::getInstance();
+$response = Response::getInstance();
 
 // Gets the relation settings
 $cfgRelation = PMA_getRelationsParam();
@@ -23,13 +24,12 @@ $savedSearchList = array();
 $savedSearch = null;
 $currentSearchId = null;
 if ($cfgRelation['savedsearcheswork']) {
-    include 'libraries/SavedSearches.class.php';
     $header = $response->getHeader();
     $scripts = $header->getScripts();
     $scripts->addFile('db_qbe.js');
 
     //Get saved search list.
-    $savedSearch = new PMA_SavedSearches($GLOBALS);
+    $savedSearch = new SavedSearches($GLOBALS);
     $savedSearch->setUsername($GLOBALS['cfg']['Server']['user'])
         ->setDbname($_REQUEST['db']);
 
@@ -50,14 +50,14 @@ if ($cfgRelation['savedsearcheswork']) {
         } elseif ('delete' === $_REQUEST['action']) {
             $deleteResult = $savedSearch->delete();
             //After deletion, reset search.
-            $savedSearch = new PMA_SavedSearches($GLOBALS);
+            $savedSearch = new SavedSearches($GLOBALS);
             $savedSearch->setUsername($GLOBALS['cfg']['Server']['user'])
                 ->setDbname($_REQUEST['db']);
             $_REQUEST = array();
         } elseif ('load' === $_REQUEST['action']) {
             if (empty($_REQUEST['searchId'])) {
                 //when not loading a search, reset the object.
-                $savedSearch = new PMA_SavedSearches($GLOBALS);
+                $savedSearch = new SavedSearches($GLOBALS);
                 $savedSearch->setUsername($GLOBALS['cfg']['Server']['user'])
                     ->setDbname($_REQUEST['db']);
                 $_REQUEST = array();
@@ -81,12 +81,8 @@ if (isset($_REQUEST['submit_sql']) && ! empty($sql_query)) {
         $message_to_display = true;
     } else {
         $goto = 'db_sql.php';
-
-        // Parse and analyze the query
-        include_once 'libraries/parse_analyze.inc.php';
-
         PMA_executeQueryAndSendQueryResponse(
-            $analyzed_sql_results, // analyzed_sql_results
+            null, // analyzed_sql_results
             false, // is_gotofile
             $_REQUEST['db'], // db
             null, // table
@@ -123,25 +119,27 @@ list(
     $tooltip_truename,
     $tooltip_aliasname,
     $pos
-) = PMA_Util::getDbInfo($db, isset($sub_part) ? $sub_part : '');
+) = PMA\libraries\Util::getDbInfo($db, isset($sub_part) ? $sub_part : '');
 
 if ($message_to_display) {
-    PMA_Message::error(__('You have to choose at least one column to display!'))
+    PMA\libraries\Message::error(
+        __('You have to choose at least one column to display!')
+    )
         ->display();
 }
 unset($message_to_display);
 
 // create new qbe search instance
-$db_qbe = new PMA_DbQbe($GLOBALS['db'], $savedSearchList, $savedSearch);
+$db_qbe = new PMA\libraries\DbQbe($GLOBALS['db'], $savedSearchList, $savedSearch);
 
-$url = 'db_designer.php' . PMA_URL_getCommon(
+$url = 'db_designer.php' . URL::getCommon(
     array_merge(
         $url_params,
         array('query' => 1)
     )
 );
 $response->addHTML(
-    PMA_Message::notice(
+    PMA\libraries\Message::notice(
         sprintf(
             __('Switch to %svisual builder%s'),
             '<a href="' . $url . '">',

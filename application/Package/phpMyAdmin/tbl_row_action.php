@@ -5,12 +5,13 @@
  *
  * @package PhpMyAdmin
  */
+use PMA\libraries\URL;
+use PMA\libraries\Response;
 
 /**
  *
  */
 require_once 'libraries/common.inc.php';
-require_once 'libraries/mysql_charsets.inc.php';
 require_once 'libraries/sql.lib.php';
 
 if (isset($_REQUEST['submit_mult'])) {
@@ -66,12 +67,13 @@ if (!empty($submit_mult)) {
         && (! isset($_REQUEST['rows_to_delete'])
         || ! is_array($_REQUEST['rows_to_delete']))
     ) {
-        $response = PMA_Response::getInstance();
-        $response->isSuccess(false);
+        $response = Response::getInstance();
+        $response->setRequestStatus(false);
         $response->addJSON('message', __('No row selected.'));
     }
 
     switch($submit_mult) {
+    /** @noinspection PhpMissingBreakStatementInspection */
     case 'row_copy':
         $_REQUEST['default_action'] = 'insert';
         // no break to allow for fallthough
@@ -85,7 +87,7 @@ if (!empty($submit_mult)) {
             && is_array($_REQUEST['rows_to_delete'])
         ) {
             foreach ($_REQUEST['rows_to_delete'] as $i => $i_where_clause) {
-                $where_clause[] = urldecode($i_where_clause);
+                $where_clause[] = $i_where_clause;
             }
         }
         $active_page = 'tbl_change.php';
@@ -105,7 +107,7 @@ if (!empty($submit_mult)) {
             && is_array($_REQUEST['rows_to_delete'])
         ) {
             foreach ($_REQUEST['rows_to_delete'] as $i => $i_where_clause) {
-                $where_clause[] = urldecode($i_where_clause);
+                $where_clause[] = $i_where_clause;
             }
         }
         $active_page = 'tbl_export.php';
@@ -116,7 +118,7 @@ if (!empty($submit_mult)) {
     default:
         $action = 'tbl_row_action.php';
         $err_url = 'tbl_row_action.php'
-            . PMA_URL_getCommon($GLOBALS['url_params']);
+            . URL::getCommon($GLOBALS['url_params']);
         if (! isset($_REQUEST['mult_btn'])) {
             $original_sql_query = $sql_query;
             if (! empty($url_query)) {
@@ -126,7 +128,7 @@ if (!empty($submit_mult)) {
         include 'libraries/mult_submits.inc.php';
         $_url_params = $GLOBALS['url_params'];
         $_url_params['goto'] = 'tbl_sql.php';
-        $url_query = PMA_URL_getCommon($_url_params);
+        $url_query = URL::getCommon($_url_params);
 
 
         /**
@@ -149,13 +151,8 @@ if (!empty($submit_mult)) {
         }
 
         $active_page = 'sql.php';
-        /**
-         * Parse and analyze the query
-         */
-        include_once 'libraries/parse_analyze.inc.php';
-
         PMA_executeQueryAndSendQueryResponse(
-            $analyzed_sql_results, // analyzed_sql_results
+            null, // analyzed_sql_results
             false, // is_gotofile
             $db, // db
             $table, // table

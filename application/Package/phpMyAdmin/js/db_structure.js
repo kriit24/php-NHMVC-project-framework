@@ -30,6 +30,7 @@ AJAX.registerTeardown('db_structure.js', function () {
     $('a.real_row_count').off('click');
     $('a.row_count_sum').off('click');
     $('select[name=submit_mult]').unbind('change');
+    $("#filterText").unbind('keyup');
 });
 
 /**
@@ -37,7 +38,7 @@ AJAX.registerTeardown('db_structure.js', function () {
  * when truncating, creating, dropping or inserting into a table
  */
 function PMA_adjustTotals() {
-    var byteUnits = new Array(
+    var byteUnits = [
         PMA_messages.strB,
         PMA_messages.strKiB,
         PMA_messages.strMiB,
@@ -45,7 +46,7 @@ function PMA_adjustTotals() {
         PMA_messages.strTiB,
         PMA_messages.strPiB,
         PMA_messages.strEiB
-    );
+    ];
     /**
      * @var $allTr jQuery object that references all the rows in the list of tables
      */
@@ -211,16 +212,89 @@ AJAX.registerOnload('db_structure.js', function () {
     };
 
 /**
+* Filtering tables on table listing of particular database
+*
+*/
+    $("#filterText").keyup(function() {
+        var filterInput = $(this).val().toUpperCase();
+        var structureTable = $('#structureTable')[0];
+        $('#structureTable tbody tr').each(function() {
+            var tr = $(this);
+            var a = tr.find('a')[0];
+            if (a) {
+                if (a.text.trim().toUpperCase().indexOf(filterInput) > -1) {
+                    tr[0].style.display = "";
+                } else {
+                    tr[0].style.display = "none";
+                }
+            }
+        });
+    });
+
+/**
  *  Event handler on select of "Make consistent with central list"
  */
     $('select[name=submit_mult]').change(function(event) {
-        if($(this).val() === 'make_consistent_with_central_list') {
+        if ($(this).val() === 'make_consistent_with_central_list') {
             event.preventDefault();
             event.stopPropagation();
-            jqConfirm(PMA_messages.makeConsistentMessage, function(){
-                        $('#tablesForm').submit();
-                    });
+            jqConfirm(
+                PMA_messages.makeConsistentMessage, function(){
+                    $('#tablesForm').submit();
+                }
+            );
             return false;
+        }
+        else if ($(this).val() === 'copy_tbl' || $(this).val() === 'add_prefix_tbl' || $(this).val() === 'replace_prefix_tbl' || $(this).val() === 'copy_tbl_change_prefix') {
+            event.preventDefault();
+            event.stopPropagation();
+            if ($('input[name="selected_tbl[]"]:checked').length === 0) {
+                return false;
+            }
+            var formData = $('#tablesForm').serialize();
+            var modalTitle = '';
+            if ($(this).val() === 'copy_tbl') {
+                modalTitle = PMA_messages.strCopyTablesTo;
+            }
+            else if ($(this).val() === 'add_prefix_tbl') {
+                modalTitle = PMA_messages.strAddPrefix;
+            }
+            else if ($(this).val() === 'replace_prefix_tbl') {
+                modalTitle = PMA_messages.strReplacePrefix;
+            }
+            else if ($(this).val() === 'copy_tbl_change_prefix') {
+                modalTitle = PMA_messages.strCopyPrefix;
+            }
+            $.ajax({
+                type: 'POST',
+                url: 'db_structure.php',
+                dataType: 'html',
+                data: formData
+
+            }).done(function(data) {
+
+                var dialogObj = $("<div style='display:none'>"+data+"</div>");
+                $('body').append(dialogObj);
+                var buttonOptions = {};
+                buttonOptions[PMA_messages.strContinue] = function () {
+                    $('#ajax_form').submit();
+                    $( this ).dialog( "close" );
+                };
+                buttonOptions[PMA_messages.strCancel] = function () {
+                    $( this ).dialog( "close" );
+                    $('#tablesForm')[0].reset();
+                };
+                $(dialogObj).dialog({
+                    minWidth: 500,
+                    resizable: false,
+                    modal: true,
+                    title: modalTitle,
+                    buttons: buttonOptions
+                });
+            });
+        }
+        else {
+            $('#tablesForm').submit();
         }
     });
 
@@ -244,7 +318,7 @@ AJAX.registerOnload('db_structure.js', function () {
          * @var question    String containing the question to be asked for confirmation
          */
         var question = PMA_messages.strTruncateTableStrongWarning + ' ' +
-            PMA_sprintf(PMA_messages.strDoYouReally, 'TRUNCATE ' + escapeHtml(curr_table_name)) +
+            PMA_sprintf(PMA_messages.strDoYouReally, 'TRUNCATE `' + escapeHtml(curr_table_name) + '`') +
             getForeignKeyCheckboxLoader();
 
         $this_anchor.PMA_confirm(question, $this_anchor.attr('href'), function (url) {
@@ -252,8 +326,9 @@ AJAX.registerOnload('db_structure.js', function () {
             PMA_ajaxShowMessage(PMA_messages.strProcessingRequest);
 
             var params = getJSConfirmCommonParam(this);
+            params.token = PMA_commonParams.get('token');
 
-            $.get(url, params, function (data) {
+            $.post(url, params, function (data) {
                 if (typeof data !== 'undefined' && data.success === true) {
                     PMA_ajaxShowMessage(data.message);
                     // Adjust table statistics
@@ -272,7 +347,7 @@ AJAX.registerOnload('db_structure.js', function () {
                 } else {
                     PMA_ajaxShowMessage(PMA_messages.strErrorProcessingRequest + " : " + data.error, false);
                 }
-            }); // end $.get()
+            }); // end $.post()
         }, loadForeignKeyCheckbox); //end $.PMA_confirm()
     }); //end of Truncate Table Ajax action
 
@@ -303,10 +378,10 @@ AJAX.registerOnload('db_structure.js', function () {
         var question;
         if (! is_view) {
             question = PMA_messages.strDropTableStrongWarning + ' ' +
-                PMA_sprintf(PMA_messages.strDoYouReally, 'DROP TABLE ' + escapeHtml(curr_table_name));
+                PMA_sprintf(PMA_messages.strDoYouReally, 'DROP TABLE `' + escapeHtml(curr_table_name) + '`');
         } else {
             question =
-                PMA_sprintf(PMA_messages.strDoYouReally, 'DROP VIEW ' + escapeHtml(curr_table_name));
+                PMA_sprintf(PMA_messages.strDoYouReally, 'DROP VIEW `' + escapeHtml(curr_table_name) + '`');
         }
         question += getForeignKeyCheckboxLoader();
 
@@ -315,11 +390,11 @@ AJAX.registerOnload('db_structure.js', function () {
             var $msg = PMA_ajaxShowMessage(PMA_messages.strProcessingRequest);
 
             var params = getJSConfirmCommonParam(this);
+            params.token = PMA_commonParams.get('token');
 
-            $.get(url, params, function (data) {
+            $.post(url, params, function (data) {
                 if (typeof data !== 'undefined' && data.success === true) {
                     PMA_ajaxShowMessage(data.message);
-                    toggleRowColors($curr_row.next());
                     $curr_row.hide("medium").remove();
                     PMA_adjustTotals();
                     PMA_reloadNavigation();
@@ -327,18 +402,18 @@ AJAX.registerOnload('db_structure.js', function () {
                 } else {
                     PMA_ajaxShowMessage(PMA_messages.strErrorProcessingRequest + " : " + data.error, false);
                 }
-            }); // end $.get()
+            }); // end $.post()
         }, loadForeignKeyCheckbox); // end $.PMA_confirm()
     }); //end of Drop Table Ajax action
 
     /**
-     * Attach Event Handler for 'Print View'
+     * Attach Event Handler for 'Print' link
      */
     $(document).on('click', "#printView", function (event) {
         event.preventDefault();
 
-        // Print the page
-        printPage();
+        // Take to preview mode
+        printPreview();
     }); //end of Print View action
 
     //Calculate Real End for InnoDB

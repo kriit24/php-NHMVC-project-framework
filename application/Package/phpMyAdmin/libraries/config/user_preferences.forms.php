@@ -114,12 +114,14 @@ $forms['Main_panel']['Startup'] = array(
     'ShowStats',
     'ShowServerInfo');
 $forms['Main_panel']['DbStructure'] = array(
+    'ShowDbStructureCharset',
     'ShowDbStructureComment',
     'ShowDbStructureCreation',
     'ShowDbStructureLastUpdate',
     'ShowDbStructureLastCheck');
 $forms['Main_panel']['TableStructure'] = array(
-    'HideStructureActions');
+    'HideStructureActions',
+    'ShowColumnComments');
 $forms['Main_panel']['Browse'] = array(
     'TableNavigationLinksMode',
     'ActionLinksMode',

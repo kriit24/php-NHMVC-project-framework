@@ -7,9 +7,10 @@
  * @todo (also validate if js is disabled, after form submission?)
  * @package PhpMyAdmin
  */
+use PMA\libraries\URL;
+use PMA\libraries\Response;
 
 require_once './libraries/common.inc.php';
-require_once './libraries/SystemDatabase.class.php';
 
 /**
  * Runs common work
@@ -17,6 +18,8 @@ require_once './libraries/SystemDatabase.class.php';
 require './libraries/db_common.inc.php';
 $url_params['goto'] = 'tbl_structure.php';
 $url_params['back'] = 'view_create.php';
+
+$response = Response::getInstance();
 
 $view_algorithm_options = array(
     'UNDEFINED',
@@ -36,6 +39,19 @@ $view_security_options = array(
 
 if (empty($sql_query)) {
     $sql_query = '';
+}
+
+// View name is a compulsory field
+if (isset($_REQUEST['view']['name'])
+    && empty($_REQUEST['view']['name'])
+) {
+    $message = PMA\libraries\Message::error(__('View name can not be empty!'));
+    $response->addJSON(
+        'message',
+        $message
+    );
+    $response->setRequestStatus(false);
+    exit;
 }
 
 if (isset($_REQUEST['createview']) || isset($_REQUEST['alterview'])) {
@@ -58,9 +74,14 @@ if (isset($_REQUEST['createview']) || isset($_REQUEST['alterview'])) {
     }
 
     if (! empty($_REQUEST['view']['definer'])) {
-        $arr = explode('@', $_REQUEST['view']['definer']);
-        $sql_query .= $sep . 'DEFINER=' . PMA_Util::backquote($arr[0]);
-        $sql_query .= '@' . PMA_Util::backquote($arr[1]) . ' ';
+        if (strpos($_REQUEST['view']['definer'], '@') === FALSE) {
+            $sql_query .= $sep . 'DEFINER='
+                . PMA\libraries\Util::backquote($_REQUEST['view']['definer']);
+        } else {
+            $arr = explode('@', $_REQUEST['view']['definer']);
+            $sql_query .= $sep . 'DEFINER=' . PMA\libraries\Util::backquote($arr[0]);
+            $sql_query .= '@' . PMA\libraries\Util::backquote($arr[1]) . ' ';
+        }
     }
 
     if (isset($_REQUEST['view']['sql_security'])) {
@@ -70,7 +91,8 @@ if (isset($_REQUEST['createview']) || isset($_REQUEST['alterview'])) {
         }
     }
 
-    $sql_query .= $sep . ' VIEW ' . PMA_Util::backquote($_REQUEST['view']['name']);
+    $sql_query .= $sep . ' VIEW '
+        . PMA\libraries\Util::backquote($_REQUEST['view']['name']);
 
     if (! empty($_REQUEST['view']['column_names'])) {
         $sql_query .= $sep . ' (' . $_REQUEST['view']['column_names'] . ')';
@@ -87,19 +109,18 @@ if (isset($_REQUEST['createview']) || isset($_REQUEST['alterview'])) {
 
     if (!$GLOBALS['dbi']->tryQuery($sql_query)) {
         if (! isset($_REQUEST['ajax_dialog'])) {
-            $message = PMA_Message::rawError($GLOBALS['dbi']->getError());
+            $message = PMA\libraries\Message::rawError($GLOBALS['dbi']->getError());
             return;
         }
 
-        $response = PMA_Response::getInstance();
         $response->addJSON(
             'message',
-            PMA_Message::error(
+            PMA\libraries\Message::error(
                 "<i>" . htmlspecialchars($sql_query) . "</i><br /><br />"
                 . $GLOBALS['dbi']->getError()
             )
         );
-        $response->isSuccess(false);
+        $response->setRequestStatus(false);
         exit;
     }
 
@@ -135,15 +156,17 @@ if (isset($_REQUEST['createview']) || isset($_REQUEST['alterview'])) {
     unset($pma_transformation_data);
 
     if (! isset($_REQUEST['ajax_dialog'])) {
-        $message = PMA_Message::success();
+        $message = PMA\libraries\Message::success();
         include 'tbl_structure.php';
     } else {
-        $response = PMA_Response::getInstance();
         $response->addJSON(
             'message',
-            PMA_Util::getMessage(PMA_Message::success(), $sql_query)
+            PMA\libraries\Util::getMessage(
+                PMA\libraries\Message::success(),
+                $sql_query
+            )
         );
-        $response->isSuccess(true);
+        $response->setRequestStatus(true);
     }
 
     exit;
@@ -175,7 +198,7 @@ $url_params['reload'] = 1;
 $htmlString = '<!-- CREATE VIEW options -->'
     . '<div id="div_view_options">'
     . '<form method="post" action="view_create.php">'
-    . PMA_URL_getHiddenInputs($url_params)
+    . URL::getHiddenInputs($url_params)
     . '<fieldset>'
     . '<legend>'
     . (isset($_REQUEST['ajax_dialog']) ?

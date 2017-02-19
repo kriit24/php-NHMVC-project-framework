@@ -86,13 +86,13 @@ AJAX.registerTeardown('tbl_structure.js', function () {
     $(document).off('submit', ".append_fields_form.ajax");
     $('body').off('click', '#fieldsForm.ajax button[name="submit_mult"], #fieldsForm.ajax input[name="submit_mult"]');
     $(document).off('click', 'a[name^=partition_action].ajax');
+    $(document).off('click', '#remove_partitioning.ajax');
 });
 
 AJAX.registerOnload('tbl_structure.js', function () {
 
     // Re-initialize variables.
     primary_indexes = [];
-    unique_indexes = [];
     indexes = [];
     fulltext_indexes = [];
     spatial_indexes = [];
@@ -173,7 +173,7 @@ AJAX.registerOnload('tbl_structure.js', function () {
                 // If Collation is changed, Warn and Confirm
                 if (checkIfConfirmRequired($form, field_cnt)){
                     var question = sprintf(
-                        PMA_messages.strChangeColumnCollation, 'http://wiki.phpmyadmin.net/pma/Garbled_data'
+                        PMA_messages.strChangeColumnCollation, 'https://wiki.phpmyadmin.net/pma/Garbled_data'
                     );
                     $form.PMA_confirm(question, $form.attr('action'), function (url) {
                         submitForm();
@@ -201,7 +201,7 @@ AJAX.registerOnload('tbl_structure.js', function () {
         /**
          * @var curr_column_name    String containing name of the field referred to by {@link curr_row}
          */
-        var curr_column_name = $curr_row.children('th').children('label').text();
+        var curr_column_name = $curr_row.children('th').children('label').text().trim();
         curr_column_name = escapeHtml(curr_column_name);
         /**
          * @var $after_field_item    Corresponding entry in the 'After' field.
@@ -213,7 +213,13 @@ AJAX.registerOnload('tbl_structure.js', function () {
         var question = PMA_sprintf(PMA_messages.strDoYouReally, 'ALTER TABLE `' + escapeHtml(curr_table_name) + '` DROP `' + escapeHtml(curr_column_name) + '`;');
         $(this).PMA_confirm(question, $(this).attr('href'), function (url) {
             var $msg = PMA_ajaxShowMessage(PMA_messages.strDroppingColumn, false);
-            $.get(url, {'is_js_confirmed' : 1, 'ajax_request' : true, 'ajax_page_request' : true}, function (data) {
+            var params = {
+                'is_js_confirmed' : 1,
+                'ajax_request' : true,
+                'ajax_page_request' : true,
+                'token': PMA_commonParams.get('token')
+            };
+            $.post(url, params, function (data) {
                 if (typeof data !== 'undefined' && data.success === true) {
                     PMA_ajaxRemoveMessage($msg);
                     if ($('.result_query').length) {
@@ -225,7 +231,6 @@ AJAX.registerOnload('tbl_structure.js', function () {
                             .prependTo('#structure_content');
                         PMA_highlightSQL($('#page_content'));
                     }
-                    toggleRowColors($curr_row.next());
                     // Adjust the row numbers
                     for (var $row = $curr_row.next(); $row.length > 0; $row = $row.next()) {
                         var new_val = parseInt($row.find('td:nth-child(2)').text(), 10) - 1;
@@ -233,8 +238,16 @@ AJAX.registerOnload('tbl_structure.js', function () {
                     }
                     $after_field_item.remove();
                     $curr_row.hide("medium").remove();
-                    //by default select the last option to add new column (in case last column is dropped)
+
+                    // Remove the dropped column from select menu for 'after field'
+                    $("select[name=after_field]").find(
+                        '[value="' + curr_column_name + '"]'
+                    ).remove();
+
+                    // by default select the (new) last option to add new column
+                    // (in case last column is dropped)
                     $("select[name=after_field] option:last").attr("selected","selected");
+
                     //refresh table stats
                     if (data.tableStat) {
                         $('#tablestatistics').html(data.tableStat);
@@ -245,18 +258,18 @@ AJAX.registerOnload('tbl_structure.js', function () {
                 } else {
                     PMA_ajaxShowMessage(PMA_messages.strErrorProcessingRequest + " : " + data.error, false);
                 }
-            }); // end $.get()
+            }); // end $.post()
         }); // end $.PMA_confirm()
     }); //end of Drop Column Anchor action
 
     /**
-     * Attach Event Handler for 'Print View'
+     * Attach Event Handler for 'Print' link
      */
     $(document).on('click', "#printView", function (event) {
         event.preventDefault();
 
-        // Print the page
-        printPage();
+        // Take to preview mode
+        printPreview();
     }); //end of Print View action
 
     /**
@@ -267,7 +280,7 @@ AJAX.registerOnload('tbl_structure.js', function () {
 
         var $this = $(this);
         var curr_table_name = $this.closest('form').find('input[name=table]').val();
-        var curr_column_name = $this.parents('tr').children('th').children('label').text();
+        var curr_column_name = $this.parents('tr').children('th').children('label').text().trim();
 
         var add_clause = '';
         if ($this.is('.add_primary_key_anchor')) {
@@ -287,7 +300,12 @@ AJAX.registerOnload('tbl_structure.js', function () {
         $(this).PMA_confirm(question, $(this).attr('href'), function (url) {
             PMA_ajaxShowMessage();
             AJAX.source = $this;
-            $.get(url, {'ajax_request' : true, 'ajax_page_request' : true}, AJAX.responseHandler);
+            var params = {
+                'ajax_request' : true,
+                'ajax_page_request' : true,
+                'token': PMA_commonParams.get('token')
+            };
+            $.post(url, params, AJAX.responseHandler);
         }); // end $.PMA_confirm()
     }); //end Add key
 
@@ -346,7 +364,7 @@ AJAX.registerOnload('tbl_structure.js', function () {
                     for (var i in data.columns) {
                         var the_column = data.columns[i];
                         var $the_row = $rows
-                            .find("input:checkbox[value=" + the_column + "]")
+                            .find("input:checkbox[value='" + the_column + "']")
                             .closest("tr");
                         // append the row for this column to the table
                         $fields_table.append($the_row);
@@ -442,10 +460,14 @@ AJAX.registerOnload('tbl_structure.js', function () {
         var $link = $(this);
 
         function submitPartitionAction(url) {
-            var submitData = '&ajax_request=true&ajax_page_request=true';
+            var params = {
+                'ajax_request' : true,
+                'ajax_page_request' : true,
+                'token': PMA_commonParams.get('token')
+            };
             PMA_ajaxShowMessage();
             AJAX.source = $link;
-            $.post(url, submitData, AJAX.responseHandler);
+            $.post(url, params, AJAX.responseHandler);
         }
 
         if ($link.is('#partition_action_DROP')) {
@@ -461,6 +483,25 @@ AJAX.registerOnload('tbl_structure.js', function () {
         } else {
             submitPartitionAction($link.attr('href'));
         }
+    });
+
+    /**
+     * Handles remove partitioning
+     */
+    $(document).on('click', '#remove_partitioning.ajax', function (e) {
+        e.preventDefault();
+        var $link = $(this);
+        var question = PMA_messages.strRemovePartitioningWarning;
+        $link.PMA_confirm(question, $link.attr('href'), function (url) {
+            var params = {
+                'ajax_request' : true,
+                'ajax_page_request' : true,
+                'token': PMA_commonParams.get('token')
+            };
+            PMA_ajaxShowMessage();
+            AJAX.source = $link;
+            $.post(url, params, AJAX.responseHandler);
+        });
     });
 });
 

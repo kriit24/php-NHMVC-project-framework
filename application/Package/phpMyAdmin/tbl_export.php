@@ -5,17 +5,20 @@
  *
  * @package PhpMyAdmin
  */
+use PMA\libraries\config\PageSettings;
+use PMA\libraries\Response;
 
 /**
  *
  */
 require_once 'libraries/common.inc.php';
-require_once 'libraries/config/page_settings.class.php';
 require_once 'libraries/display_export.lib.php';
+require_once 'libraries/config/user_preferences.forms.php';
+require_once 'libraries/config/page_settings.forms.php';
 
-PMA_PageSettings::showGroup('Export');
+PageSettings::showGroup('Export');
 
-$response = PMA_Response::getInstance();
+$response = Response::getInstance();
 $header   = $response->getHeader();
 $scripts  = $header->getScripts();
 $scripts->addFile('export.js');
@@ -25,70 +28,7 @@ $cfgRelation = PMA_getRelationsParam();
 
 // handling export template actions
 if (isset($_REQUEST['templateAction']) && $cfgRelation['exporttemplateswork']) {
-
-    if (isset($_REQUEST['templateId'])) {
-        $templateId = $_REQUEST['templateId'];
-        $id = PMA_Util::sqlAddSlashes($templateId);
-    }
-
-    $templateTable = PMA_Util::backquote($cfgRelation['db']) . '.'
-       . PMA_Util::backquote($cfgRelation['export_templates']);
-    $user = PMA_Util::sqlAddSlashes($GLOBALS['cfg']['Server']['user']);
-
-    switch ($_REQUEST['templateAction']) {
-    case 'create':
-        $query = "INSERT INTO " . $templateTable . "("
-            . " `username`, `export_type`,"
-            . " `template_name`, `template_data`"
-            . ") VALUES ("
-            . "'" . $user . "', "
-            . "'" . PMA_Util::sqlAddSlashes($_REQUEST['exportType']) . "', "
-            . "'" . PMA_Util::sqlAddSlashes($_REQUEST['templateName']) . "', "
-            . "'" . PMA_Util::sqlAddSlashes($_REQUEST['templateData']) . "');";
-        break;
-    case 'load':
-        $query = "SELECT `template_data` FROM " . $templateTable
-             . " WHERE `id` = " . $id  . " AND `username` = '" . $user . "'";
-        break;
-    case 'update':
-        $query = "UPDATE " . $templateTable . " SET `template_data` = "
-          . "'" . PMA_Util::sqlAddSlashes($_REQUEST['templateData']) . "'"
-          . " WHERE `id` = " . $id  . " AND `username` = '" . $user . "'";
-        break;
-    case 'delete':
-        $query = "DELETE FROM " . $templateTable
-           . " WHERE `id` = " . $id  . " AND `username` = '" . $user . "'";
-        break;
-    default:
-        break;
-    }
-
-    $result = PMA_queryAsControlUser($query, false);
-
-    $response = PMA_Response::getInstance();
-    if (! $result) {
-        $error = $GLOBALS['dbi']->getError($GLOBALS['controllink']);
-        $response->isSuccess(false);
-        $response->addJSON('message', $error);
-        exit;
-    }
-
-    $response->isSuccess(true);
-    if ('create' == $_REQUEST['templateAction']) {
-        $response->addJSON(
-            'data',
-            PMA_getOptionsForExportTemplates($_REQUEST['exportType'])
-        );
-    } elseif ('load' == $_REQUEST['templateAction']) {
-        $data = null;
-        while ($row = $GLOBALS['dbi']->fetchAssoc(
-            $result, $GLOBALS['controllink']
-        )) {
-            $data = $row['template_data'];
-        }
-        $response->addJSON('data', $data);
-    }
-    $GLOBALS['dbi']->freeResult($result);
+    PMA_handleExportTemplateActions($cfgRelation);
     exit;
 }
 
@@ -107,10 +47,10 @@ $export_page_title = __('View dump (schema) of table');
 // generate WHERE clause (if we are asked to export specific rows)
 
 if (! empty($sql_query)) {
-    $parser = new SqlParser\Parser($sql_query);
+    $parser = new PhpMyAdmin\SqlParser\Parser($sql_query);
 
     if ((!empty($parser->statements[0]))
-        && ($parser->statements[0] instanceof SqlParser\Statements\SelectStatement)
+        && ($parser->statements[0] instanceof PhpMyAdmin\SqlParser\Statements\SelectStatement)
     ) {
 
         // Finding aliases and removing them, but we keep track of them to be
@@ -127,13 +67,17 @@ if (! empty($sql_query)) {
         }
 
         // Rebuilding the SELECT and FROM clauses.
-        $replaces = array(
-            array(
-                'FROM', 'FROM ' . SqlParser\Components\ExpressionArray::build(
-                    $parser->statements[0]->from
+        if (count($parser->statements[0]->from) > 0
+            && count($parser->statements[0]->union) === 0
+        ) {
+            $replaces = array(
+                array(
+                    'FROM', 'FROM ' . PhpMyAdmin\SqlParser\Components\ExpressionArray::build(
+                        $parser->statements[0]->from
+                    ),
                 ),
-            ),
-        );
+            );
+        }
 
         // Checking if the WHERE clause has to be replaced.
         if ((!empty($where_clause)) && (is_array($where_clause))) {
@@ -146,37 +90,56 @@ if (! empty($sql_query)) {
         $replaces[] = array('LIMIT', '');
 
         // Replacing the clauses.
-        $sql_query = SqlParser\Utils\Query::replaceClauses(
+        $sql_query = PhpMyAdmin\SqlParser\Utils\Query::replaceClauses(
             $parser->statements[0],
             $parser->list,
             $replaces
         );
 
         // Removing the aliases by finding the alias followed by a dot.
-        $tokens = SqlParser\Lexer::getTokens($sql_query);
+        $tokens = PhpMyAdmin\SqlParser\Lexer::getTokens($sql_query);
         foreach ($aliases as $alias => $table) {
-            $tokens = SqlParser\Utils\Tokens::replaceTokens(
+            $tokens = PhpMyAdmin\SqlParser\Utils\Tokens::replaceTokens(
                 $tokens,
                 array(
                     array(
                         'value_str' => $alias,
                     ),
                     array(
-                        'type' => SqlParser\Token::TYPE_OPERATOR,
+                        'type' => PhpMyAdmin\SqlParser\Token::TYPE_OPERATOR,
                         'value_str' => '.',
                     )
                 ),
                 array(
-                    new SqlParser\Token($table),
-                    new SqlParser\Token('.',SqlParser\Token::TYPE_OPERATOR)
+                    new PhpMyAdmin\SqlParser\Token($table),
+                    new PhpMyAdmin\SqlParser\Token('.',PhpMyAdmin\SqlParser\Token::TYPE_OPERATOR)
                 )
             );
         }
-        $sql_query = SqlParser\TokensList::build($tokens);
+        $sql_query = PhpMyAdmin\SqlParser\TokensList::build($tokens);
     }
 
-    echo PMA_Util::getMessage(PMA_Message::success());
+    echo PMA\libraries\Util::getMessage(PMA\libraries\Message::success());
 }
 
-$export_type = 'table';
-require_once 'libraries/display_export.inc.php';
+require_once 'libraries/display_export.lib.php';
+
+if (! isset($sql_query)) {
+    $sql_query = '';
+}
+if (! isset($num_tables)) {
+    $num_tables = 0;
+}
+if (! isset($unlim_num_rows)) {
+    $unlim_num_rows = 0;
+}
+if (! isset($multi_values)) {
+    $multi_values = '';
+}
+$response = Response::getInstance();
+$response->addHTML(
+    PMA_getExportDisplay(
+        'table', $db, $table, $sql_query, $num_tables,
+        $unlim_num_rows, $multi_values
+    )
+);
