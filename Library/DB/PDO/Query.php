@@ -54,6 +54,10 @@ trait Query{
 			$this->rebuildStatement = false;
 			return $numrows;
 		}
+		if( !$this->stmt && !$this->stmtArray ){
+
+			return;
+		}
 
 		return $this->stmt->rowCount();
 	}

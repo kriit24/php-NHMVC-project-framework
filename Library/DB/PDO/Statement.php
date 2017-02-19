@@ -36,6 +36,8 @@ trait Statement{
 	function Insert($values = array()){
 
 		$values = array_merge($this->preDefinedColumns, $values);
+		if( $this->_trigger['INSERT'] && $triggerValues = call_user_func_array( array($this, $this->_trigger['INSERT']), array($values)) )
+			$values = array_merge($values, $triggerValues);
 		$values = $this->validFields($values);
 		$values = $this->prepareParams($values);
 
@@ -50,8 +52,8 @@ trait Statement{
 		$this->StatementReConstruct();
 		$this->stmtArray['INSERT INTO'] = $this->_name;
 		$this->stmtArray['COLUMN'] = '('.implode(', ', array_keys($values)).')';
-		$this->stmtArray['VALUES'] = str_replace(array_flip($functionValues), $functionValues, '(:'.implode(', :', array_keys($values)).')' );
-		$this->params = $this->prepareInsert($values, array_flip($functionValues));
+		$this->stmtArray['VALUES'] = str_replace(array_keys($functionValues), $functionValues, '(:'.implode(', :', array_keys($values)).')' );
+		$this->params = $this->prepareInsert($values, array_keys($functionValues));
 		$this->Query();
 		return $this->insertId();
 	}
@@ -59,6 +61,8 @@ trait Statement{
 	function Update($values, $where){
 
 		$values = array_merge($this->preDefinedColumns, $values);
+		if( $this->_trigger['UPDATE'] && $triggerValues = call_user_func_array( array($this, $this->_trigger['UPDATE']), array($values, $where)) )
+			$values = array_merge($values, $triggerValues);
 		$values = $this->validFields($values);
 		$values = $this->prepareParams($values);
 

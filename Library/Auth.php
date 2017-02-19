@@ -11,7 +11,7 @@ class Auth extends Component\isPrivate{
 		if( $_GET['action'] == 'logout' ){
 
 			\Library\Session::clear();
-			setcookie('SESSION_LOGGED', 'false', time()+(\Library\Session::SESSION_TIME), '/');
+			setcookie('SESSION_LOGGED', 'false', \Library\Session::sessionExpires(), '/');
 			die(header('Location: ./'));
 		}
 
@@ -29,7 +29,7 @@ class Auth extends Component\isPrivate{
 			else{
 
 				\Library\Session::clear();
-				setcookie('SESSION_LOGGED', 'false', time()+(\Library\Session::SESSION_TIME), '/');
+				setcookie('SESSION_LOGGED', 'false', \Library\Session::sessionExpires(), '/');
 				die(header('Location: ./'));
 			}
 		}
@@ -109,7 +109,7 @@ class Auth extends Component\isPrivate{
 				\Library\Session::clear('userData');
 				\Library\Session::userData($row);
 				\Library\Session::userData(array('logged' => true));
-				setcookie('SESSION_LOGGED', 'true', time()+(\Library\Session::SESSION_TIME), '/');
+				setcookie('SESSION_LOGGED', 'true', \Library\Session::sessionExpires(), '/');
 
 				$log->Insert(
 					array(
@@ -129,16 +129,8 @@ class Auth extends Component\isPrivate{
 
 	private function defaultPrivilege( $row = array() ){
 
-		if( \Library\Session::userData() ){
-
-			if( \Library\Session::userData()->level != 0 && \Conf\Conf::_DB_CONN == false ){
-
-				\Library\Session::clear();
-				setcookie('SESSION_LOGGED', 'false', time()+(\Library\Session::SESSION_TIME), '/');
-				die(header('Location: ./'));
-			}
+		if( \Library\Session::userData() )
 			return true;
-		}
 
 		if( empty($row) ){
 

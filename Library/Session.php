@@ -3,7 +3,7 @@ namespace Library;
 
 class Session{
 
-	const SESSION_TIME = 60*60*2.5*1;
+	const SESSION_TIME = 60*30;//60 seconds (1 minute) * 30 minute
 	const SESSION_NAME = 'PHPSESSID';
 
 	private $_Session = null;
@@ -23,6 +23,11 @@ class Session{
 		session_write_close();
 	}
 
+	public static function sessionExpires(){
+
+		return time()+(\Library\Session::SESSION_TIME);
+	}
+
 	public static function reGenId(){
 
 		session_start();
@@ -35,7 +40,7 @@ class Session{
 		if( !$value )
 			$value = session_id();
 
-		setcookie( self::SESSION_NAME, $value, time()+(self::SESSION_TIME), '/');
+		setcookie( self::SESSION_NAME, $value, self::sessionExpires(), '/');
 	}
 
 	public static function clear($name = ''){
@@ -48,7 +53,7 @@ class Session{
 
 			foreach($_SESSION as $key => $value)
 				unset($_SESSION[$key]);
-			//self::set( 'false' );//it makes some problems
+			self::set( 'false' );
 		}
 
 		session_write_close();
@@ -80,6 +85,7 @@ class Session{
 		$sessionWrite = false;
 
 		$value = isset($args[0]) ? $args[0] : null;
+		$overWrite = isset($args[1]) ? $args[1] : false;
 		$sessionValue = null;
 
 		if( $name && !$_SESSION[$name] ){
@@ -107,6 +113,9 @@ class Session{
 				if( gettype($value) != 'boolean' && isset($value) )
 					$sessionValue = $value;
 			}
+
+			if( $overWrite )
+				$sessionValue = $value;
 		}
 
 		if( isset($sessionValue) ){

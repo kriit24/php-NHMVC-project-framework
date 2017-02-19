@@ -14,6 +14,7 @@ class Html{
 		'td' => 'td',
 		'div' => 'div',
 		'span' => 'span',
+		'br' => '/br',
 		'a' => 'a',
 		'i' => 'i',
 		'h1' => 'h1',
@@ -23,6 +24,8 @@ class Html{
 		'h5' => 'h5',
 		'h6' => 'h6',
 		'img' => 'img',
+		'iframe' => 'iframe',
+		'label' => 'label',
 		'/script' => '/script',
 		'/form' => '/form',
 		'/table' => '/table',
@@ -42,6 +45,8 @@ class Html{
 		'/h5' => '/h5',
 		'/h6' => '/h6',
 		'/img' => '/',
+		'/iframe' => '/iframe',
+		'/label' => '/label',
 	);
 	const ELEMENT_DEFAULT_ATTR = array(
 		'form' => array('method' => 'POST'),
@@ -79,6 +84,9 @@ class Html{
 
 		if( empty($attr) )
 			$attr = array();
+
+		if( isset($attr['complete']) )
+			unset($attr['complete']);
 
 		return $this->attr(
 			(!is_Array($attr) ? array() : $attr),
@@ -159,10 +167,35 @@ class Html{
 		return $elem;
 	}
 
+	private function onComplete( $elem ){
+
+		if( $elem['complete'] ){
+
+			$fn = $elem['complete'];
+			$fnAttr = $elem['attr'];
+			$fnAttr['value'] = $elem['value'];
+			$ret = $fn( $this->data, $fnAttr );
+			if( $ret ){
+
+				if( $ret['value'] ){
+
+					$elem['value'] = $ret['value'];
+					unset($ret['value']);
+				}
+				$elem['attr'] = $ret;
+			}
+		}
+
+		return $elem;
+	}
+
 	private function openTag($elem){
+
+		$elem = $this->onComplete($elem);
 
 		if( !isset($elem['value']) || empty($elem['value']) )
 			$elem = $this->getData($elem);
+
 		$retElem = $this->buildSiblingElem($elem['before']) . '<' . $elem['elem'] . $this->buildAttr($elem) . '>' . $this->buildSiblingElem($elem['append']) . $elem['value'];
 		if( $elem['after'] )
 			$this->elemAfter['/'.$elem['elem']] = $elem['after'];
@@ -202,6 +235,16 @@ class Html{
 	}
 
 	private function _img($elem){
+
+		return $this->openCloseTag($elem);
+	}
+
+	private function _iframe($elem){
+
+		return $this->openCloseTag($elem);
+	}
+
+	private function _label($elem){
 
 		return $this->openCloseTag($elem);
 	}

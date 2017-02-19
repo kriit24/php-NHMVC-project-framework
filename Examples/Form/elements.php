@@ -6,9 +6,19 @@ $form = new \Library\Form( 'list'/*row*/ );
 //DESCRIPTION
 $form->addElem('form');//first elem must be form if needed
 
-$form->addElem('text'/*type*/, 'name'/*name*/, array()/*attributes*/);
+$form->addElem('text'/*type*/, 'name'/*name*/, array()/*attributes*/, array()/*merge attributes*/, true/*return element string*/);
 $form->addElem('text'/*type*/, 'name'/*name*/, 'value'/*attribute value*/);
 $form->addElem('text'/*type*/, 'name'/*name*/, array('value' => 'val')/*attribute value*/);
+
+//ELEMENT COMPLETE
+$form->addElem('text', 'name', array(
+	'complete' => function( $row, $elem ){
+
+		pre($row);
+		pre($elem);
+		return $elem;//if no changes made then not needed to return
+	}
+));
 
 $form->setData( array(array('key' => 'value'))/*data*/ );
 //ATTR methods
@@ -48,6 +58,14 @@ $form->addElem('form');
 $form->addElem('text', 'name', array(
 	'label' => $this->Language('Name'),
 	'class' => 'some'
+), array($some == true ? array('disabled' => 'disabled') : array())
+))->attr(array('style' => 'none'));
+
+//second merge
+$form->addElem('text', 'name', array_merge(array(
+	'label' => $this->Language('Name'),
+	'class' => 'some'
+), array($some == true ? array('disabled' => 'disabled') : array())
 ))->attr(array('style' => 'none'));
 
 $form->addElem('select', 'role_id', array(

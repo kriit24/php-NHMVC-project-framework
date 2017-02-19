@@ -90,6 +90,8 @@ class Form{
 			unset($attr['option']);
 		if( isset($attr['optgroup']) )
 			unset($attr['optgroup']);
+		if( isset($attr['complete']) )
+			unset($attr['complete']);
 		if( isset($attr['validators']) ){
 
 			$attr['required'] = 'required';
@@ -110,7 +112,7 @@ class Form{
 		return $this->attr(array_merge(array(
 			'type' => (self::ELEMENTS[$type] == 'input' ? $type : ''),
 			'name' => $elemName,
-			'value' => (!is_Array($attr) ? $attr : '')
+			'value' => (!is_Array($attr) ? $attr : ''),
 		), (!is_Array($attr) ? array() : $attr)), 
 			array(
 				'elem' => self::ELEMENTS[$type],
@@ -223,17 +225,26 @@ class Form{
 		
 		if( is_array($this->data) ){
 
-			if( isset($this->data[ $elem['name'] ]) ){
+			$data = $this->data;
+			if( isset($data[ $elem['name'] ]) ){
 
-				$elem['attr']['value'] = $this->data[ $elem['name'] ];
-			}
-			if( $elem['attr']['force-value'] ){
-
-				$elem['attr']['value'] = $elem['attr']['force-value'];
-				unset($elem['attr']['force-value']);
+				$elem['attr']['value'] = $data[ $elem['name'] ];
 			}
 			return $elem;
 		}
+		return $elem;
+	}
+
+	private function onComplete( $elem ){
+
+		if( $elem['complete'] ){
+
+			$fn = $elem['complete'];
+			$ret = $fn( $this->data, $elem['attr'] );
+			if( $ret )
+				$elem['attr'] = $ret;
+		}
+
 		return $elem;
 	}
 
@@ -249,6 +260,8 @@ class Form{
 
 	private function createElem($elem){
 
+		$elem = $this->onComplete($elem);
+
 		if( $elem['type'] != 'submit' && (!isset($elem['attr']['value']) || empty($elem['attr']['value'])) )
 			$elem = $this->getData($elem);
 
@@ -260,7 +273,11 @@ class Form{
 
 	private function _data($elem){
 
-		$elem = $this->getData($elem);
+		$elem = $this->onComplete($elem);
+
+		if( !isset($elem['attr']['value']) || empty($elem['attr']['value']) )
+			$elem = $this->getData($elem);
+
 		return $this->buildSiblingElem($elem['before']) . $elem['attr']['value'] . $this->buildSiblingElem($elem['after']) . $this->buildSiblingElem($elem['append']);
 	}
 
@@ -271,8 +288,11 @@ class Form{
 
 	private function _textarea($elem){
 
+		$elem = $this->onComplete($elem);
+
 		if( !isset($elem['attr']['value']) || empty($elem['attr']['value']) )
 			$elem = $this->getData($elem);
+
 		$value = $elem['attr']['value'];
 		unset($elem['attr']['value']);
 		return $this->buildSiblingElem($elem['before']) . '<' . $elem['elem'] . $this->buildAttr($elem) . '>' . $value . '</' . $elem['elem'] . '>' . $this->buildSiblingElem($elem['after']) . $this->buildSiblingElem($elem['append']);

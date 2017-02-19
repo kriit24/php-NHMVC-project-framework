@@ -26,11 +26,16 @@ class Form extends Component\isPrivate{
 		$this->construct();
 	}
 
-	function addElem($type, $name = '', $attr = array(), $return = false){
+	function addElem($type, $name = '', $attr = array(), $mergeAttr = array(), $return = false){
+
+		if( is_array($attr) && is_array($mergeAttr) )
+			$attr = array_merge($attr, $mergeAttr);
 
 		if( is_array($type) )
 			return $this->_addFromArray($type, $attr);
 
+		if( is_array($attr) )
+			$attr = array_filter($attr, function($value) { return $value !== ''; });
 		$elemName = ($name ? $name : $type);
 		if( !$return ){
 

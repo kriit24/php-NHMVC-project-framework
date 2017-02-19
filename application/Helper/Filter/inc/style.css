@@ -6,6 +6,7 @@
 	display:none;
 	background:#ffffff;
 	border:1px solid #f8f8f8;
+	z-index:100;
 }
 .filter_helper a, .filter_helper_form a{
 	margin-top:7px;

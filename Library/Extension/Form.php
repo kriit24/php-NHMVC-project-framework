@@ -11,6 +11,7 @@ trait Form{
 	private $mainAttr = array('label', 'label-attr');
 	private $structur = array();
 	private $data = array();
+	public $countElems = 0;
 
 	private function construct(){
 
@@ -84,6 +85,7 @@ trait Form{
 		$this->elemsType[$type][] = $name;
 		if( $elem['label'] )
 			$this->htmlElemList['label'] = true;
+		$this->countElems = count($this->elemList);
 	}
 
 	private function _createElem($type, $name, $class, $attr, $return = false){

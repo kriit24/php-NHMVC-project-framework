@@ -23,4 +23,6 @@ $client->fetchAll(array('id' => 1));//regular where method
 $client->fetchColumn('column', array('id' => 1));//regular where method
 $client->fetchNumrows(array('id' => 1));//fetch only numrows
 
+$client->Select()->column('company')->fetch( array('id' => 1) );
+
 ?>

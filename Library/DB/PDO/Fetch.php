@@ -43,8 +43,20 @@ trait Fetch{
 		}
 		else{
 
-			if( !$this->Query )
+			if( !$this->Query ){
+
+				if( $where )
+					$this->where( $where );
 				$this->Query();
+			}
+			else{
+
+				if( $where ){
+
+					$this->where( $where );
+					$this->Query();
+				}
+			}
 			$this->rebuildStatement = false;
 		}
 	}
@@ -102,10 +114,10 @@ trait Fetch{
 			if( !$reflectionMethod->isPublic() )
 				die($method[1] . ' is not public');
 
-			$ret = call_user_func_array(array($method[0], $method[1]), array($ret, $method[2]));
+			$ret2 = call_user_func_array(array($method[0], $method[1]), array($ret, $method[2]));
+			if( !empty($ret2) )
+				$ret = $ret2;
 		}
-		if( empty($ret) )
-			return $row;
 		return $ret;
 	}
 }

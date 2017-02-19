@@ -132,8 +132,6 @@ Project.clickEvent = [];
 
 	$.extend({
 
-		_POST: {},
-
 		//$.location( {'key' : 'value'} );
 		location: function( href, params ){
 
@@ -170,14 +168,6 @@ Project.clickEvent = [];
 			return (newHref.indexOf('?') == -1 && newHref.length > 0 ? '?' : '')+newHref;
 		},
 		
-		setPOST: function( jsonPost ){
-
-			if( this.canJSON( jsonPost ) ){
-
-				this._POST = $.parseJSON(jsonPost);
-			}
-		},
-
 		ucFirst: function(string) {
 
 			return string.substring(0, 1).toUpperCase() + string.substring(1);
@@ -221,7 +211,7 @@ Project.clickEvent = [];
 
 		canJSON: function(value, complete) {
 
-			if(value.length == 0) return {};
+			if(value == undefined || value.length == 0) return {};
 
 			value = value.replace(/^\s+|\s+$/g,"");
 			if( value.substr(0,1) == '{' || value.substr(0,1) == '[' ){
@@ -232,7 +222,7 @@ Project.clickEvent = [];
 					obj.complete = complete;
 					return obj.complete( $.parseJSON(value) );
 				}
-				return {};
+				return $.parseJSON(value);
 			}
 			return {};
 		}

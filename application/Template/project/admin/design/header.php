@@ -31,7 +31,8 @@
 <script src="<?=$this->header['URI2']; ?>/js/project.required.js" type="text/javascript"></script>
 
 <script type="text/javascript">
-$.setPOST( '<?=json_encode($_POST);?>' );
+var $_POST = $.canJSON('<?=addslashes(json_encode($_POST));?>');
+var $_GET = $.canJSON('<?=json_encode($_GET);?>');
 timeoutId = setTimeout(function(){ window.location.href = window.location.href; }, 40 * 60 * 1000);
 </script>
 
