@@ -1,5 +1,13 @@
-//ADD BEFORE <div class="tabs"> element
+//ADD TABS elment attribute style="display:none;"
+//ADD BEFORE tabs div element
 //<div class="tabs-loader"><img src="/Template/admin/images/ajax-loader-big.gif"/></div>
+/*
+//NB!!! DO NOT BUT this on $(window).load
+$(document).ready(function(){
+
+	Project.Tabs('elem').tabs();
+});
+*/
 
 Project.Tabs = function(selector){
 

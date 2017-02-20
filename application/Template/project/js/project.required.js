@@ -10,6 +10,7 @@ Project.Required = {
 		$(elem).on('input', function(){
 
 			this.setCustomValidity('');
+			return;
 		});
 	},
 	
@@ -21,8 +22,10 @@ Project.Required = {
 		else if(textbox.validity.typeMismatch){
 			textbox.setCustomValidity(message);
 		}
-		else {
-			textbox.setCustomValidity('');
+		else{
+
+			if(typeof textbox.setCustomValidity !== 'undefined')
+				textbox.setCustomValidity('');
 		}
 		return true;
 	}
@@ -33,5 +36,16 @@ $(window).on('load', function(){
 	$('input[required],textarea[required]').each(function(k, elem){
 
 		Project.Required.elements( elem );
+	});
+
+	$('.ui-dialog-content').bind("DOMNodeInsertedIntoDocument",function(){
+
+		$(this).ready(function(){
+
+			$('input[required],textarea[required]', this).each(function(k, elem){
+
+				Project.Required.elements( elem );
+			});
+		});
 	});
 });

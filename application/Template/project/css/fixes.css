@@ -49,3 +49,9 @@
 .ui-tabs, .ui-tabs-panel{
 	padding:0px !important;
 }
+
+
+.ui-tabs .ui-tabs-active.ui-state-active, .ui-tabs .ui-tabs-active.ui-state-active a{
+	background:#0275d8;
+	color:#ffffff;
+}

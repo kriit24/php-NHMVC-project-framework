@@ -33,5 +33,11 @@ class Image{
 		$self = new self();
 		return $self->_crop($file, $width, $height, $location_dir);
 	}
+
+	public static function watermark($file, $watermarkFile, $watermarkX, $watermarkY){
+
+		$self = new self();
+		$self->_watermark($file, $watermarkFile, $watermarkX, $watermarkY);
+	}
 }
 ?>

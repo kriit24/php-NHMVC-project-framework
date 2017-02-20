@@ -66,7 +66,7 @@ trait Form{
 				$type = 'text';
 			}
 			if( !isset($attr[$name]['label']) )
-				$attr[$name]['label'] = $this->Language($this->label($name));
+				$attr[$name]['label'] = $this->label($name);
 
 			$this->addElem($type, $name, $attr[$name]);
 		}

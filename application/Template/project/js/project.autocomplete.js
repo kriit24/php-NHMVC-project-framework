@@ -1,14 +1,17 @@
-//Project.Autocomplete.setSource('car_id', ['some', 'some2', 'some3']);
-//Project.Autocomplete.setSource('car_id', [{ value: "1", label: "some" },{ value: "2", label: "some 2" },{ value: "3", label: "some 3" }]);
-//GET values by input name, if u want to autofill input elements
+//Project.Autocomplete.setSource('car_id', ['some', 'some2', 'some3'], minLength);
+//Project.Autocomplete.setSource('car_id', [{ value: "1", label: "some" },{ value: "2", label: "some 2" },{ value: "3", label: "some 3" }], minLength);
 
 Project.Autocomplete = {
 
 	source : {},
 
-	setSource: function( elemName, source ){
+	minLength : 3,
+
+	setSource: function( elemName, source, minLength ){
 
 		this.source[ elemName ] = source;
+		if( minLength != undefined )
+			this.minLength = minLength;
 	},
 
 	method: function(elem, origElem, item){
@@ -45,16 +48,14 @@ Project.Autocomplete = {
 			return;
 		}
 
+		var minLength = this.minLength;
 		var source = this.source[name] != undefined ? this.source[name] : $(elem).attr('rel');
 		var value  = $(elem).attr('autocomplete-value') != undefined ? $(elem).attr('autocomplete-value') : $(elem).val();
 		var newElem = $(elem).clone(true);
 		newElem.attr({'type' : 'hidden', 'rel' : ''});
-		//console.log(originalElement);
-		//var newElem = $('<input type="hidden" name="' + name + '" value="' + $(elem).val() + '" />');
 		$(elem).after(newElem);
 		$(elem).attr({'name' : name + '_autocomplete_label', 'value' : value});
 		
-		//
 		$(elem).on('keyup', function(e){
 
 			if( e.keyCode != 9 && e.keyCode != 13 )
@@ -63,11 +64,16 @@ Project.Autocomplete = {
 
 		$( elem ).autocomplete({
 			'source': source,
-			'minLength' : 3,
+			'minLength' : minLength,
 			'select' : function (event, ui) {
 				return Project.Autocomplete.method(this, newElem, ui.item);
 			}
-		});
+		}).data("ui-autocomplete")._renderItem = function (ul, item) {
+			 return $("<li></li>")
+				 .data("item.autocomplete", item)
+				 .append("<span>" + item.label + "</span>")
+				 .appendTo(ul);
+		 };
 	}
 };
 

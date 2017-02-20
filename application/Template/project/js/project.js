@@ -1,3 +1,5 @@
+var $_POST = [];
+var $_GET = [];
 var Project = {};
 Project.clickEvent = [];
 (function($){
@@ -9,17 +11,26 @@ Project.clickEvent = [];
 
 		center: function(parentElement){
 
-			var padding_left = $(this.selector).css('padding-left');
-			var padding_top = $(this.selector).css('padding-top');
+			if( $(this.selector).css('position') == 'fixed' ){
 
-			var margin_left = ( $(parentElement).width()-$(this.selector).width()-parseInt(padding_left) )/2;
-			var margin_top = ( $(parentElement).height()-$(this.selector).height()-parseInt(padding_top) )/2;
-			if($(window).scrollTop() > 0){
-
-				var scrollTop = $(window).scrollTop();
-				margin_top += scrollTop;
+				var new_top = ( $(parentElement).height()-$(this.selector).height() )/2;
+				var new_left = ( $(parentElement).width()-$(this.selector).width() )/2;
+				$(this.selector).css({'top' : new_top + 'px', 'left' : new_left + 'px'});
 			}
-			$(this.selector).css({'left' : margin_left+'px', 'top' : margin_top+'px'});
+			else{
+
+				var padding_left = $(this.selector).css('padding-left');
+				var padding_top = $(this.selector).css('padding-top');
+
+				var margin_left = ( $(parentElement).width()-$(this.selector).width()-parseInt(padding_left) )/2;
+				var margin_top = ( $(parentElement).height()-$(this.selector).height()-parseInt(padding_top) )/2;
+				if($(window).scrollTop() > 0){
+
+					var scrollTop = $(window).scrollTop();
+					margin_top += scrollTop;
+				}
+				$(this.selector).css({'left' : margin_left+'px', 'top' : margin_top+'px'});
+			}
 		},
 		live: function(action, complete){
 
@@ -45,15 +56,23 @@ Project.clickEvent = [];
 				});
 			});
 		},
-		confirm: function(text){
+		confirm: function(text, complete){
 
 			$( this.selector ).live('click', function(){
 
 				var answer = confirm(text);
+				if( complete ){
+
+					return complete(answer);
+				}
 				if (answer){
 
-					window.location.href = $(this).attr('href');
-					return false;
+					if( $(this)[0].tagName.toUpperCase() == 'A' && $(this).attr('href').length > 0 ){
+
+						window.location.href = $(this).attr('href');
+						return false;
+					}
+					return true;
 				}
 				else
 					return false;
