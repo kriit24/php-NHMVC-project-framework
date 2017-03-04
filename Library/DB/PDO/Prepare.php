@@ -134,28 +134,60 @@ trait Prepare{
 			$pos++;
 			if( preg_match_all('/([a-zA-Z0-9\__]+)([LIKE[:space:]_]+)'.$v.'/s', $where, $matches) ){
 
-				$column = $matches[3][0];
-				if( !$params[$column] && $params[$columnKey] )
-					$column = $columnKey;
+				//if some problems then remove that if AND update filter
+				if( count($matches[3]) > 1 ){
 
-				if( $params[$column] ){
+					foreach($matches[3] as $col){
 
-					switch ($pos){
+						$column = $col;
+						if( !$params[$column] && $params[$columnKey] )
+							$column = $columnKey;
 
-						case 1:
-							$params[$column] = '%'.$params[$column].'%';
-						break;
+						if( $params[$column] ){
 
-						case 2:
-							$params[$column] = '%'.$params[$column];
-						break;
+							switch ($pos){
 
-						case 3:
-							$params[$column] = $params[$column].'%';
-						break;
+								case 1:
+									$params[$column] = '%'.$params[$column].'%';
+								break;
+
+								case 2:
+									$params[$column] = '%'.$params[$column];
+								break;
+
+								case 3:
+									$params[$column] = $params[$column].'%';
+								break;
+							}
+						}
+						$columnKey ++;
 					}
 				}
-				$columnKey ++;
+				else{
+				
+					$column = $matches[3][0];
+					if( !$params[$column] && $params[$columnKey] )
+						$column = $columnKey;
+
+					if( $params[$column] ){
+
+						switch ($pos){
+
+							case 1:
+								$params[$column] = '%'.$params[$column].'%';
+							break;
+
+							case 2:
+								$params[$column] = '%'.$params[$column];
+							break;
+
+							case 3:
+								$params[$column] = $params[$column].'%';
+							break;
+						}
+					}
+					$columnKey ++;
+				}
 			}
 			$where = preg_replace('/([a-zA-Z0-9\_\._]+)([LIKE[:space:]_]+)'.$v.'/s', '\\1\\2:\\3', $where);
 		}

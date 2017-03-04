@@ -36,9 +36,24 @@ Project.Dialog = function( elem ){
 		reload : false,
 		Object : {},
 
-		//$.dialog.get({'url' : '/ajax.php?model=s&page=s', 'data' : 'GETDATA', 'title' : 'title', 'complete' : function(data){
-		//	$(elem).live('click', function(){ $.dialog.post(); });
-		//}}).create();
+		start : function(){
+
+			if( $('#'+this.loaderSelector).css('display') == 'none' )
+				$('#'+this.loaderSelector).show();
+
+			return this;
+		},
+
+		/*
+		FOR SHORT LOADING
+		$.dialog('#elem').get({'url' : '/ajax.php?model=s&page=s', 'data' : 'GETDATA', 'title' : 'title', 'complete' : function(data){
+			$(elem).live('click', function(){ $.dialog.post(); });
+		}}).create();
+
+		FOR LONG LOADING
+		var dialog = $.dialog('#elem').start();
+		dialog.get().create();
+		*/
 
 		get : function( Object ){
 
@@ -48,9 +63,16 @@ Project.Dialog = function( elem ){
 			return this;
 		},
 
-		//$.dialog.post({'url' : '/ajax.php?model=s&page=s', 'data' : 'POSTDATA', 'title' : 'title', 'complete' : function(data){
-		//	$(elem).live('click', function(){ $.dialog.post(); });
-		//}}).create();
+		/*
+		FOR SHORT LOADING
+		$.dialog('#elem').post({'url' : '/ajax.php?model=s&page=s', 'data' : 'POSTDATA', 'title' : 'title', 'complete' : function(data){
+			$(elem).live('click', function(){ $.dialog.post(); });
+		}}).create();
+
+		FOR LONG LOADING
+		var dialog = $.dialog('#elem').start();
+		dialog.post().create();
+		*/
 
 		post : function( Object ){
 
@@ -61,9 +83,14 @@ Project.Dialog = function( elem ){
 		},
 
 		/*
-		$.dialog.html({'data' : 'HTML', 'title' : 'title', 'complete' : function(data){
+		FOR SHORT LOADING
+		$.dialog('#elem').html({'data' : 'HTML', 'title' : 'title', 'complete' : function(data){
 			$(elem).live('click', function(){ $.dialog.post(); });
 		}}).create();
+
+		FOR LONG LOADING
+		var dialog = $.dialog('#elem').start();
+		dialog.html().create();
 		*/
 
 		html : function( Object ){
@@ -79,13 +106,13 @@ Project.Dialog = function( elem ){
 		create : function(){
 
 			this.createElement = true;
-			$('#'+this.loaderSelector).show();
+			this.start();
 		},
 
 		append : function(){
 
 			this.appendElement = true;
-			$('#'+this.loaderSelector).show();
+			this.start();
 		},
 
 		close : function(){
@@ -203,18 +230,18 @@ Project.Dialog = function( elem ){
 			var href = '';
 			var title = '';
 
-			if( elem.selector == 'a.dialog' )
-				href = $(elem).attr('href');
+			if( $(elem).prop('href') && $(elem).prop('href').length > 0 )
+				href = $(elem).prop('href');
 			else
 				href = $(elem).attr('rel');
 
-			if( $(elem).attr('title') != undefined )
-				title = $(elem).attr('title');
+			if( $(elem).prop('title') )
+				title = $(elem).prop('title');
 
-			if( href.length == 0 ){
+			if( href == undefined || href.length == 0 ){
 
 				alert('DIALOG url missing: if A element then attr("href") if TR element attr("rel")');
-				return true;
+				return false;
 			}
 
 			var scrollTop = $('body').scrollTop();
@@ -252,6 +279,7 @@ Project.Dialog = function( elem ){
 					return true;
 				});
 			}}).create();
+			return false;
 		}
 	};
 };
@@ -260,6 +288,7 @@ $(document).ready(function(){
 
 	$.extend( {dialog : Project.Dialog} );
 	var dialog = $.dialog('#dialog');
+	dialog.reload = false;
 
 	if( Project.Session.get('dialogScrollto') ){
 
@@ -267,29 +296,34 @@ $(document).ready(function(){
 		Project.Session.remove('dialogScrollto');
 	}
 
-	var handlerClick = true;
+	$('.dialog').live('click', function(e){
 
-	if( $('.dialog').length > 0 ){
+		var elem = $(e.target);
 
-		$('body').live('click', function(e){
+		if( e.target.tagName.toUpperCase() == 'SPAN' ){
 
-			alert('this is not complete');
-			console.log(e.target);
-		});
-	}
+			if( elem.parent('label') && elem.parent('label').attr('for') != undefined ){
 
-	$('.dialog').live('click', function(){
-
-		if( handlerClick == true ){
-
-			return dialog.clickEvent(this);
+				var id = elem.parent('label').attr('for');
+				if( elem.parent('label').prev().attr('id') != undefined && elem.parent('label').prev().attr('id') == id && elem.parent('label').prev()[0].tagName.toUpperCase() == 'INPUT' )
+					return;
+			}
 		}
-		handlerClick = true;
+		if( e.target.tagName.toUpperCase() == 'INPUT' || e.target.tagName.toUpperCase() == 'A' ){
+
+			if( elem.attr('class') == 'undefined' || elem.attr('class').indexOf('dialog') == -1 )
+				return;
+		}
+
+		return dialog.clickEvent(this);
 	});
 	$('button.ui-dialog-titlebar-close').live('click', function(){
 
 		//no reload - it can re post data
-		if( dialog.reload )
-			window.location.href = window.location.href;
+		if( dialog.reload ){
+
+			if( window.location.hash.length == 0 )
+				window.location.href = window.location.href;
+		}
 	});
 });

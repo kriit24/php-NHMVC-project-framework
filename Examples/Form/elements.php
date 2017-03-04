@@ -139,15 +139,7 @@ $form->addElem('a', 'some', array(
 
 $form->addElem('span', '', 'Remove');
 
-//TWO elements dont need to be closed "a" AND "span"
-
-//ADD AFTER </table> elements
-$form->footer( array(
-	$form->addElem('div', '', array('style' => 'text-align:right;margin-top:10px;padding-right:10px;'), true),//element must be returned
-	$form->addElem('submit', Form::SUBMIT['confirm'], array('value' => $this->Language( 'Kinnita saatmiseks' )), true),//element must be returned
-	$form->addElem('submit', Form::SUBMIT['delete'], array('value' => $this->Language( 'Kustuta arved' ), 'class' => 'confirm'), true),//element must be returned
-	$form->addElem('/div', '', array(), true)//element must be closed and returned
-) );
+//elements dont need to be closed "a", "span", "i", "img", "iframe", "label"
 
 //for more elements see Library\Extension\Form\Form.php
 //for more html elements see Library\Extension\Form\Html.php

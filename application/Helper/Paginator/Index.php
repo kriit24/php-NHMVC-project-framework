@@ -5,7 +5,7 @@ class Index extends \Library{
 
 	public function __construct(){
 
-		$this->inc( $this->toUrl(__DIR__).'/inc/style.css' );
+		$this->inc( __DIR__.'/inc/style.css' );
 	}
 
 	public function paginate( $paginator ){

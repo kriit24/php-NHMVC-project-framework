@@ -8,6 +8,7 @@ class Template extends \Library{
 	const DEBUG = (_DEBUG == 'template' ? true : false);
 	private $design;
 	private $template = '';
+	private $Includes = array();
 
 	public function __construct(){
 
@@ -57,13 +58,11 @@ class Template extends \Library{
 
 	public function header(){
 
-		$URI = $this->toUrl(__DIR__.'/'.$this->template.'/'.$this->design);
-		$URI2 = dirname($URI);
 		$Includes = \Library\Component\Register::getRegister('INCLUDES');
+		$this->Includes = $Includes;
+		\Library\Component\Register::cleanRegister('INCLUDES');
 
 		$this->header = array(
-			'URI' => $URI,
-			'URI2' => $URI2,
 			'CSS' => array(),
 			'JS' => array(),
 		);
@@ -73,9 +72,9 @@ class Template extends \Library{
 			foreach($Includes as $href){
 
 				if( substr(basename($href), -4) == '.css' )
-					$this->header['CSS'][] = '<link rel="stylesheet" href="'.$href.'" type="text/css"/>';
+					$this->header['CSS'][] = '<link rel="stylesheet" href="'.$this->toUrl($href).'?ver='.strtotime('now').'" type="text/css"/>';
 				if( substr(basename($href), -3) == '.js' )
-					$this->header['JS'][] = '<script src="'.$href.'" type="text/javascript"></script>';
+					$this->header['JS'][] = '<script src="'.$this->toUrl($href).'?ver='.strtotime('now').'" type="text/javascript"></script>';
 			}
 		}
 	}
@@ -98,6 +97,32 @@ class Template extends \Library{
 					$reflectionMethod->invoke($val['class'], null);
 				}
 			}
+		}
+	}
+
+	public function footer(){
+
+		$Includes = \Library\Component\Register::getRegister('INCLUDES');
+		if( $Includes ){
+
+			$cssString = null;
+			$jsString = null;
+
+			foreach($Includes as $href){
+
+				if( in_array($href, $this->Includes) )
+					continue;
+
+				if( substr(basename($href), -4) == '.css' )
+					$cssString .= file_Get_contents( $href ) . "\n";
+				if( substr(basename($href), -3) == '.js' )
+					$jsString .= file_Get_contents( $href ) . "\n";
+			}
+			if( $cssString )
+				echo '<style type="text/css">'.$cssString.'</style>';
+			
+			if( $jsString )
+				echo '<script type="text/javascript">'.$jsString.'</script>';
 		}
 	}
 }

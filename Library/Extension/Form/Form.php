@@ -239,10 +239,15 @@ class Form{
 
 		if( $elem['complete'] ){
 
+			$elem['attr']['elem'] = $elem['elem'];
+
 			$fn = $elem['complete'];
 			$ret = $fn( $this->data, $elem['attr'] );
-			if( $ret )
-				$elem['attr'] = $ret;
+			if( $ret ){
+
+				unset($ret['elem']);
+				$elem['attr'] = array_merge($elem['attr'], $ret);
+			}
 		}
 
 		return $elem;
@@ -265,8 +270,11 @@ class Form{
 		if( $elem['type'] != 'submit' && (!isset($elem['attr']['value']) || empty($elem['attr']['value'])) )
 			$elem = $this->getData($elem);
 
+		$preValue = preg_match('/\{(.*?)\}/i', $elem['attr']['value']) ? \Library\Component\Replace::replace($elem['attr']['value'], $this->data) : $elem['attr']['value'];
 		$checked = isset($this->checked[ $elem['name'] ]) ? array_shift($this->checked[ $elem['name'] ]) : array();
-		if( $checked[ $elem['attr']['value'] ] )
+		//maybe resolve this with ::checkedComplete
+
+		if( $checked[ $preValue ] )
 			$elem['attr']['checked'] = 'checked';
 		return $this->buildSiblingElem($elem['before']) . '<' . $elem['elem'] . $this->buildAttr($elem) . '/>' . $this->buildSiblingElem($elem['after']) . $this->buildSiblingElem($elem['append']);
 	}
@@ -282,6 +290,8 @@ class Form{
 	}
 
 	private function _select($elem){
+
+		$elem = $this->onComplete($elem);
 
 		return $this->buildSiblingElem($elem['before']) . '<' . $elem['elem'] . $this->buildAttr($elem) . '>' . ($elem['optgroup'] ? $this->optgroup($elem) : $this->option($elem)) . '</' . $elem['elem'] . '>' . $this->buildSiblingElem($elem['after']) . $this->buildSiblingElem($elem['append']);
 	}
@@ -321,11 +331,15 @@ class Form{
 				array('label' => $k)
 			);
 
+			$elem['elem'] = 'optgroup';
+			$elem['attr'] = $optgroupAttr;
+			$elem = $this->onComplete($elem);
+
 			$optionElem = array_merge($elem, array(
 				'option' => $optgroupArray,
 				'option-attr' => $elem['option-attr']
 			));
-			$optgroup .= '<optgroup' . $this->buildAttr(array('attr' => $optgroupAttr)) . '>' . $this->option($optionElem) . '</optgroup>';
+			$optgroup .= '<optgroup' . $this->buildAttr($elem) . '>' . $this->option($optionElem) . '</optgroup>';
 			$i++;
 		}
 		return $optgroup;
@@ -365,7 +379,11 @@ class Form{
 				)
 			);
 
-			$option .= '<option' . $this->buildAttr(array('attr' => $optionAttr)) . '>' . $optionArray[1] . '</option>';
+			$elem['elem'] = 'option';
+			$elem['attr'] = $optionAttr;
+			$elem = $this->onComplete($elem);
+
+			$option .= '<option' . $this->buildAttr($elem) . '>' . $optionArray[1] . '</option>';
 			$i++;
 		}
 		return $option;

@@ -3,64 +3,32 @@ namespace Library\DB\PDO;
 
 trait Log{
 
-	static function log($table, $Query){
+	static function indexLog( $table, $queryType, $indexParams ){
 
-		$check_Query = explode(' ', trim($Query));
-		$action = strtoupper($check_Query[0]);
+		if( empty($indexParams) )
+			return;
 
-		$data = addslashes($Query);
-		$q = "INSERT INTO log (`table_name`, `action`, `data`, `type`, `created_by`, `created_by_id`, `created_at`) VALUES ('".$table."', '".$action."', '".$data."', 'LOG', '".\Library\Session::userData()->user_name."', ".\Library\Session::userData()->user_id.", NOW())";
-		$this->Query($q);
+		$indexQueryLogFile = _DIR .'/tmp/DB/index_log/' . $table .'/'. $queryType .'_'. md5(json_encode($indexParams)).'.php';
+		if( is_file($indexQueryLogFile) )
+			return;
+
+		if( !is_dir( dirname($indexQueryLogFile) ) )
+			mkdir( dirname($indexQueryLogFile), 0755, true );
+
+		file_put_contents($indexQueryLogFile, $queryType . "\n\n" . json_encode($indexParams));
 	}
 
-	static function archive($table, $table_id, $Query){
+	static function getQueryType( $stmtArray ){
 
-		$check_Query = explode(' ', trim($Query));
-		$action = strtoupper($check_Query[0]);
-		$table_id = self::getTableId($Query);
+		$type = isset($stmtArray['SELECT']) ? 'SELECT' : '';
+		if( isset($stmtArray['INSERT']) )
+			$type = 'INSERT';
+		if( isset($stmtArray['UPDATE']) )
+			$type = 'UPDATE';
+		if( isset($stmtArray['DELETE']) )
+			$type = 'DELETE';
 
-		if( in_array($action, array('INSERT')) ){
-
-			$data = addslashes(json_encode(array('GET' => $_GET, 'POST' => $_POST, 'Query' => addslashes($Query))));
-			$q = "INSERT INTO log (`table_name`, `table_id`, `action`, `data`, `type`, `created_by`, `created_by_id`, `created_at`) VALUES ('".$table."', '".$table_id."', '".$action."', '".$data."', 'ARCHIVE', '".\Library\Session::userData()->user_name."', ".\Library\Session::userData()->user_id.", NOW())";
-			//die($q);
-			$this->Query($q);
-		}
-		if( in_array($action, array('UPDATE')) ){
-
-			$qStmt = $this->Query("SELECT * FROM ".$table." WHERE id = ".$table_id);
-			$qData = array();
-			while($row = $qStmt->fetch()){
-
-				$qData[] = $row;
-			}
-
-			$data = addslashes(json_encode(array('GET' => $_GET, 'POST' => $_POST, 'Query' => addslashes($Query))));
-			$q = "INSERT INTO log (`table_name`, `table_id`, `action`, `data`, `type`, `created_by`, `created_by_id`, `created_at`) VALUES ('".$table."', '".$table_id."', '".$action."', '".$data."', 'ARCHIVE', '".\Library\Session::userData()->user_name."', ".\Library\Session::userData()->user_id.", NOW())";
-			//die($q);
-			$this->Query($q);
-		}
-		if( in_array($action, array('DELETE')) ){
-
-			$qStmt = $this->Query("SELECT * FROM ".$table." WHERE id = ".$table_id);
-			$qData = array();
-			while($row = $qStmt->fetch()){
-
-				$qData[] = $row;
-			}
-
-			$data = addslashes(json_encode(array('GET' => $_GET, 'POST' => $_POST, 'DATA' => json_encode($qData), 'Query' => addslashes($Query))));
-			$q = "INSERT INTO log (`table_name`, `table_id`, `action`, `data`, `type`, `created_by`, `created_by_id`, `created_at`) VALUES ('".$table."', '".$table_id."', '".$action."', '".$data."', 'ARCHIVE', '".\Library\Session::userData()->user_name."', ".\Library\Session::userData()->user_id.", NOW())";
-			$this->Query($q);
-		}
-	}
-
-	private static function getTableId($Query){
-
-		preg_match('/WHERE([[:space:]_]+)id([[:space:]=_]+)([0-9_]+)/s', $Query, $match);
-		if( is_numeric($match[3]) )
-			return $match[3];
-		return false;
+		return $type;
 	}
 }
 ?>

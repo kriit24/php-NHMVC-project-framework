@@ -21,10 +21,14 @@ Project.Tabs = function(selector){
 
 			var self = this;
 
-			$('ul a', this.selector).click(function(){
+			$('ul a', self.selector).click(function(){
+
+				var urlObject = {};
+				urlObject[0] = this.href;
+				Project.Session.set('tab_url', urlObject);
 
 				window.location.href = this.href;
-				$(this.selector).tabs({'active' : self.getActiveTab()});
+				$(self.selector).tabs({'active' : self.getActiveTab()});
 				return;
 			});
 
@@ -38,8 +42,20 @@ Project.Tabs = function(selector){
 		
 		getActiveTab : function(){
 
-			var id = '#' + window.location.href.split('#')[1];
-			var index = $('a[href="' + id + '"]', this.selector).parent().index();
+			var id = window.location.href.split('#')[1];
+			if( id == undefined ){
+
+				var tab_url = Project.Session.get('tab_url');
+				if( tab_url ){
+
+					var id = tab_url[0].split('#')[1];
+				}
+			}
+
+			if( id == undefined )
+				return 0;
+
+			var index = $('a[href="#' + id + '"]', this.selector).parent().index();
 			if( index < 0 )
 				index = 0;
 			return index;

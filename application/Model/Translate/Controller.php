@@ -10,8 +10,8 @@ class Controller extends \Library{
 		$this->language->Select()
 			->column("*, value AS `".$lang."`")
 			->id($_GET['id'])
-			->method(array($this, 'othersByLanguage'))
-			->method(array($this, 'htmlspecialchars'));
+			->complete(array($this, 'othersByLanguage'))
+			->complete(array($this, 'htmlspecialchars'));
 		return $this;
 	}
 
@@ -48,7 +48,7 @@ class Controller extends \Library{
 			), $_GET)
 			->order("name")
 			->paginator(50)
-			->method(array($this, 'htmlspecialchars'));
+			->complete(array($this, 'htmlspecialchars'));
 		return $this;
 	}
 }

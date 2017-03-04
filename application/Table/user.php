@@ -47,10 +47,10 @@ class user extends \Library\Sql{
 	public function userJoinClient(){
 
 		return $this->Select()
-		->column(array(
-			'u.*', "'******'" => 'password', 'u.name' => 'user_name',
-			\Table\client::USER_FIELDS
-		))
+		->column(
+			array('u.*', "'******'" => 'password', 'u.name' => 'user_name'),
+			array('c' => \Table\client::singleton()->getColumns( array('id') ))
+		)
 		->from($this->_name, 'u')
 		->join('client', 'c', 'c.user_id = u.id');
 	}

@@ -6,7 +6,8 @@ namespace Library;
 */
 class Curl{
 
-	use \Library\Component\Singleton;
+	private static $ch;
+	private static $cookie;
 
 	/**
 	* send regular curl request
@@ -17,9 +18,27 @@ class Curl{
 	* @param Int $in_file_size=0 - filesize('/var/www/file.pdf')
 	* @return result
 	*/
-	function sendCurl($url, $post_data=array(), $login = '', $in_file='', $in_file_size=0){
+	public static function get($url, $sshLogin = ''){
 
-		$ch = curl_init();
+		register_shutdown_function(array(new self(), 'close'));
+
+		return self::makeRequest($url, array(), $sshLogin);
+	}
+
+	public static function post($url, $post_data, $sshLogin = '', $in_file='', $in_file_size=0){
+
+		register_shutdown_function(array(new self(), 'close'));
+
+		return self::makeRequest($url, $post_data, $sshLogin, $in_file, $in_file_size);
+	}
+
+	private static function makeRequest($url, $post_data=array(), $sshLogin = '', $in_file='', $in_file_size=0){
+
+		$ch = self::$ch ? self::$ch : curl_init();
+		$cookieFile = uniqid('_cookie', true);
+
+		if( !is_dir(get_include_path() . '/tmp/cookies') )
+			mkdir(get_include_path() . '/tmp/cookies');
 
 		curl_setopt($ch, CURLOPT_URL, $url);
 		if(is_array($post_data) && count($post_data)>0){
@@ -33,22 +52,30 @@ class Curl{
 			curl_setopt($ch, CURLOPT_INFILE, $in_file);
 			curl_setopt($ch, CURLOPT_INFILESIZE, $in_file_size);
 		}
-		if($login){
+		if($sshLogin){
 
 			//user:password
-			curl_setopt($ch, CURLOPT_USERPWD, $login);
+			curl_setopt($ch, CURLOPT_USERPWD, $sshLogin);
 		}
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-		curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible;)");
+		curl_setopt($ch, CURLOPT_USERAGENT,'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/32.0.1700.107 Chrome/32.0.1700.107 Safari/537.36');
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+
+		if( !self::$cookie ){
+
+			curl_setopt($ch, CURLOPT_COOKIESESSION, true);
+			curl_setopt($ch, CURLOPT_COOKIEJAR, $cookieFile);  //could be empty, but cause problems on some hosts
+			curl_setopt($ch, CURLOPT_COOKIEFILE, get_include_path() . '/tmp/cookies');  //could be empty, but cause problems on some hosts
+		}
 		$Result = curl_exec($ch);
 
 		if (curl_errno($ch)) {
 
 			die( curl_error($ch) );
 		}
-		curl_close($ch);
+		self::$ch = $ch;
+		self::$cookie = $cookieFile;
 		return $Result;
 	}
 
@@ -57,7 +84,7 @@ class Curl{
 	alternative for that is fil_get_contents
 	*/
 
-	public function sendContentCurl($url, $post_data=array(), $method = 'POST'){
+	public static function sendContentCurl($url, $post_data=array(), $method = 'POST'){
 
 		$postdata = http_build_query($post_data);
 
@@ -77,7 +104,7 @@ class Curl{
 	/**
 	* alternate method for curl in some cases if windows server
 	*/
-	function sendCurlWindows($url, $post_data = array()){
+	public static function sendCurlWindows($url, $post_data = array()){
 
 		$fp = @fsockopen($url, 80, $errno, $errstr, 10);
 		if(!$fp) {
@@ -85,7 +112,14 @@ class Curl{
             exit;
 		}
 
-		$postdata = "amount=$total&ref=xyz";
+		$postdata = "";
+		if( !empty($post_data) ){
+
+			foreach($post_data as $k => $v){
+
+				$postdata .= ($postdata ? '&' : '') . $k .'='. $v;
+			}
+		}
 		$postdata = urlencode($postdata);
 
 		$data = "POST /cgi-bin/calc.cgi HTTP/1.0\r\n";
@@ -105,6 +139,17 @@ class Curl{
 		fclose($fp);
 
 		return $return;
+	}
+
+	function close(){
+
+		if( gettype(self::$ch) == 'resource' )
+			curl_close(self::$ch);
+	}
+
+	function destruct(){
+
+		$this->close();
 	}
 }
 ?>

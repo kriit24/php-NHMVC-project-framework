@@ -5,7 +5,7 @@ class Index extends Controller{
 
 	public function __construct(){
 
-		$this->inc( $this->toUrl(__DIR__) . '/inc/script.js' );
+		$this->inc( __DIR__ . '/inc/script.js' );
 
 		$this->Form = new Form;
 		$this->Validate = new Validate;

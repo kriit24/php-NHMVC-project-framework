@@ -2,9 +2,9 @@
 
 //DB library methods included
 //SELECT
-$db->method(array(\Library\Sql, 'addslashes'));
-$db->method(array(\Library\Sql, 'stripslashes'));
-$db->method(array(\Library\Sql, 'htmlspecialchars'));
+$db->complete(array(\Library\Sql, 'addslashes'));
+$db->complete(array(\Library\Sql, 'stripslashes'));
+$db->complete(array(\Library\Sql, 'htmlspecialchars'));
 
 //INSERT, UPDATE
 $data = $db->addslashes($_POST);

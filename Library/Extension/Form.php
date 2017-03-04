@@ -33,10 +33,10 @@ trait Form{
 
 	private function _setData($data){
 
-		$this->Form->setData($data);
-		$this->Html->setData($data);
-		//$this->data[] = json_encode($data);
-		$this->data[] = $data;
+		//$this->Form->setData($data);
+		//$this->Html->setData($data);
+		$this->data[] = json_encode($data);
+		//$this->data[] = $data;
 	}
 
 	private function getClass($type){
@@ -56,17 +56,17 @@ trait Form{
 		return array($elemKey, $this->elemList[$elemKey]);
 	}
 
-	private function _addFromArray($list, $attr){
+	private function _addFromArray($list, $attr, $elemType = null){
 
 		foreach($list as $name => $type){
 
 			if( is_numeric($name) ){
 
 				$name = $type;
-				$type = 'text';
+				$type = $elemType ? $elemType : 'text';
 			}
 			if( !isset($attr[$name]['label']) )
-				$attr[$name]['label'] = $this->label($name);
+				$attr[$name]['label'] = $this->Language($this->label($name));
 
 			$this->addElem($type, $name, $attr[$name]);
 		}

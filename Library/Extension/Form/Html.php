@@ -44,7 +44,7 @@ class Html{
 		'/h4' => '/h4',
 		'/h5' => '/h5',
 		'/h6' => '/h6',
-		'/img' => '/',
+		'/img' => null,
 		'/iframe' => '/iframe',
 		'/label' => '/label',
 	);
@@ -182,7 +182,7 @@ class Html{
 					$elem['value'] = $ret['value'];
 					unset($ret['value']);
 				}
-				$elem['attr'] = $ret;
+				$elem['attr'] = array_merge($elem['attr'], $ret);
 			}
 		}
 
@@ -202,13 +202,20 @@ class Html{
 		return $retElem;
 	}
 
-	private function closeTag($elem){
+	private function closeTag($elem, $shortTag = false){
 
 		$elemAfter = $this->elemAfter[$elem['elem']] ? $this->elemAfter[$elem['elem']] : array();
 		if( json_encode($elem['after']) != json_encode($elemAfter))
 			$elemAfter = array_merge($elemAfter, ($elem['after'] ? $elem['after'] : array()));
 
-		return '<' . $elem['elem'] . '>' . $this->buildSiblingElem($elemAfter);
+		return ($shortTag ? '' : '<' . $elem['elem'] . '>') . $this->buildSiblingElem($elemAfter);
+	}
+
+	private function shortTag($elem){
+
+		$elemHtml = $this->openTag($elem);
+		$elemHtml .= $this->closeTag($elem, true);
+		return $elemHtml;
 	}
 
 	private function openCloseTag($elem){
@@ -236,7 +243,7 @@ class Html{
 
 	private function _img($elem){
 
-		return $this->openCloseTag($elem);
+		return $this->shortTag($elem);
 	}
 
 	private function _iframe($elem){

@@ -12,12 +12,12 @@ class Index extends Controller{
 
 	public function __construct(){
 
-		$this->inc( $this->toUrl(__DIR__).'/inc/style.css' );
+		$this->inc( __DIR__.'/inc/style.css' );
 		if( \Library\Browser::get()['short'] == 'IE' )
-			$this->inc( $this->toUrl(__DIR__).'/inc/style-ie.css' );
+			$this->inc( __DIR__.'/inc/style-ie.css' );
 		if( !$_GET['route'] )
 			$this->inc( '/Template/css/clear-content-bar.css' );
-		//$this->inc( $this->toUrl(__DIR__) .'/inc/script.js' );
+		//$this->inc( __DIR__ .'/inc/script.js' );
 	}
 
 	//THIS header is for title

@@ -43,9 +43,14 @@ class PDO extends Connection{
 		return $this->stmtArray;
 	}
 
-	public function getColumns(){
+	public function getColumns( $exclude = array() ){
 
-		return $this->_validFields;
+		return array_diff($this->_validFields, $exclude);
+	}
+
+	public function getAlias( $exclude = array() ){
+
+		return array_diff($this->_aliasFields, $exclude);
 	}
 
 	function getParams(){
@@ -63,9 +68,9 @@ class PDO extends Connection{
 		$this->params = $params;
 	}
 
-	function method($method){
+	function complete($complete){
 
-		$this->methods[] = $method;
+		$this->onComplete[] = $complete;
 		return $this;
 	}
 

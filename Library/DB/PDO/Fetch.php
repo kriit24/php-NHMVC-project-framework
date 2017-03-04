@@ -7,19 +7,19 @@ trait Fetch{
 
 	private function extension($row, $multiArray = false){
 
-		if( $this->methods && $row ){
+		if( $this->onComplete && $row ){
 
 			if( $multiArray ){
 
 				foreach($row as $k => $v){
 
-					if( $returnRow = $this->executeMethod($v, $this->methods) );
+					if( $returnRow = $this->executeMethod($v, $this->onComplete) );
 						$row[$k] = $returnRow;
 				}
 			}
 			else{
 
-				if( $returnRow = $this->executeMethod($row, $this->methods) );
+				if( $returnRow = $this->executeMethod($row, $this->onComplete) );
 					$row = $returnRow;
 			}
 		}
@@ -105,10 +105,10 @@ trait Fetch{
 		return $this->numrows();
 	}
 
-	private function executeMethod($row, $methods){
+	private function executeMethod($row, $onComplete){
 
 		$ret = $row;
-		foreach( $methods as $method ){
+		foreach( $onComplete as $method ){
 
 			$reflectionMethod = new \ReflectionMethod($method[0], $method[1]);
 			if( !$reflectionMethod->isPublic() )

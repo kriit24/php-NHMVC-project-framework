@@ -94,7 +94,7 @@ class s {
 }
 
 $row = $client->Select()
-->method(array(new s, 'functionName'))//SEE "methods.php" for Sql methods included
+->complete(array(new s, 'functionName'))//SEE "methods.php" for Sql methods included
 ->fetch();
 echo $client->getQuery();
 pre($row);

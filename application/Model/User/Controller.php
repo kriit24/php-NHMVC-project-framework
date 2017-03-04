@@ -12,7 +12,7 @@ class Controller extends \Library{
 
 		$this->user->userJoinClient()
 			->where(array('u.id' => $id))
-			->method(array($this->user, 'unsetPassword'));
+			->complete(array($this->user, 'unsetPassword'));
 		return $this;
 	}
 

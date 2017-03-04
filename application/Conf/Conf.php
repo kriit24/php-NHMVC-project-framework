@@ -42,6 +42,7 @@ class Conf{
 
 		define('_SHELL', (php_sapi_name() == 'cli' ? true : false));//for CRONJOB
 		define('_DIR', get_include_path());
+		define('_DIR_APP', get_include_path() . '/' . _APPLICATION_PATH);
 		define('_IP', $_SERVER['REMOTE_ADDR']);
 		//autoload, template, view
 		define('_DEBUG', (isset($_GET['debug']) && self::_DEV_MODE ? $_GET['debug'] : false));

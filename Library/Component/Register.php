@@ -94,6 +94,34 @@ class Register{
 		return false;
 	}
 
+	static function cleanRegister($name){
+
+		unset( $GLOBALS[$name] );
+		$type = $GLOBALS['REGISTER_TYPE'][trim($name)];
+
+		if( $type == self::IS_ARRAY ){
+
+			$value = array();
+		}
+		if( $type == self::IS_OBJECT ){
+
+			$value = new stdClass();
+		}
+		if( $type == self::IS_STRING ){
+
+			$value = '';
+		}
+		if( $type == self::IS_INTEGER ){
+
+			$value = 0;
+		}
+		if( $type == self::IS_BOOLEAN ){
+
+			$value = false;
+		}
+		\Library\Component\Register::register($name, $value, $type);
+	}
+
 	static function deleteRegister($name){
 
 		unset( $GLOBALS[$name] );

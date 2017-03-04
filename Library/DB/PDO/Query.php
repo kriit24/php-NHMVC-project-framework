@@ -7,6 +7,11 @@ trait Query{
 
 		$this->PDO = $this->getConnection( $this->_connName );
 
+		if( \Conf\Conf::_DEV_MODE && in_array($type = Log::getQueryType($this->stmtArray), array('SELECT', 'UPDATE', 'DELETE')) ){
+
+			Log::indexLog($this->_name, $type, $this->stmtArray['WHERE']);
+		}
+
 		list($Query, $params) = $this->buildQuery($Query, $params);
 		$this->Query = $Query;
 		$this->params = $params;

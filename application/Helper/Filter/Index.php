@@ -6,8 +6,8 @@ class Index extends \Library{
 	public function __construct(){
 
 		$this->Form = new Form;
-		$this->inc( $this->toUrl(__DIR__).'/inc/script.js' );
-		$this->inc( $this->toUrl(__DIR__).'/inc/style.css' );
+		$this->inc( __DIR__.'/inc/script.js' );
+		$this->inc( __DIR__.'/inc/style.css' );
 	}
 
 	//$filter->header( 'Form object' );

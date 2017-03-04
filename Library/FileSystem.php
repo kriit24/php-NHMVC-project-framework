@@ -30,6 +30,8 @@ class FileSystem extends Component\FileSystem{
 			die('Inc value must be string');
 
 		$list = Component\Register::getRegister('INCLUDES');
+		if( !is_array($list) )
+			$list = array();
 		if( !in_array($file, $list) )
 			Component\Register::setRegister('INCLUDES', (gettype($file) == 'string' ? array($file) : $file));
 	}
@@ -176,7 +178,7 @@ class FileSystem extends Component\FileSystem{
 		return pathinfo($fileName, PATHINFO_EXTENSION);
 	}
 
-	function getFileCType($fileName){
+	function getFileCType($fileName, $allowDownloadRestrictedFiles){
 
 		switch( $this->fileExtension($fileName) ) {
 
@@ -203,7 +205,16 @@ class FileSystem extends Component\FileSystem{
 			case "php":
 			case "htm":
 			case "html":
-			case "txt": die("<b>Cannot be used for ". $file_extension ." files!</b>"); break;
+			case "txt": 
+				if( $allowDownloadRestrictedFiles ){
+
+					$ctype="application/force-download";
+				}
+				else{
+					
+					die("<b>Cannot be used for ". $file_extension ." files!</b>"); 
+				}
+			break;
 
 			default: $ctype="application/force-download";
 		}
@@ -214,7 +225,7 @@ class FileSystem extends Component\FileSystem{
 	* download file from another domain
 	* @param String $file AS full url based file http://domain/image.png
 	*/
-	function downloadFile($file, $fileName = ''){
+	function downloadFile($file, $fileName = '', $allowDownloadRestrictedFiles = false){
 
 		//First, see if the file exists
 		if (!is_file($file)) {
@@ -236,7 +247,7 @@ class FileSystem extends Component\FileSystem{
 		header("Content-Description: File Transfer");
 
 		//Use the switch-generated Content-Type
-		header("Content-Type: ".$this->getFileCType($fileName));
+		header("Content-Type: ".$this->getFileCType($fileName, $allowDownloadRestrictedFiles));
 
 		//Force the download
 		$header="Content-Disposition: attachment; filename=".$fileName.";";

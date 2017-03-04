@@ -47,9 +47,9 @@ class classIterator{
 			return $MethodChecker->$methodTypeToCheck();
 	}
 
-	function action(){
+	function action( $methodName = null ){
 
-		$method = preg_replace('/\W/s', '', $this->method);
+		$method = preg_replace('/\W/s', '', ($methodName ? $methodName : $this->method));
 		if( $method && (($this->requestRequired == true && $this->requestIsSet == true && $this->error == false) || $this->requestRequired == false) ){
 
 			//$method = preg_replace('/\W/s', '_', $method);

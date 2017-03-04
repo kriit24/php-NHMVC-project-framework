@@ -20,7 +20,6 @@ class Form extends Component\isPrivate{
 		$this->bodyType = $bodyType;
 		if( $bodyType == 'list' )
 			$this->tableClass .= ' table-horizontal';
-		//IF problems appear THEN remove if condition
 		if( $bodyType )
 			$this->_setStructur($structur);
 		$this->construct();
@@ -33,6 +32,9 @@ class Form extends Component\isPrivate{
 
 		if( is_array($type) )
 			return $this->_addFromArray($type, $attr);
+
+		if( is_array($name) )
+			return $this->_addFromArray($name, $attr, $type);
 
 		if( is_array($attr) )
 			$attr = array_filter($attr, function($value) { return $value !== ''; });

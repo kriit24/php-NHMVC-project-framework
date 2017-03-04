@@ -5,8 +5,8 @@ class Index{
 
 	public function __construct(){
 
-		//$this->inc( $this->toUrl(__DIR__) . '/inc/script.js' );
-		//$this->inc( $this->toUrl(__DIR__) . '/inc/style.css' );
+		//$this->inc( __DIR__ . '/inc/script.js' );
+		//$this->inc( __DIR__ . '/inc/style.css' );
 	}
 
 	protected function Index(){

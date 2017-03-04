@@ -6,7 +6,7 @@ foreach($this->sort as $v){
 
 	$html[$v] = 
 		'<div class="sort_helper sort_helper_'.$v.'">'.
-		'<img src="'.$this->toUrl( __DIR__ ).'/../image/sort_black.png"/>'.
+		'<img src="'. __DIR__ .'/../image/sort_black.png"/>'.
 		'</div>';
 }
 

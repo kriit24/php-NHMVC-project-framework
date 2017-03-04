@@ -265,11 +265,14 @@ trait Create{
 
 		$html = '';
 		$i = 0;
+
 		foreach($this->elemList as $elem){
 
 			if( !empty($this->data) ){
 
-				foreach($this->data as $data){
+				foreach($this->data as $json){
+
+					$data = json_decode($json, true);
 
 					$this->Form->setData($data);
 					$this->Html->setData($data);
@@ -282,6 +285,11 @@ trait Create{
 				$html .= $this->createElement(array($elem));
 			}
 			$i++;
+		}
+
+		if( isset($this->elemsType['form']) ){
+
+			$html .= $this->Html->{'/form'}();
 		}
 		return $html;
 	}
@@ -324,6 +332,16 @@ trait Create{
 
 			if( $this->bodyType == 'list' ){
 
+				if( !empty($this->data) ){
+
+					$dataArray = $this->data;
+					$data = json_decode($dataArray[0], true);
+					//die(pre($dataArray));
+
+					$this->Form->setData($data);
+					$this->Html->setData($data);
+				}
+
 				$html .= $this->createList($attr);
 			}
 			if( $this->bodyType == 'row' ){
@@ -334,7 +352,9 @@ trait Create{
 					//die(pre($dataArray));
 				
 					$k = 0;
-					foreach($dataArray as $data){
+					foreach($dataArray as $json){
+
+						$data = json_decode($json, true);
 
 						if( gettype($data) == 'array' ){
 
@@ -371,7 +391,9 @@ trait Create{
 		$html = '';
 		if( !empty($this->data) ){
 
-			foreach($this->data as $data){
+			foreach($this->data as $json){
+
+				$data = json_decode($json, true);
 
 				$this->Form->setData( $data );
 				$this->Html->setData( $data );

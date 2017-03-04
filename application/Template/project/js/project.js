@@ -1,5 +1,3 @@
-var $_POST = [];
-var $_GET = [];
 var Project = {};
 Project.clickEvent = [];
 (function($){
@@ -230,6 +228,7 @@ Project.clickEvent = [];
 
 		canJSON: function(value, complete) {
 
+			if( typeof value != 'string' ) return {};
 			if(value == undefined || value.length == 0) return {};
 
 			value = value.replace(/^\s+|\s+$/g,"");
@@ -244,6 +243,25 @@ Project.clickEvent = [];
 				return $.parseJSON(value);
 			}
 			return {};
+		},
+
+		loadPackage: function(devMode){
+
+			var n = Date.now();
+			var version = '';
+			if( devMode == true )
+				version = '?ver=' + n;
+			var currentScript = $('script').last();
+
+			$(currentScript).after(
+				'<script src="/Template/js/project.storage.js' + version + '" type="text/javascript"></script>'+
+				'<script src="/Template/js/project.dialog.js' + version + '" type="text/javascript"></script>'+
+				'<script src="/Template/js/project.autocomplete.js' + version + '" type="text/javascript"></script>'+
+				'<script src="/Template/js/project.required.js' + version + '" type="text/javascript"></script>'+
+				'<script src="/Template/js/project.caret.js' + version + '" type="text/javascript"></script>'+
+				'<script src="/Template/js/project.tabs.js' + version + '" type="text/javascript"></script>'+
+				'<script src="/Template/js/project.language.js' + version + '" type="text/javascript"></script>'
+			);
 		}
 	});
 })(jQuery);
@@ -255,7 +273,20 @@ $(document).ready(function(){
 	   $(this).datepicker({dateFormat: "dd.mm.yy"});
 	});
 
-	$('.link').live('click', function(){
+	$('.link').live('click', function(e){
+
+		if( e.target.tagName.toUpperCase() == 'SPAN' ){
+
+			var elem = $(e.target);
+			if( elem.parent('label') && elem.parent('label').attr('for') != undefined ){
+
+				var id = elem.parent('label').attr('for');
+				if( elem.parent('label').prev().attr('id') != undefined && elem.parent('label').prev().attr('id') == id && elem.parent('label').prev()[0].tagName.toUpperCase() == 'INPUT' )
+					return;
+			}
+		}
+		if( e.target.tagName.toUpperCase() == 'INPUT' || e.target.tagName.toUpperCase() == 'A' )
+			return;
 
 		window.location.href = $(this).attr('rel');
 	});
@@ -282,15 +313,6 @@ $(document).ready(function(){
 		}
 	});
 
-	/*
-	addelem('form', '', array('id' => 'uniq-id'))
-
-	addelem('submit', 'name', array(
-	'scrollto' => true,
-	'for' => 'uniq-id'
-	))
-	*/
-
 	if( Project.Session.get('scrolltoElemTop') ){
 
 		var top = Project.Session.get('scrolltoElemTop');
@@ -315,4 +337,7 @@ $(document).ready(function(){
 
 		Project.Session.set('scrolltoElemTop', scrollTop);
 	});
+
+	$('label.checkbox').prev('input[type="checkbox"]').css({'visibility' : 'hidden', 'margin-bottom' : '10px', 'display' : 'inline-block', 'width' : '15px'});
+	$('label.checkbox').prev('input[type="radio"]').css({'visibility' : 'hidden', 'margin-bottom' : '0px', 'display' : 'inline-block', 'width' : '15px'});
 });

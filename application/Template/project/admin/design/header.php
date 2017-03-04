@@ -12,28 +12,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css" type="text/css"/>
-<link rel="stylesheet" href="<?=$this->header['URI2']; ?>/css/bootstrap/css/bootstrap.min.css" type="text/css"/>
-<link rel="stylesheet" href="<?=$this->header['URI2']; ?>/css/font-awesome/css/font-awesome.min.css" type="text/css"/>
-<link rel="stylesheet" href="<?=$this->header['URI2']; ?>/css/flag-icon-css/css/flag-icon.required.css" type="text/css"/>
-<link rel="stylesheet" href="<?=$this->header['URI2']; ?>/css/fixes.css" type="text/css"/>
-<link rel="stylesheet" href="<?=$this->header['URI']; ?>/css/style.css" type="text/css"/>
-<link rel="stylesheet" href="<?=$this->header['URI']; ?>/css/media.css" type="text/css"/>
+<link rel="stylesheet" href="/Template/css/bootstrap/css/bootstrap.min.css" type="text/css"/>
+<link rel="stylesheet" href="/Template/css/font-awesome/css/font-awesome.min.css" type="text/css"/>
+<link rel="stylesheet" href="/Template/css/flag-icon-css/css/flag-icon.required.css" type="text/css"/>
+<link rel="stylesheet" href="/Template/css/style.css" type="text/css"/>
+<link rel="stylesheet" href="/Template/css/fixes.css" type="text/css"/>
+<link rel="stylesheet" href="/Template/admin/css/style.css" type="text/css"/>
+<link rel="stylesheet" href="/Template/admin/css/media.css" type="text/css"/>
 
 <?=implode("", $this->header['CSS']);?>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js" type="text/javascript"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js" type="text/javascript"></script>
-<script src="<?=$this->header['URI2']; ?>/js/project.js" type="text/javascript"></script>
-<script src="<?=$this->header['URI2']; ?>/js/project.storage.js" type="text/javascript"></script>
-<script src="<?=$this->header['URI2']; ?>/js/project.dialog.js" type="text/javascript"></script>
-<script src="<?=$this->header['URI2']; ?>/js/project.autocomplete.js" type="text/javascript"></script>
-<script src="<?=$this->header['URI2']; ?>/js/project.required.js" type="text/javascript"></script>
+<script src="/Template/js/project.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 var $_POST = $.canJSON('<?=addslashes(json_encode($_POST));?>');
 var $_GET = $.canJSON('<?=json_encode($_GET);?>');
-timeoutId = setTimeout(function(){ window.location.href = window.location.href; }, 40 * 60 * 1000);
+timeoutId = setTimeout(function(){ window.location.href = window.location.href.split('#')[0]; }, 40 * 60 * 1000);
+var language = '<?=_LANG;?>';
+$.loadPackage('<?=\Conf\Conf::_DEV_MODE;?>');
 </script>
 
 <?=implode("", $this->header['JS']);?>
