@@ -55,12 +55,6 @@ class Html{
 
 	private $data = array();
 	private $elemAfter = array();
-	private $_parent;
-
-	public function __construct($parent){
-
-		$this->_parent = $parent;
-	}
 
 	public function setData($data){
 
@@ -72,12 +66,14 @@ class Html{
 		return $elem;
 	}
 
-	private function getClass($type){
+	private function getClass($elem, $type){
 
-		if( Form::ELEMENTS[$type] )
-			return new Form($this->_parent);
-		if( Html::ELEMENTS[$type] )
-			return new Html($this->_parent);
+		if( isset(Form::ELEMENTS[$type]) )
+			return new Form();
+		if( isset(Html::ELEMENTS[$type]) )
+			return new Html();
+
+		die('ELEMENT NOT FOUND:' . $elem . ' TYPE ' . $type);
 	}
 
 	function addElem($type, $elemName, $attr){
@@ -94,7 +90,7 @@ class Html{
 				'elem' => self::ELEMENTS[$type],
 				'className' => 'Html',
 				'type' => $type,
-				'name' => $elemName,
+				'name' => ($elemName ? $elemName : $type),
 				'value' => (!is_Array($attr) ? $attr : '')
 			)
 		);
@@ -130,7 +126,7 @@ class Html{
 			$elemHtml = '';
 			foreach($elems as $elem){
 
-				$elemClass = $this->getClass($elem['type']);
+				$elemClass = $this->getClass($elem['elem'], $elem['type']);
 				$elemClass->setData($this->data);
 				if( $elem['options'] ){
 

@@ -15,8 +15,6 @@ class Form extends Component\isPrivate{
 	*/
 	function __construct( $bodyType = '', $structur = array() ){
 
-		list($self, $caller) = debug_backtrace(false, 2);
-		$this->_parent = $caller['class'];
 		$this->bodyType = $bodyType;
 		if( $bodyType == 'list' )
 			$this->tableClass .= ' table-horizontal';
@@ -186,13 +184,6 @@ class Form extends Component\isPrivate{
 	function getElements(){
 
 		return $this->elemList;
-	}
-
-	function Language($message){
-
-		$language = new Language;
-		$language->_parent = $this->_parent;
-		return $language->Language($message);
 	}
 }
 

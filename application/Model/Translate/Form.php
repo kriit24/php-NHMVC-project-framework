@@ -29,18 +29,28 @@ class Form extends \Library{
 	public function TranslateForm(){
 
 		$form = new \Library\Form( 'row' );
+
 		$form->addElem('data', 'clear_name', array(
 			'label' => $this->Language('Name'),
 			'label-attr' => array('class' => 'name')
 		));
+
 		$form->addElem('data', 'clear_value', array(
 			'label' => $this->Language('Content'),
 			'label-attr' => array('class' => 'value2')
 		));
+
 		$form->addElem('data', 'model2', array(
 			'label' => $this->Language('Model'),
 			'label-attr' => array('class' => 'model2')
 		));
+
+		$form->addElem('a', 'delete', array(
+			'value' => $this->Language('Delete'),
+			'href' => $this->url( '?action=delete&id{id}' ),
+			'class' => "delete"
+		));
+
 		return $form;
 	}
 
@@ -48,22 +58,27 @@ class Form extends \Library{
 
 		$form = new \Library\Form( 'list' );
 		$form->addElem('form', '', array('action' => $this->url('?id='.$_GET['id'])));
-		$form->addElem('hidden', 'name')->append('form');
-		$form->addElem('hidden', 'model')->append('form');
+		$form->addElem('hidden', 'name', array('value' => $row['name']))->append('form');
+		$form->addElem('hidden', 'model', array('value' => $row['model']))->append('form');
 
 		$form->addElem('data', 'clear_name', array(
 			'label' => $this->Language('Name'),
 		));
+
 		$form->addElem('data', 'model', array(
 			'label' => $this->Language('Model')
 		));
-		foreach(\Conf\Conf::LANGUAGE as $lang)
+		foreach(\Conf\Conf::LANGUAGE as $lang){
+
 			$form->addElem('textarea', $lang, array(
 				'label' => $lang
 			));
+		}
+		
 		$form->addElem('checkbox', 'update_all_with_same_name', array(
 			'value' => 1,
 		))->after( '<span style="margin-left:5px;">' . $this->Language( 'Update all with same value' ) . '</span>' );
+		
 		$form->addElem('submit', Form::SUBMIT['update'], 'Update');
 
 		$form->setData( $row );

@@ -311,7 +311,7 @@ $(document).ready(function(){
 		}
 		if( e.target.tagName.toUpperCase() == 'INPUT' || e.target.tagName.toUpperCase() == 'A' ){
 
-			if( elem.attr('class') == 'undefined' || elem.attr('class').indexOf('dialog') == -1 )
+			if( typeof elem.attr('class') == 'undefined' || elem.attr('class').indexOf('dialog') == -1 )
 				return;
 		}
 

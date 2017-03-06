@@ -10,6 +10,7 @@ abstract class _Abstract implements \Library_Interface_Abstract{
 				'Index_Admin' => array('position' => 'content', 'is_static' => false, 'is_first_page' => false, 'is_route' => true),
 			),
 			'Edit' => array('is_route' => true),
+			'GetJsonTranslate' => array('is_route' => true),
 		);
 	}
 
@@ -19,6 +20,7 @@ abstract class _Abstract implements \Library_Interface_Abstract{
 			'Index_Admin' => array('SUPERADMIN'),
 			'Edit' => array('SUPERADMIN'),
 			'Dashboard' => array('SUPERADMIN'),
+			'GetJsonTranslate' => array('*'),
 		);
 	}
 

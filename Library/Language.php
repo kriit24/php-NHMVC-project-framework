@@ -5,12 +5,26 @@ class Language{
 
 	use \Library\Component\Singleton;
 
+	public $_parent = '';
+
 	static function init(){
 
 		if( $_GET['language'] && strlen($_GET['language']) == 3 ) 
 			$_SESSION['language'] = $_GET['language'];
 		define('_LANG', ($_SESSION['language'] ? $_SESSION['language'] : \Conf\Conf::_DLANG));
 		define('_DLANG', \Conf\Conf::_DLANG);
+
+		$redis = new \Library\Redis;
+		if( $redis->isConnected() ){
+
+			$lang = $redis->get('language');
+			\Library\Component\Register::register('LANGUAGE', $lang, \Library\Component\Register::IS_ARRAY);
+		}
+		else{
+
+			$lang = $this->getAllLanguageFromDb();
+			\Library\Component\Register::register('LANGUAGE', $lang, \Library\Component\Register::IS_ARRAY);
+		}
 	}
 
 	function Language( $message = '' ){
@@ -22,29 +36,6 @@ class Language{
 		if( !$language->isConnected() || !_LANG )
 			return $message;
 
-		if( !$this->_parent ){
-
-			$caller = debug_backtrace(false, 3);
-			if( preg_match('/'._APPLICATION_PATH.'/i', $caller[0]['file']) ){
-
-				$exp = explode(_APPLICATION_PATH, $caller[0]['file']);
-				$this->_parent = substr($exp[1], 0, strrpos($exp[1], '/'));
-				//$this->_parent = $caller[0]['class'];
-			}
-			else if( preg_match('/'._APPLICATION_PATH.'/i', $caller[1]['file']) ){
-
-				$exp = explode(_APPLICATION_PATH, $caller[1]['file']);
-				$this->_parent = substr($exp[1], 0, strrpos($exp[1], '/'));
-				//$this->_parent = $caller[1]['class'];
-			}
-			else if( preg_match('/'._APPLICATION_PATH.'/i', $caller[2]['file']) ){
-
-				$exp = explode(_APPLICATION_PATH, $caller[2]['file']);
-				$this->_parent = substr($exp[1], 0, strrpos($exp[1], '/'));
-				//$this->_parent = $caller[2]['class'];
-			}
-		}
-
 		$model = $this->_parent;
 		$pos = strrpos($model, '\\');
 		if( $pos )
@@ -55,24 +46,24 @@ class Language{
 
 	private function getLanguage($message, $model){
 
-		$redis = new \Library\Redis;
-		if( !$redis->isConnected() )
-			return $this->getLanguageFromDb($message, $model);
-
-		$lang = $redis->get('language');
+		$lang = \Library\Component\Register::getRegister('LANGUAGE');
 		$langKey = md5($model.'_'.$message.'_'._LANG);
 
 		if( !$lang ){
 
 			$message = $this->getLanguageFromDb($message, $model);
-			$redis->set('language', array($langKey => $message));
+			$redis = new \Library\Redis;
+			if( $redis->isConnected() )
+				$redis->set('language', array($langKey => $message));
 		}
 		else{
 
 			if( !in_array($langKey, array_keys($lang)) ){
 
 				$message = $this->getLanguageFromDb($message, $model);
-				$redis->append('language', array($langKey => $message));
+				$redis = new \Library\Redis;
+				if( $redis->isConnected() )
+					$redis->append('language', array($langKey => $message));
 			}
 			else
 				$message = $lang[$langKey];
@@ -94,6 +85,25 @@ class Language{
 			return $message;
 		}
 		return $row['value'];
+	}
+
+	private function getAllLanguageFromDb(){
+
+		$language = new \Table\language;
+		$ret = array();
+
+		$language->Select()
+			->column('SQL_CACHE *')
+			->where("language = '"._LANG."' ");
+		if( $language->Numrows() > 0 ){
+
+			while($row = $language->fetch()){
+
+				$langKey = md5($row['model'].'_'.$row['name'].'_'._LANG);
+				$ret[$langKey] = $row['value'];
+			}
+		}
+		return $ret;
 	}
 }
 

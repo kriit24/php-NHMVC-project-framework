@@ -313,6 +313,11 @@ $(document).ready(function(){
 		}
 	});
 
+	$('.no-click').live('click', function(){
+
+		return false;
+	});
+
 	if( Project.Session.get('scrolltoElemTop') ){
 
 		var top = Project.Session.get('scrolltoElemTop');

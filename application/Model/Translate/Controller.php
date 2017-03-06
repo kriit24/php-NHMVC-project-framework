@@ -51,6 +51,44 @@ class Controller extends \Library{
 			->complete(array($this, 'htmlspecialchars'));
 		return $this;
 	}
+
+	public function getTranslateByValue(){
+
+		$translate = urldecode($_GET['translate']);
+
+		$row = $this->language->Select()
+			->column( array('name', 'value') )
+			->where( array('value' => $translate, 'language' => _LANG) )
+			->limit(1)
+			->fetch();
+
+		if( empty($row) ){
+
+			$this->language->Insert(array(
+				'name' => $translate,
+				'value' => $translate,
+				'language' => _DLANG,
+				'model' => 'From/Javascript'
+			));
+
+			if( _LANG != _DLANG ){
+
+				$this->language->Insert(array(
+					'name' => $translate,
+					'value' => $translate,
+					'language' => _LANG,
+					'model' => 'From/Javascript'
+				));
+			}
+
+			return array(
+				'name' => $translate,
+				'value' => $translate,
+			);
+		}
+
+		return $row;
+	}
 }
 
 ?>

@@ -44,12 +44,6 @@ class Form{
 	private $data = array();
 	private $selected = array();
 	private $checked = array();
-	private $_parent;
-
-	public function __construct($parent){
-
-		$this->_parent = $parent;
-	}
 
 	public function setData($data){
 
@@ -73,12 +67,14 @@ class Form{
 		return $elem;
 	}
 
-	private function getClass($type){
+	private function getClass($elem, $type){
 
-		if( Form::ELEMENTS[$type] )
-			return new Form($this->_parent);
-		if( Html::ELEMENTS[$type] )
-			return new Html($this->_parent);
+		if( isset(Form::ELEMENTS[$type]) )
+			return new Form();
+		if( isset(Html::ELEMENTS[$type]) )
+			return new Html();
+
+		die('ELEMENT NOT FOUND:' . $elem . ' TYPE ' . $type);
 	}
 
 	function addElem($type, $elemName, $attr){
@@ -171,10 +167,6 @@ class Form{
 
 			$ret = $elem[ $type ];
 		}
-		if( $elem[ $type . '('.$i.')' ] ){
-
-			$ret = $elem[ $type . '('.$i.')' ];
-		}
 		if( $elem[ $type ][ $i ] ){
 
 			$ret = $elem[ $type ][ $i ];
@@ -190,7 +182,7 @@ class Form{
 
 			foreach($elems as $elem){
 
-				$elemClass = $this->getClass($elem['type']);
+				$elemClass = $this->getClass($elem['elem'], $elem['type']);
 				$elemClass->setData($this->data);
 				if( $elem['options'] ){
 
@@ -272,6 +264,7 @@ class Form{
 
 		$preValue = preg_match('/\{(.*?)\}/i', $elem['attr']['value']) ? \Library\Component\Replace::replace($elem['attr']['value'], $this->data) : $elem['attr']['value'];
 		$checked = isset($this->checked[ $elem['name'] ]) ? array_shift($this->checked[ $elem['name'] ]) : array();
+		$checked = $elem['checked'] ? array($elem['checked'] => true) : $checked;
 		//maybe resolve this with ::checkedComplete
 
 		if( $checked[ $preValue ] )
@@ -352,6 +345,7 @@ class Form{
 
 		$option = '';
 		$selected = isset($this->selected[ $elem['name'] ]) ? array_shift($this->selected[ $elem['name'] ]) : array();
+		$selected = $elem['selected'] ? array($elem['selected'] => true) : $selected;
 		$i = 0;
 
 		foreach($elem['option'] as $k => $v){

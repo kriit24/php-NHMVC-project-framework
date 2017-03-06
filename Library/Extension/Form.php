@@ -11,6 +11,7 @@ trait Form{
 	private $mainAttr = array('label', 'label-attr');
 	private $structur = array();
 	private $data = array();
+	private $_instances = array();
 	public $countElems = 0;
 
 	private function construct(){
@@ -35,16 +36,21 @@ trait Form{
 
 		//$this->Form->setData($data);
 		//$this->Html->setData($data);
-		$this->data[] = json_encode($data);
-		//$this->data[] = $data;
+		//$this->data[] = json_encode($data);
+		$this->data[] = $data;
 	}
 
 	private function getClass($type){
 
+		if( $this->_instances[$type] )
+			return $this->_instances[$type];
+
 		if( $this->Form::ELEMENTS[$type] )
-			return $this->{'Form'};
+			$this->_instances[$type] = $this->{'Form'};
 		if( $this->Html::ELEMENTS[$type] )
-			return $this->{'Html'};
+			$this->_instances[$type] = $this->{'Html'};
+
+		return $this->_instances[$type];
 	}
 
 	private function getElement($name){
@@ -66,7 +72,7 @@ trait Form{
 				$type = $elemType ? $elemType : 'text';
 			}
 			if( !isset($attr[$name]['label']) )
-				$attr[$name]['label'] = $this->Language($this->label($name));
+				$attr[$name]['label'] = $this->label($name);
 
 			$this->addElem($type, $name, $attr[$name]);
 		}
@@ -115,11 +121,16 @@ trait Form{
 		$this->elemList[$elemToKey][$siblingType][] = $elemFrom;
 		unset($this->elemList[$elemFromKey]);
 
-		foreach($this->elemsList[$fromElem] as $k => $v){
+		//IF PROBLEMS THEN REPLACE WITH FOREACH WHATS IN ABOVE
+		$elemsListKeys = array_flip($this->elemsList[$fromElem]);
+		$elemsListKey = $elemsListKeys[$elemFromKey];
+		unset($this->elemsList[$fromElem][$elemsListKey]);
+
+		/*foreach($this->elemsList[$fromElem] as $k => $v){
 
 			if( $v == $elemFromKey )
 				unset($this->elemsList[$fromElem][$k]);
-		}
+		}*/
 		if( empty($this->elemsList[$fromElem]) )
 			unset($this->elemsList[$fromElem]);
 	}

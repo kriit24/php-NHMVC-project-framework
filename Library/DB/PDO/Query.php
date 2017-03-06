@@ -7,14 +7,19 @@ trait Query{
 
 		$this->PDO = $this->getConnection( $this->_connName );
 
-		if( \Conf\Conf::_DEV_MODE && in_array($type = Log::getQueryType($this->stmtArray), array('SELECT', 'UPDATE', 'DELETE')) ){
+		if( \Conf\Conf::_DEV_MODE ){
 
-			Log::indexLog($this->_name, $type, $this->stmtArray['WHERE']);
+			$type = Log::getQueryType($this->stmtArray);
 		}
 
 		list($Query, $params) = $this->buildQuery($Query, $params);
 		$this->Query = $Query;
 		$this->params = $params;
+
+		if( \Conf\Conf::_DEV_MODE && in_array($type, array('SELECT', 'UPDATE', 'DELETE')) ){
+
+			Log::queryLog($this->_name, $type, $Query, $params);
+		}
 
 		//check query if UPDATE OR DELETE query dont have WHERE parameters
 		if( $this->prepareCheckQuery($Query) )

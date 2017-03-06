@@ -51,9 +51,35 @@ class Library extends \Library\Component\Extension{
 
 			$className = $library[$method];
 			$caller = debug_backtrace(false, 4);
+			
+			if( preg_match('/'._APPLICATION_PATH.'/i', $caller[0]['file']) ){
+
+				$exp = explode(_APPLICATION_PATH, $caller[0]['file']);
+				$_parent = substr($exp[1], 0, strrpos($exp[1], '/'));
+				$_method = $caller[0]['function'];
+			}
+			else if( preg_match('/'._APPLICATION_PATH.'/i', $caller[1]['file']) ){
+
+				$exp = explode(_APPLICATION_PATH, $caller[1]['file']);
+				$_parent = substr($exp[1], 0, strrpos($exp[1], '/'));
+				$_method = $caller[1]['function'];
+			}
+			else if( preg_match('/'._APPLICATION_PATH.'/i', $caller[2]['file']) ){
+
+				$exp = explode(_APPLICATION_PATH, $caller[2]['file']);
+				$_parent = substr($exp[1], 0, strrpos($exp[1], '/'));
+				$_method = $caller[2]['function'];
+			}
+			else if( preg_match('/'._APPLICATION_PATH.'/i', $caller[3]['file']) ){
+
+				$exp = explode(_APPLICATION_PATH, $caller[3]['file']);
+				$_parent = substr($exp[1], 0, strrpos($exp[1], '/'));
+				$_method = $caller[3]['function'];
+			}
+
 			$class = new $className(true);
-			$class->_parent = $caller[3]['class'];
-			$class->_method = $caller[3]['function'];
+			$class->_parent = $_parent;
+			$class->_method = $_method;
 			return call_user_func_array(array($class, $method), $args);
 		}
 		if( method_exists($this, $method) ){

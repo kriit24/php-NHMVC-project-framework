@@ -4,4 +4,6 @@ $(document).ready(function(){
 
 		window.location.href = $.removeLocationParam( $.location(window.location.href, {'byLanguage': this.value}), 'pagenumber' );
 	});
+
+	$('.delete').confirm( $.language('Delete ?') );
 });

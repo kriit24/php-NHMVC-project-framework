@@ -18,7 +18,7 @@ while($row = $this->role->fetch()){
 			</div>
 		</div>
 
-		<div class="ibox-content border privilege-<?=$row['id'];?>" style="<?= isset( $_POST['privilege'][ $row['id'] ] ) ? '' : 'display: none;' ?>width:95%;margin:0 auto;">
+		<div class="ibox-content border privilege-<?=$row['id'];?>" style="<?= isset( $_POST['privilege'][ $row['id'] ] ) ? '' : 'display: none;' ?>width:95%;">
 
 			<form method="post">
 			<div style="margin-bottom:20px;">
@@ -46,20 +46,25 @@ while($row = $this->role->fetch()){
 					foreach($classes as $class){
 
 						?>
-						<div style="display:inline-block;vertical-align:top;padding:10px;">
-						<div style="margin-bottom:10px;"><b><?=$class['class'];?></b></div>
-						<?
-						foreach($class['methods'] as $method){
+						<div style="display:inline-block;vertical-align:top;padding:10px;" class="subitoggle">
+							<div style="margin-bottom:10px;"><b><?=$class['class'];?></b></div>
 
-							$checked = isset( $this->privileges[ $row['id'] ][ $route ][ $class['class'] ][ $method ] ) ? ' checked="checked"' : '';
-							?>
 							<div style="margin-bottom:5px;">
-								<input type="checkbox" name="privilege[<?=($row['id']);?>][<?=($route);?>][<?=($class['class']);?>][<?=($method);?>]" value="1" id="<?=($row['id']);?>_<?=($route);?>_<?=($class['class']);?>_<?=($method);?>"<?=($checked);?>> 
-								<label for="<?=($row['id']);?>_<?=($route);?>_<?=($class['class']);?>_<?=($method);?>" class="checkbox"><span></span><?=$method;?></label>
+								<input type="checkbox" name="privilege[<?=($row['id']);?>][all]" value="1" id="<?=($class['class']);?>_all" class="select-group"> 
+								<label for="<?=($class['class']);?>_all" class="checkbox"><span></span><?=$this->Language( 'Select all' );?></label>
 							</div>
 							<?
-						}
-						?>
+							foreach($class['methods'] as $method){
+
+								$checked = isset( $this->privileges[ $row['id'] ][ $route ][ $class['class'] ][ $method ] ) ? ' checked="checked"' : '';
+								?>
+								<div style="margin-bottom:5px;">
+									<input type="checkbox" name="privilege[<?=($row['id']);?>][<?=($route);?>][<?=($class['class']);?>][<?=($method);?>]" value="1" id="<?=($row['id']);?>_<?=($route);?>_<?=($class['class']);?>_<?=($method);?>"<?=($checked);?>> 
+									<label for="<?=($row['id']);?>_<?=($route);?>_<?=($class['class']);?>_<?=($method);?>" class="checkbox"><span></span><?=$method;?></label>
+								</div>
+								<?
+							}
+							?>
 						</div>
 						<?
 					}

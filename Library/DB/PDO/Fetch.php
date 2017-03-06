@@ -4,25 +4,31 @@ namespace Library\DB\PDO;
 trait Fetch{
 
 	private $rebuildStatement = false;
+	private $isInWhile = false;
 
 	private function extension($row, $multiArray = false){
 
-		if( $this->onComplete && $row ){
+		if( $row ){
 
-			if( $multiArray ){
+			if( $this->onComplete ){
 
-				foreach($row as $k => $v){
+				if( $multiArray ){
 
-					if( $returnRow = $this->executeMethod($v, $this->onComplete) );
-						$row[$k] = $returnRow;
+					foreach($row as $k => $v){
+
+						if( $returnRow = $this->executeMethod($v, $this->onComplete) );
+							$row[$k] = $returnRow;
+					}
+				}
+				else{
+
+					if( $returnRow = $this->executeMethod($row, $this->onComplete) );
+						$row = $returnRow;
 				}
 			}
-			else{
-
-				if( $returnRow = $this->executeMethod($row, $this->onComplete) );
-					$row = $returnRow;
-			}
 		}
+		else
+			$row = false;
 		return $row;
 	}
 
@@ -39,7 +45,8 @@ trait Fetch{
 				$this->Select();
 
 			$this->Query();
-			$this->rebuildStatement = true;
+			$this->rebuildStatement = ($this->isInWhile ? false : true);
+			$this->isInWhile = true;
 		}
 		else{
 

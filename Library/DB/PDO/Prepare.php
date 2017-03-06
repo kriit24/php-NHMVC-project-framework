@@ -385,7 +385,7 @@ trait Prepare{
 		return false;
 	}
 
-	private function prepareGetQuery($Query, $params){
+	public function prepareGetQuery($Query, $params){
 
 		if( empty($params) )
 			return $Query;

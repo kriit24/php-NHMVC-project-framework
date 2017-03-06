@@ -21,6 +21,7 @@ class Index extends Controller{
 		if( $this->Validate->isValidTranslate() )
 			$this->POST(Form::SUBMIT['add'])->action();
 		$this->GET('action=truncate')->action();
+		$this->GET('action=delete')->action();
 
 		$this->translateData()->view('Index');
 	}
@@ -35,6 +36,11 @@ class Index extends Controller{
 	protected function Dashboard(){
 
 		$this->view('Dashboard');
+	}
+
+	protected function GetJsonTranslate(){
+
+		echo json_encode($this->getTranslateByValue());
 	}
 }
 

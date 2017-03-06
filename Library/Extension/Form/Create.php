@@ -3,15 +3,19 @@ namespace Library\Extension\Form;
 
 trait Create{
 
-	private function getHtmlElemAttr($elem, $type, $i = null){
+	private function getHtmlElemAttr($elem, $type, $subtype = null, $i = null){
 
 		$ret = array();
+		$retSub = array();
+
 		if( $elem[ $type ] )
 			$ret = $elem[ $type ];
-		if( isset($i) && $elem[ $type . '('.$i.')' ] )
-			$ret = $elem[ $type . '('.$i.')' ];
 		if( isset($i) && $elem[ $type ][ $i ] )
 			$ret = $elem[ $type ][ $i ];
+
+		$retSub = $ret;
+		if( isset($subtype) && $retSub[ $subtype ] )
+			unset($retSub[ $subtype ]);
 
 		if( gettype($ret) == 'string' ){
 
@@ -20,7 +24,7 @@ trait Create{
 
 			die( '<b style="color:red;">Attribute must be array, string given</b>' );
 		}
-		return $ret;
+		return array($retSub, $ret);
 	}
 
 	private function createForm($attr){
@@ -42,68 +46,69 @@ trait Create{
 	private function createTable($attr){
 
 		$attr['table'] = array_merge(array('class' => $this->tableClass), ($attr['table'] ?? array()));
-		$table = $this->addelem('table', '', $this->getHtmlElemAttr($attr, 'table'), array(), true);
-		return $this->Html->{'table'}($table);
+		list($attrTable, ) = $this->getHtmlElemAttr($attr, 'table');
+		return $this->Html->{'table'}($this->Html->addElem('table', '', $attrTable));
 	}
 
 	private function createHead($attr){
 
 		if( !$this->htmlElemList['label'] )
 			return '';
-			//return (!$this->htmlElemList['label'] ? $this->Html->{'tbody'}() : '');
 
-		$row = array(
-			$this->addelem('thead', '', $this->getHtmlElemAttr($attr, 'thead'), array(), true),
-			$this->addelem('tr', '', $this->getHtmlElemAttr($attr, 'tr'), array(), true)
-		);
+		list($attrTHead, $attr) = $this->getHtmlElemAttr($attr, 'thead', 'tr');
+		list($attrTr, $attr) = $this->getHtmlElemAttr($attr, 'tr', 'th');
+
+		$html = $this->Html->{'thead'}($this->Html->addElem('thead', '', $attrTHead));
+		$html .= $this->Html->{'tr'}($this->Html->addElem('tr', '', $attrTr));
 
 		$i = 0;
 
 		foreach($this->elemList as $elem){
 
+			list($attrLabel, ) = $this->getHtmlElemAttr($elem, 'label-attr', $i);
+
 			//$labelValue = $elem['label'] && strip_tags($elem['label']) == $elem['label'] ? $this->Language($elem['label']) : $elem['label'];
 			$labelValue = $elem['label'] && strip_tags($elem['label']) == $elem['label'] ? $elem['label'] : $elem['label'];
-			$labelAttr = array('value' => ($elem['label'] ? $labelValue : ''), 'attr' => $this->getHtmlElemAttr($elem, 'label-attr', $i));
-			if( !empty($attr) && $setLabelAttr = $this->getHtmlElemAttr($this->getHtmlElemAttr($attr, 'tr'), 'th', $i) ){
+			if( !empty($attr) ){
 
-				$labelAttr['attr'] = !empty($labelAttr) ? array_merge($labelAttr['attr'], $setLabelAttr) : $setLabelAttr;
+				list($setLabelAttr, ) = $this->getHtmlElemAttr($attr, 'th', '', $i);
+				$attrLabel = !empty($attrLabel) ? array_merge($attrLabel, $setLabelAttr) : $setLabelAttr;
 			}
-			$row[] = $this->addelem('th', '', $labelAttr, array(), true);
-			$row[] = $this->addelem('/th', '', array(), array(), true);
+			$html .= $this->Html->{'th'}(array_merge($this->Html->addElem('th', '', $attrLabel), array('value' => ($elem['label'] ? $labelValue : ''))));
+			$html .= $this->Html->{'/th'}();
 			$i++;
 		}
-		$row[] = $this->addelem('/tr', '', array(), array(), true);
-		$row[] = $this->addelem('/thead', '', array(), array(), true);
-		return $this->createElement($row, array());
+		$html .= $this->Html->{'/tr'}();
+		$html .= $this->Html->{'/thead'}();
+		return $html;
 	}
 
-	private function createRow($attr, $k, $html = null){
+	private function createRow($attr, $k, $htmlIn = null){
 
-		$attrTbody = $this->getHtmlElemAttr($attr, 'tbody');
-		$attrTr = $this->getHtmlElemAttr($attrTbody, 'tr', $k);
+		list($attrTbody, $attr) = $this->getHtmlElemAttr($attr, 'tbody', 'tr');
+		list($attrTr, $attr) = $this->getHtmlElemAttr($attr, 'tr', 'td', $k);
 
 		if( !$this->htmlElemList['tbody'] && $this->htmlElemList['table'] ){
 
-			$row = array(
-				$this->addelem('tbody', '', $attrTbody, array(), true),
-				$this->addelem('tr', '', $attrTr, array(), true)
-			);
+			$html = $this->Html->{'tbody'}($this->Html->addElem('tbody', '', $attrTbody));
+			$html .= $this->Html->{'tr'}($this->Html->addElem('tr', 'tr', $attrTr));
+
 			$this->htmlElemList['tbody'] = true;
 		}
 		else{
 
-			$row = array($this->addelem('tr', '', $attrTr, array(), true));
+			$html .= $this->Html->{'tr'}($this->Html->addElem('tr', 'tr', $attrTr));
 		}
 
 		$i = 0;
-		if( $html ){
+		if( $htmlIn ){
 
-			$elemHtml = $html;
+			$elemHtml = $htmlIn;
 
-			$tdAttr = array_merge(array('value' => $elemHtml), $this->getHtmlElemAttr($attrTr, 'td', $i));
+			list($attrTd, ) = $this->getHtmlElemAttr($attr, 'td', '', $i);
 
-			$row[] = $this->addelem('td', '', $tdAttr, array(), true);
-			$row[] = $this->addelem('/td', '', array(), array(), true);
+			$html .= $this->Html->{'td'}(array_merge($this->Html->addElem('td', '', $attrTd), array('value' => $elemHtml)));
+			$html .= $this->Html->{'/td'}();
 		}
 		else{
 
@@ -111,59 +116,56 @@ trait Create{
 
 				$elemAttr = isset($this->elemAttr[$key][$k]) ? $this->elemAttr[$key][$k] : array();
 				$elem['attr'] = array_merge($elem['attr'], $elemAttr);
-				$elemHtml = $this->createElement(array($elem));
+				$elemHtml = $this->createHtmlElement($elem);
 
-				$tdAttr = array_merge(array('value' => $elemHtml), $this->getHtmlElemAttr($attrTr, 'td', $i));
+				list($attrTd, ) = $this->getHtmlElemAttr($attr, 'td', '', $i);
 
-				$row[] = $this->addelem('td', '', $tdAttr, array(), true);
-				$row[] = $this->addelem('/td', '', array(), array(), true);
+				$html .= $this->Html->{'td'}(array_merge($this->Html->addElem('td', '', $attrTd), array('value' => $elemHtml)));
+				$html .= $this->Html->{'/td'}();
 				$i++;
 			}
 		}
-		$row[] = $this->addelem('/tr', '', array(), array(), true);
-		return $this->createElement($row, array());
+		$html .= $this->Html->{'/tr'}();
+		return $html;
 	}
 
 	private function createList($attr){
 
 		$html = '';
-		$attrTbody = $this->getHtmlElemAttr($attr, 'tbody');
+		list($attrTbody, $attr) = $this->getHtmlElemAttr($attr, 'tbody', 'tr');
 		if( !$this->htmlElemList['tbody'] && $this->htmlElemList['table'] )
-			$html = $this->Html->{'tbody'}($attrTbody);
+			$html = $this->Html->{'tbody'}($this->Html->addElem('tbody', '', $attrTbody));
 		$i = 0;
 		foreach($this->elemList as $key => $elem){
 
 			$elemAttr = isset($this->elemAttr[$key][0]) ? $this->elemAttr[$key][0] : array();
 			$elem['attr'] = array_merge($elem['attr'], $elemAttr);
-			$elemHtml = $this->createElement(array($elem));
+			$elemHtml = $this->createHtmlElement($elem);
 
-			$trAttr = $this->getHtmlElemAttr($attrTbody, 'tr', $i);
-			//$labelValue = $elem['label'] && strip_tags($elem['label']) == $elem['label'] ? $this->Language($elem['label']) : $elem['label'];
+			list($attrTr, $attr) = $this->getHtmlElemAttr($attr, 'tr', 'td', $i);
+			list($attrTd, ) = $this->getHtmlElemAttr($attr, 'td', '', $i);
+			list($attrLabel, ) = $this->getHtmlElemAttr($elem, 'label-attr');
+
 			$labelValue = $elem['label'] && strip_tags($elem['label']) == $elem['label'] ? $elem['label'] : $elem['label'];
-			$thAttr = array_merge(array('value' => ($elem['label'] ? $labelValue : '')), $this->getHtmlElemAttr($elem, 'label-attr'));
-			$tdAttr = array_merge(array('value' => $elemHtml), $this->getHtmlElemAttr($trAttr, 'td'));
+			$thAttr = $attrLabel;
+			$tdAttr = $attrTd;
 
 			if( $this->htmlElemList['label'] ){
 
-				$row = array(
-					$this->addelem('tr', '', $trAttr, array(), true),
-					$this->addelem('th', '', $thAttr, array(), true),
-					$this->addelem('/th', '', array(), array(), true),
-					$this->addelem('td', '', $tdAttr, array(), true),
-					$this->addelem('/td', '', array(), array(), true),
-					$this->addelem('/tr', '', array(), array(), true)
-				);
+				$html .= $this->Html->{'tr'}($this->Html->addElem('tr', '', $attrTr));
+				$html .= $this->Html->{'th'}(array_merge($this->Html->addElem('th', '', $thAttr), array('value' => ($elem['label'] ? $labelValue : ''))));
+				$html .= $this->Html->{'/th'}();
+				$html .= $this->Html->{'td'}(array_merge($this->Html->addElem('td', '', $tdAttr), array('value' => $elemHtml)));
+				$html .= $this->Html->{'/td'}();
+				$html .= $this->Html->{'/tr'}();
 			}
 			else{
 
-				$row = array(
-					$this->addelem('tr', '', $trAttr, array(), true),
-					$this->addelem('td', '', $tdAttr, array(), true),
-					$this->addelem('/td', '', array(), array(), true),
-					$this->addelem('/tr', '', array(), array(), true)
-				);
+				$html .= $this->Html->{'tr'}($this->Html->addElem('tr', '', $attrTr));
+				$html .= $this->Html->{'td'}($this->Html->addElem('td', '', $tdAttr));
+				$html .= $this->Html->{'/td'}();
+				$html .= $this->Html->{'/tr'}();
 			}
-			$html .= $this->createElement($row);
 			$i++;
 		}
 		return $html;
@@ -178,8 +180,6 @@ trait Create{
 	private function createErrorLabel($error, $return = false){
 
 		$html = '';
-		$row = array();
-		$list = array();
 
 		if( gettype($error) == 'string' && is_Array(json_decode($error, true)) )
 			$error = json_decode($error, true);
@@ -189,29 +189,25 @@ trait Create{
 
 		if(is_array($error)){
 
-			$row[] = $this->addelem('div', '', array('class' => 'col error-label', 'style' => 'background:#ffecec;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;display: block;margin-bottom: 5px;padding: 10px 15px;'), array(), true);
+			$html .= $this->Html->{'div'}($this->Html->addElem('div', '', array('class' => 'col error-label', 'style' => 'background:#ffecec;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;display: block;margin-bottom: 5px;padding: 10px 15px;')));
 
 			foreach($error as $k => $v){
 
 				$elem .= $elem ? ',[name='.str_replace(' ', '_', $k).']' : '[name='.str_replace(' ', '_', $k).']';
 				if($v && !in_array($v, $list)){
 
-					$row[] = $this->addelem('h4', '', array('style' => 'margin:0.5rem;font-size:20px;font-weight:bold;', 'value' => $v), array(), true);
-					$row[] = $row[] = $this->addelem('/h4', '', array(), array(), true);
+					$html .= $this->Html->{'h4'}($this->Html->addElem('h4', '', array('style' => 'margin:0.5rem;font-size:20px;font-weight:bold;', 'value' => $v)));
+					$html .= $this->Html->{'/h4'}();
 				}
-				$list[] = $v;
 			}
 
-			$row[] = $this->addelem('/div', '', array(), array(), true);
-			//$row[] = $this->addelem('div', '', array('style' => 'clear:both;'), true);
-			//$row[] = $this->addelem('/div', '', array(), true);
+			$html .= $this->Html->{'/div'}();
 
-			if($elem){
+			if( $elem ){
 
-				$row[] = $this->addelem('script', '', '$(document).ready(function(){$("'.$elem.'").addClass("errorLabel");});', array(), true);
-				$row[] = $this->addelem('/script', '', '', array(), true);
+				$html .= $this->Html->{'script'}($this->Html->addElem('script', '', array('value' => '$(document).ready(function(){$("'.$elem.'").addClass("errorLabel");});')));
+				$html .= $this->Html->{'/script'}();
 			}
-			$html = $this->createElement($row, array());
 		}
 		return $html;
 	}
@@ -234,29 +230,26 @@ trait Create{
 
 		if(is_array($message)){
 
-			$row[] = $this->addelem('div', '', array('class' => 'col message-label', 'style' => 'background:#ecffec;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;display: block;margin-bottom: 5px;padding: 10px 15px;'), array(), true);
+			$html .= $this->Html->{'div'}($this->Html->addElem('div', '', array('class' => 'col message-label', 'style' => 'background:#ecffec;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;display: block;margin-bottom: 5px;padding: 10px 15px;')));
 
 			foreach($message as $k => $v){
 
 				$elem .= $elem ? ',[name='.str_replace(' ', '_', $k).']' : '[name='.str_replace(' ', '_', $k).']';
 				if($v && !in_array($v, $list)){
 
-					$row[] = $this->addelem('h4', '', array('style' => 'margin:0.5rem;font-size:20px;font-weight:bold;', 'value' => $v), array(), true);
-					$row[] = $row[] = $this->addelem('/h4', '', array(), array(), true);
+					$html .= $this->Html->{'h4'}($this->Html->addElem('h4', '', array('style' => 'margin:0.5rem;font-size:20px;font-weight:bold;', 'value' => $v)));
+					$html .= $this->Html->{'/h4'}();
 				}
 				$list[] = $v;
 			}
 
-			$row[] = $this->addelem('/div', '', array(), array(), true);
-			//$row[] = $this->addelem('div', '', array('style' => 'clear:both;'), array(), true);
-			//$row[] = $this->addelem('/div', '', array(), array(), true);
+			$html .= $this->Html->{'/div'}();
 
 			if($elem){
 
-				$row[] = $this->addelem('script', '', '$(document).ready(function(){$("'.$elem.'").addClass("messageLabel");});', array(), true);
-				$row[] = $this->addelem('/script', '', '', array(), true);
+				$html .= $this->Html->{'script'}($this->Html->addElem('script', '', array('value' => '$(document).ready(function(){$("'.$elem.'").addClass("messageLabel");});')));
+				$html .= $this->Html->{'/script'}();
 			}
-			$html = $this->createElement($row, array());
 		}
 		return $html;
 	}
@@ -270,19 +263,19 @@ trait Create{
 
 			if( !empty($this->data) ){
 
-				foreach($this->data as $json){
+				foreach($this->data as $data){
 
-					$data = json_decode($json, true);
+					//$data = json_decode($json, true);
 
 					$this->Form->setData($data);
 					$this->Html->setData($data);
 
-					$html .= $this->createElement(array($elem));
+					$html .= $this->createHtmlElement($elem);
 				}
 			}
 			else{
 
-				$html .= $this->createElement(array($elem));
+				$html .= $this->createHtmlElement($elem);
 			}
 			$i++;
 		}
@@ -294,15 +287,11 @@ trait Create{
 		return $html;
 	}
 
-	private function createElement($row){
+	private function createHtmlElement($elem){
 
 		$elemHtml = '';
-
-		foreach($row as $elem){
-
-			$elemClass = $this->getClass($elem['type']);
-			$elemHtml .= $elemClass->{$elem['elem']}($elem);
-		}
+		$elemClass = $this->getClass($elem['type']);
+		$elemHtml .= $elemClass->{$elem['elem']}($elem);
 		return $elemHtml;
 	}
 
@@ -335,7 +324,8 @@ trait Create{
 				if( !empty($this->data) ){
 
 					$dataArray = $this->data;
-					$data = json_decode($dataArray[0], true);
+					$data = $dataArray[0];
+					//$data = json_decode($dataArray[0], true);
 					//die(pre($dataArray));
 
 					$this->Form->setData($data);
@@ -352,9 +342,9 @@ trait Create{
 					//die(pre($dataArray));
 				
 					$k = 0;
-					foreach($dataArray as $json){
+					foreach($dataArray as $data){
 
-						$data = json_decode($json, true);
+						//$data = json_decode($json, true);
 
 						if( gettype($data) == 'array' ){
 
@@ -391,9 +381,9 @@ trait Create{
 		$html = '';
 		if( !empty($this->data) ){
 
-			foreach($this->data as $json){
+			foreach($this->data as $data){
 
-				$data = json_decode($json, true);
+				//$data = json_decode($json, true);
 
 				$this->Form->setData( $data );
 				$this->Html->setData( $data );

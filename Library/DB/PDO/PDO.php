@@ -83,8 +83,10 @@ class PDO extends Connection{
 	//$this->column_name('value');
 	function __call($method, $args){
 
+		$isColumn = $args[1];
+
 		//IF METHOD IS COLUMN
-		if( in_array($method, $this->_validFields) ){
+		if( in_array($method, $this->_validFields) || $isColumn == true/*IS COLUMN*/ ){
 
 			$column = $method;
 			$value = $args[0];
