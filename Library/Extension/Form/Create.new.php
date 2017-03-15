@@ -38,15 +38,6 @@ trait Create{
 				$e['attr']['enctype'] = 'multipart/form-data';
 
 			$this->_remove($name);
-
-			$dataArray = $this->data;
-			$data = $dataArray[0];
-			//$data = json_decode($dataArray[0], true);
-			//die(pre($dataArray));
-
-			$this->Form->setData($data);
-			$this->Html->setData($data);
-
 			return $this->Html->{'form'}($e);
 		}
 		return false;
@@ -171,7 +162,7 @@ trait Create{
 			else{
 
 				$html .= $this->Html->{'tr'}($this->Html->addElem('tr', '', $attrTr));
-				$html .= $this->Html->{'td'}(array_merge($this->Html->addElem('td', '', $tdAttr), array('value' => $elemHtml)));
+				$html .= $this->Html->{'td'}($this->Html->addElem('td', '', $tdAttr));
 				$html .= $this->Html->{'/td'}();
 				$html .= $this->Html->{'/tr'}();
 			}
@@ -189,7 +180,6 @@ trait Create{
 	private function createErrorLabel($error, $return = false){
 
 		$html = '';
-		$list = array();
 
 		if( gettype($error) == 'string' && is_Array(json_decode($error, true)) )
 			$error = json_decode($error, true);
@@ -206,12 +196,7 @@ trait Create{
 				$elem .= $elem ? ',[name='.str_replace(' ', '_', $k).']' : '[name='.str_replace(' ', '_', $k).']';
 				if($v && !in_array($v, $list)){
 
-					$html .= $this->Html->{'h4'}( 
-						array_merge(
-							$this->Html->addElem('h4', '', array('style' => 'margin:0.5rem;font-size:20px;font-weight:bold;')),
-							array('value' => $v)
-						)
-					);
+					$html .= $this->Html->{'h4'}($this->Html->addElem('h4', '', array('style' => 'margin:0.5rem;font-size:20px;font-weight:bold;', 'value' => $v)));
 					$html .= $this->Html->{'/h4'}();
 				}
 			}
@@ -234,6 +219,7 @@ trait Create{
 	private function createMessageLabel($message, $return = false){
 
 		$html = '';
+		$row = array();
 		$list = array();
 
 		if( gettype($message) == 'string' && is_Array(json_decode($message, true)) )
@@ -251,12 +237,7 @@ trait Create{
 				$elem .= $elem ? ',[name='.str_replace(' ', '_', $k).']' : '[name='.str_replace(' ', '_', $k).']';
 				if($v && !in_array($v, $list)){
 
-					$html .= $this->Html->{'h4'}( 
-						array_merge(
-							$this->Html->addElem('h4', '', array('style' => 'margin:0.5rem;font-size:20px;font-weight:bold;')),
-							array('value' => $v)
-						)
-					);
+					$html .= $this->Html->{'h4'}($this->Html->addElem('h4', '', array('style' => 'margin:0.5rem;font-size:20px;font-weight:bold;', 'value' => $v)));
 					$html .= $this->Html->{'/h4'}();
 				}
 				$list[] = $v;
@@ -282,9 +263,9 @@ trait Create{
 
 			if( !empty($this->data) ){
 
-				foreach($this->data as $data){
+				foreach($this->data as $json){
 
-					//$data = json_decode($json, true);
+					$data = json_decode($json, true);
 
 					$this->Form->setData($data);
 					$this->Html->setData($data);
@@ -343,8 +324,7 @@ trait Create{
 				if( !empty($this->data) ){
 
 					$dataArray = $this->data;
-					$data = $dataArray[0];
-					//$data = json_decode($dataArray[0], true);
+					$data = json_decode($dataArray[0], true);
 					//die(pre($dataArray));
 
 					$this->Form->setData($data);
@@ -361,9 +341,9 @@ trait Create{
 					//die(pre($dataArray));
 				
 					$k = 0;
-					foreach($dataArray as $data){
+					foreach($dataArray as $json){
 
-						//$data = json_decode($json, true);
+						$data = json_decode($json, true);
 
 						if( gettype($data) == 'array' ){
 
@@ -400,9 +380,9 @@ trait Create{
 		$html = '';
 		if( !empty($this->data) ){
 
-			foreach($this->data as $data){
+			foreach($this->data as $json){
 
-				//$data = json_decode($json, true);
+				$data = json_decode($json, true);
 
 				$this->Form->setData( $data );
 				$this->Html->setData( $data );

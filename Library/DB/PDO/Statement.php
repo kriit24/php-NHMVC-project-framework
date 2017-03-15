@@ -33,11 +33,9 @@ trait Statement{
 		return $this;
 	}
 
-	function Insert($values = array()){
+	function Insert($values){
 
 		$values = array_merge($this->preDefinedColumns, $values);
-		if( $this->_trigger['INSERT'] && $triggerValues = call_user_func_array( array($this, $this->_trigger['INSERT']), array($values)) )
-			$values = array_merge($values, $triggerValues);
 		$values = $this->validFields($values);
 		$values = $this->prepareParams($values);
 
@@ -61,8 +59,6 @@ trait Statement{
 	function Update($values, $where){
 
 		$values = array_merge($this->preDefinedColumns, $values);
-		if( $this->_trigger['UPDATE'] && $triggerValues = call_user_func_array( array($this, $this->_trigger['UPDATE']), array($values, $where)) )
-			$values = array_merge($values, $triggerValues);
 		$values = $this->validFields($values);
 		$values = $this->prepareParams($values);
 
@@ -85,7 +81,7 @@ trait Statement{
 		return $this;
 	}
 
-	function Delete($where = ''){
+	function Delete($where){
 
 		$where = array_merge($this->preDefinedColumns, $where);
 

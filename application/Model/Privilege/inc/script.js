@@ -5,7 +5,10 @@ $(document).ready(function(){
 
 	$('.select-group').live('click', function(){
 
-		$(this).parents('.subitoggle').find('input[type="checkbox"]').not(this).prop( "checked", function( i, val ) {
+		var elem = '#' + $(this).attr('for');
+
+		$(this).parents('.subitoggle').find('input[type="checkbox"]').not(elem).prop( "checked", function( i, val ) {
+			console.log(this);
 			return !val;
 		});
 	});

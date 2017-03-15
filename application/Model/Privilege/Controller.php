@@ -106,14 +106,17 @@ class Controller extends \Library{
 				if( empty($models) )
 					continue;
 
-				foreach($models as $model => $methods){
+				if( is_Array($models) ){
 
-					if( empty($methods) )
-						continue;
+					foreach($models as $model => $methods){
 
-					foreach($methods as $method => $true){
+						if( empty($methods) )
+							continue;
 
-						$privilege->Insert( array('role_id' => $role_id, 'route' => $route, 'class' => $model, 'method' => $method) );
+						foreach($methods as $method => $true){
+
+							$privilege->Insert( array('role_id' => $role_id, 'route' => $route, 'class' => $model, 'method' => $method) );
+						}
 					}
 				}
 			}

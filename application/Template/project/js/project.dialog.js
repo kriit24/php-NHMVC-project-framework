@@ -272,7 +272,7 @@ Project.Dialog = function( elem ){
 
 							self.reload = true;
 							if( scrollTop )
-								Project.Session.set('dialogScrollto', scrollTop);
+								Project.Session.set('scrollTo', scrollTop);
 						}}).create();
 						return false;
 					}
@@ -289,12 +289,6 @@ $(document).ready(function(){
 	$.extend( {dialog : Project.Dialog} );
 	var dialog = $.dialog('#dialog');
 	dialog.reload = false;
-
-	if( Project.Session.get('dialogScrollto') ){
-
-		$('html, body').animate({scrollTop: Project.Session.get('dialogScrollto')}, 500);
-		Project.Session.remove('dialogScrollto');
-	}
 
 	$('.dialog').live('click', function(e){
 
@@ -322,8 +316,7 @@ $(document).ready(function(){
 		//no reload - it can re post data
 		if( dialog.reload ){
 
-			if( window.location.hash.length == 0 )
-				window.location.href = window.location.href;
+			$.reload();
 		}
 	});
 });

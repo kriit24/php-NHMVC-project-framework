@@ -19,7 +19,7 @@ abstract class _Abstract implements \Library_Interface_Abstract{
 	public static function privilege(): array{
 
 		return array(
-			'Index' => array('*'),
+			'Index' => array('ADMIN', 'SUPERADMIN', 'MARKETING'),
 			'Index_Admin' => array('ADMIN', 'SUPERADMIN')
 		);
 	}

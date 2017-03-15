@@ -8,11 +8,11 @@ while($row = $this->role->fetch()){
 
 	?>
 	<div class="ibox float-e-margins">
-		<div class="ibox-title">
+		<div class="ibox-title dropdown" for="privilege-<?=$row['id'];?>">
 		    <h5><b><?=($row['name']);?></b></h5>
 
 		    <div class="ibox-tools">
-				<a class="collapse-link dropdown" id="privilege-<?=$row['id'];?>">
+				<a class="collapse-link">
 					<i class="fa fa-chevron-down"></i>
 				</a>
 			</div>
@@ -50,8 +50,8 @@ while($row = $this->role->fetch()){
 							<div style="margin-bottom:10px;"><b><?=$class['class'];?></b></div>
 
 							<div style="margin-bottom:5px;">
-								<input type="checkbox" name="privilege[<?=($row['id']);?>][all]" value="1" id="<?=($class['class']);?>_all" class="select-group"> 
-								<label for="<?=($class['class']);?>_all" class="checkbox"><span></span><?=$this->Language( 'Select all' );?></label>
+								<input type="checkbox" name="privilege[<?=($row['id']);?>][all]" value="1" id="<?=($row['id']);?>_<?=($route);?>_<?=($class['class']);?>_<?=($method);?>_group_all"> 
+								<label for="<?=($row['id']);?>_<?=($route);?>_<?=($class['class']);?>_<?=($method);?>_group_all" class="checkbox select-group"><span></span><?=$this->Language( 'Select all' );?></label>
 							</div>
 							<?
 							foreach($class['methods'] as $method){

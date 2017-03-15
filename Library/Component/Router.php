@@ -140,7 +140,24 @@ class Router extends \Library\classIterator{
 					$classFile = _DIR .DIRECTORY_SEPARATOR. _APPLICATION_PATH .DIRECTORY_SEPARATOR. $routeName .DIRECTORY_SEPARATOR. $className;
 					if( is_dir($classFile) ){
 
-						if( method_exists('\\' . $routeName . '\\' . $className . '\\Index', $exp[2]) ){
+						$reflection = new \Reflectionclass('\\' . $routeName . '\\' . $className . '\\Index');
+						$check = $routeName . '\\' . $className;
+						$methodsList = array();
+						$methods = (array)$reflection->getMethods(\ReflectionMethod::IS_PUBLIC | \ReflectionMethod::IS_PROTECTED);
+						$methods = array_filter(array_filter($methods, function($row) use($check){
+
+							$row = (array) $row;
+							if( preg_match('/' . str_replace('\\', '_', $check) . '/i', str_replace('\\', '_', $row['class'])) && $row['name'] != '__construct' )
+								return true;
+						}));
+						if( !empty($methods) ){
+
+							foreach($methods as $row)
+								$methodsList[] = $row->name;
+						}
+
+						//if( method_exists('\\' . $routeName . '\\' . $className . '\\Index', $exp[2]) ){
+						if( in_array($exp[2], $methodsList) ){
 
 							$methodName = $exp[2];
 							unset($exp[2]);

@@ -8,7 +8,7 @@ abstract class _Abstract implements \Library_Interface_Abstract{
 		return array(
 			'admin' => array(
 				'Index_Admin' => array('position' => 'content', 'is_static' => false, 'is_first_page' => false, 'is_route' => true),
-				'Check' => array('position' => 'header', 'is_static' => true, 'is_first_page' => false, 'is_route' => false)
+				'Check' => array('position' => 'content', 'is_static' => true, 'is_first_page' => false, 'is_route' => false)
 			)
 		);
 	}

@@ -76,6 +76,15 @@ class Library extends \Library\Component\Extension{
 				$_parent = substr($exp[1], 0, strrpos($exp[1], '/'));
 				$_method = $caller[3]['function'];
 			}
+			else{
+
+				$exp = explode(_APPLICATION_PATH, $caller[1]['file']);
+				if( $exp[1] )
+					$_parent = substr($exp[1], 0, strrpos($exp[1], '/'));
+				else
+					$_parent = $caller[1]['class'];
+				$_method = $caller[1]['function'];
+			}
 
 			$class = new $className(true);
 			$class->_parent = $_parent;

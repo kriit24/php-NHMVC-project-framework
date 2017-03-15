@@ -132,18 +132,28 @@ Project.clickEvent = [];
 			});
 		},
 
-		scrollTo( speed, posAdd ){
+		scrollTo: function( speed, offsetAdd ){
 
-			var selector = this.selector;
+			var selector = this.selector.length == 0 ? this : $(this.selector);
 
 			if( speed == undefined )
 				var speed = 500;
-			if( posAdd == undefined )
-				var posAdd = 0;
+			if( offsetAdd == undefined )
+				var offsetAdd = 0;
 
 			$('html, body').animate({
-				scrollTop: ( $(selector).offset().top + posAdd )
+				scrollTop: ( selector.offset().top + offsetAdd )
 			}, speed);
+		},
+		
+		scrollOnAction: function( offsetAdd ){
+
+			var selector = this.selector.length == 0 ? this : $(this.selector);
+
+			if( offsetAdd == undefined )
+				var offsetAdd = 0;
+
+			Project.Session.set('scrollTo', selector.offset().top + offsetAdd);
 		}
 	});
 
@@ -169,6 +179,15 @@ Project.clickEvent = [];
 				newHref += newHref ? '&'+key+'='+value : key+'='+value;
 			});
 			return (newHref.indexOf('?') == -1 && newHref.length > 0 ? '?' : '')+newHref;
+		},
+
+		reload: function(){
+
+			var regex = new RegExp("([?;&])reload[^&;]*[;&]?");
+			var query = window.location.href.split('#')[0].replace(regex, "$1").replace(/&$/, '');
+			window.location.href =
+				(window.location.href.indexOf('?') < 0 ? "?" : query + (query.slice(-1) != "?" ? "&" : ""))
+				+ "reload=" + new Date().getTime() + window.location.hash;
 		},
 
 		removeLocationParam: function( href, param ){
@@ -296,6 +315,9 @@ $(document).ready(function(){
 		Project.clickEvent[$(this).attr('id')] = true;
 
 		var className = '.' + $(this).attr('id');
+		if( $(className) == undefined || $(className).length == 0 )
+			className = '.' + $(this).attr('for');
+
 		var elem = this;
 		if( $(className) != undefined && $(className).length > 0 ){
 
@@ -318,30 +340,12 @@ $(document).ready(function(){
 		return false;
 	});
 
-	if( Project.Session.get('scrolltoElemTop') ){
+	if( Project.Session.get('scrollTo') ){
 
-		var top = Project.Session.get('scrolltoElemTop');
+		var top = Project.Session.get('scrollTo');
 		$('html, body').animate({scrollTop: top}, 500);
-		Project.Session.remove('scrolltoElemTop');
+		Project.Session.remove('scrollTo');
 	}
-
-	$('input[scrollto="true"], input[scrollto="1"]').live('click', function(){
-
-		var scrollTop = $(window).scrollTop();
-
-		if( $(this).attr('for') != undefined ){
-
-			var elem = '#' + $(this).attr('for');
-			if( $(elem) != undefined && $(elem).length > 0 ){
-
-				var pos = $(elem).offset();
-				var top = parseInt(pos.top);
-				scrollTop = top - 100;
-			}
-		}
-
-		Project.Session.set('scrolltoElemTop', scrollTop);
-	});
 
 	$('label.checkbox').prev('input[type="checkbox"]').css({'visibility' : 'hidden', 'margin-bottom' : '10px', 'display' : 'inline-block', 'width' : '15px'});
 	$('label.checkbox').prev('input[type="radio"]').css({'visibility' : 'hidden', 'margin-bottom' : '0px', 'display' : 'inline-block', 'width' : '15px'});
