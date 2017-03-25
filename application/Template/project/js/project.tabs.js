@@ -78,7 +78,7 @@ Project.Tabs = function(selector){
 
 							$('.tabs-loader').hide();
 							$(self.selectorElem).show();
-						}, 250);
+						}, 150);
 
 					}
 				});
