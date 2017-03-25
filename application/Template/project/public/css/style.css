@@ -98,6 +98,7 @@ body > .container-fluid{
 	height:100%;
 }
 .container-fluid#content-bar > .row > .col{
+	background:#ffffff;
 	display:table-cell;
 	width:auto;
 	height:auto;

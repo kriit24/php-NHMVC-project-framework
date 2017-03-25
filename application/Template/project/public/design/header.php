@@ -27,6 +27,7 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js" type="text/javascript"></script>
 <script src="/Template/js/project.js" type="text/javascript"></script>
 <script src="/Template/js/project.dialog.js" type="text/javascript"></script>
+<script src="/Template/js/project.storage.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 var $_POST = $.canJSON('<?=addslashes(json_encode($_POST));?>');

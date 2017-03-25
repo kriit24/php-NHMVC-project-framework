@@ -16,7 +16,7 @@ class Index extends \Library{
 
 	protected function Index_Admin(){
 
-		$this->view('Index');
+		$this->view('Index_Admin');
 	}
 }
 
