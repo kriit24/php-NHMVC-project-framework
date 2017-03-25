@@ -5,6 +5,9 @@ trait Query{
 
 	function Query($Query = '', $params = array()){
 
+		if( $Query && empty($this->stmtArray) )
+			$this->StatementReConstruct();
+
 		$this->PDO = $this->getConnection( $this->_connName );
 		if( !$this->PDO )
 			return $this;
