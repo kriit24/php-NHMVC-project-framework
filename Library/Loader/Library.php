@@ -3,6 +3,8 @@ namespace Library\Loader;
 
 class Library extends \Library\Component\Extension{
 
+	use \Library\Component\Singleton;
+
 	static function init(){
 
 		if( $cache = \Library\Component\Cache::get('LIBRARY') ){

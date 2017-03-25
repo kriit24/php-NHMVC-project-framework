@@ -78,7 +78,7 @@ trait Query{
 	}
 
 	function insertId(){
-
+		
 		if( $this->PDO == NULL ){
 
 			$row = $this->Query("SHOW TABLE STATUS FROM `".\Conf\Conf::_DB_CONN['_default']['_database']."` WHERE `name` LIKE '".$this->_name."'")->fetch();

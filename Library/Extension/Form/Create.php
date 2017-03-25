@@ -350,11 +350,30 @@ trait Create{
 					//$data = json_decode($dataArray[0], true);
 					//die(pre($dataArray));
 
+					if( gettype($data) == 'array' ){
+
+						$this->Form->setData($data);
+						$this->Html->setData($data);
+
+						$html .= $this->createList($attr);
+					}
+					if( gettype($data) == 'string' || strtolower(gettype($data)) == 'null' ){
+
+						$html .= $this->createList($attr);
+					}
+					if( gettype($data) == 'object' ){
+
+						$htmlObject = $data;
+						$html .= $htmlObject->createListFromObject( $attr );
+					}
+
 					$this->Form->setData($data);
 					$this->Html->setData($data);
 				}
+				else{
 
-				$html .= $this->createList($attr);
+					$html .= $this->createList($attr);
+				}
 			}
 			if( $this->bodyType == 'row' ){
 
@@ -376,7 +395,7 @@ trait Create{
 							$html .= $this->createRow( $attr, $k );
 							$k++;
 						}
-						if( gettype($data) == 'string' || strtolower(gettype($data)) == 'null' ){
+						if( gettype($data) == 'string' ){
 
 							$html .= $this->createRow( $attr, $k, $data );
 							$k++;
@@ -418,6 +437,30 @@ trait Create{
 
 			$html .= $this->createRow( $attr, $k );
 			$k++;
+		}
+		return $html;
+	}
+
+	private function createListFromObject( $attr ){
+
+		$html = '';
+		if( !empty($this->data) ){
+
+			$dataArray = $this->data;
+			$data = $dataArray[0];
+
+			//$data = json_decode($json, true);
+
+			$this->Form->setData( $data );
+			$this->Html->setData( $data );
+
+			$html .= $this->createList( $attr );
+			//$k++;
+		}
+		else{
+
+			$html .= $this->createList( $attr );
+			//$k++;
 		}
 		return $html;
 	}

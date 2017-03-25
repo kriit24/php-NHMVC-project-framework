@@ -15,15 +15,15 @@ trait Log{
 			$PDO = $sql->getConnection( $sql->_connName );
 			if( $sql->isConnected() ){
 
-				$stmt = $PDO->prepare("EXPLAIN EXTENDED " . $Query);
-				$stmt->execute($params);
+			$stmt = $PDO->prepare("EXPLAIN EXTENDED " . $Query);
+			$stmt->execute($params);
 				$r = $stmt->fetchAll( $sql->fetchMode );
 				$ExplainQuery = $sql->prepareGetQuery($Query, $params);
 
-				self::explainLog($table, $queryType, $Query, $r, false);
-				self::noIndexUsedLog($table, $queryType, $ExplainQuery, $r);
-			}
+			self::explainLog($table, $queryType, $Query, $r, false);
+			self::noIndexUsedLog($table, $queryType, $ExplainQuery, $r);
 		}
+	}
 	}
 
 	static function explainLog( $table, $queryType, $Query, $data, $return = false ){

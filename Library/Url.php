@@ -12,7 +12,7 @@ class Url{
 		return str_replace(get_include_path(), '', $directoryPath);
 	}
 
-	public function url($url = array(), $hideKey = array(), $mergeUrl = false){
+	public function url($url = array(), $merge = array()){
 
 		if( empty($url) )
 			return '';
@@ -34,6 +34,7 @@ class Url{
 		$url = array_merge($this->build( $url ), $url);
 		if( $url['route'] && $url['route'] == \Conf\Conf::_DEFAULT_ROUTE )
 			unset($url['route']);
+		//pre($url);
 
 		$urlString = '';
 		foreach($url as $key => $value){
