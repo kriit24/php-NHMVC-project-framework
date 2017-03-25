@@ -12,7 +12,7 @@ trait Statement{
 		$this->row = array();
 		$this->preQuery = '';
 		$this->Query = '';
-		$this->methods = array();
+		$this->onComplete = array();
 		$this->rebuildStatement = false;
 
 		if( empty($this->_validFields) )
