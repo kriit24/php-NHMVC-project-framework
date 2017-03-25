@@ -49,7 +49,7 @@ abstract class install{
 	private static function installDb($db, $redis){
 
 		$dbString = file_get_contents( dirname(__DIR__).'/inc/database.sql' );
-		foreach(array('CREATE TABLE' => '\;', 'INSERT INTO' => '\;', 'UPDATE' => '\;', 'CREATE TRIGGER' => 'END\;', 'CREATE PROCEDURE' => 'END\;', 'CREATE FUNCTION' => 'END\;', 'CREATE DEFINER' => 'END\;') as $startLine => $endLine){
+		foreach(array('CREATE TABLE' => '\;', 'INSERT INTO' => '\;', 'UPDATE' => '\;', 'CREATE TRIGGER' => 'END\;', 'DELIMITER \$\$' => 'DELIMITER \;', 'CREATE PROCEDURE' => 'END\;', 'CREATE FUNCTION' => 'END\;', 'CREATE DEFINER' => 'END\;') as $startLine => $endLine){
 
 			preg_match_all('/\n'.$startLine.'(.*?)'.$endLine.'/s', $dbString, $matches);
 			foreach($matches[0] as $query){

@@ -28,7 +28,7 @@ trait Statement{
 
 		$this->StatementReConstruct();
 		$this->stmtArray['SELECT'] = '';
-		$this->Column( ($this->_aliasFields ? array_replace($this->_validFields, $this->_aliasFields) : $this->_validFields) );
+		$this->Column( $this->prepareQueryColumnName($this->_validFields) );
 		$this->From($this->_name);
 		return $this;
 	}
@@ -49,7 +49,7 @@ trait Statement{
 
 		$this->StatementReConstruct();
 		$this->stmtArray['INSERT INTO'] = $this->_name;
-		$this->stmtArray['COLUMN'] = '('.implode(', ', array_keys($values)).')';
+		$this->stmtArray['COLUMN'] = '('.implode(', ', $this->prepareQueryColumnName(array_keys($values))).')';
 		$this->stmtArray['VALUES'] = str_replace(array_keys($functionValues), $functionValues, '(:'.implode(', :', array_keys($values)).')' );
 		$this->params = $this->prepareInsert($values, array_keys($functionValues));
 		$this->Query();
@@ -144,6 +144,27 @@ trait Statement{
 		return $this;
 	}
 
+	function jsonColumn($columnsArray){
+
+		$JSON_ARRAY_STRING = '';
+		foreach($columnsArray as $k => $v){
+
+			$key = is_numeric($k) ? $v : $k;
+			if( preg_match('/\./i', $key) )
+				list(, $key) = explode('.', $key);
+			$column = $v;
+
+			$JSON_ARRAY_STRING .= ($JSON_ARRAY_STRING ? ", ',', " : "") . "JSON_ARRAY_STRING('".$key."', " . $column . ")";
+		}
+
+		return "JSON_OBJECT(
+			GROUP_CONCAT(
+				JSON_ARRAY_LIST( CONCAT(".$JSON_ARRAY_STRING.") )
+				SEPARATOR ','
+			)
+		)";
+	}
+
 	function From($from, $as = ""){
 
 		$this->stmtArray['FROM'] = ($from ? $from : $this->_name) . ($as ? ' AS '.$as : '');
@@ -217,25 +238,29 @@ trait Statement{
 
 	function Order($order){
 
-		$this->stmtArray['ORDER BY'] .= $this->stmtArray['ORDER BY'] ? ', '.$order : $order;
+		if( $order )
+			$this->stmtArray['ORDER BY'] .= $this->stmtArray['ORDER BY'] ? ', '.$order : $order;
 		return $this;
 	}
 
 	function Group($group){
 
-		$this->stmtArray['GROUP BY'] .= $this->stmtArray['GROUP BY'] ? ', '.$group : $group;
+		if( $group )
+			$this->stmtArray['GROUP BY'] .= $this->stmtArray['GROUP BY'] ? ', '.$group : $group;
 		return $this;
 	}
 
 	function limit($start, $limit = 0){
 
-		$this->stmtArray['LIMIT'] = $start . ($limit ? ','.$limit : '');
+		if( isset($start) )
+			$this->stmtArray['LIMIT'] = $start . ($limit ? ','.$limit : '');
 		return $this;
 	}
 
 	function having($having){
 
-		$this->stmtArray['HAVING'] = $having;
+		if( $having )
+			$this->stmtArray['HAVING'] = $having;
 	}
 }
 

@@ -61,7 +61,7 @@ Project.clickEvent = [];
 				var answer = confirm(text);
 				if( complete ){
 
-					return complete(answer);
+					return complete(answer, this);
 				}
 				if (answer){
 
@@ -77,61 +77,6 @@ Project.clickEvent = [];
 			});
 		},
 		
-		//paragraph toggle
-		ptoggle : function(speed){
-
-			var sel = this.selector.split('.');
-			var elem = (sel[1] != undefined ? sel[1] : sel[0]) . replace('#', '') . replace('.', '');
-			if( $('form.'+elem).length > 0 ){
-
-				$('form.'+elem).addClass('paragraph-toggle');
-			}
-			else if( $('div.'+elem).length > 0 ){
-
-				$('div.'+elem).addClass('paragraph-toggle');
-			}
-			else if( $('div.'+elem).length == 0 && $('form.'+elem).length == 0 && $( '.' + elem ).length == 0 ){
-
-				$( '.' + elem ).addClass('paragraph-toggle');
-			}
-			else{
-
-				alert('Cannot find "form.'+elem+'" OR "div.'+elem+'" to toggle');
-			}
-
-			$(this.selector).live('click', function(){
-
-				if( $('form.'+elem).length > 0 ){
-
-					$('form.'+elem).animate({height: "toggle"}, speed);
-				}
-				else if( $('div.'+elem).length > 0 ){
-
-					$('div.'+elem).animate({height: "toggle"}, speed);
-				}
-				else if( $('div.'+elem).length == 0 && $('form.'+elem).length == 0 && $( '.' + elem ).length == 0 ){
-
-					$( '.' + elem ).animate({height: "toggle"}, speed);
-				}
-				else{
-
-					alert('Cannot find "form.'+elem+'" OR "div.'+elem+'" to toggle');
-				}
-				return false;
-			});
-		},
-		
-		//toggle checkbox elements
-		itoggle : function(){
-
-			$(this).live('click', function(){
-
-				$(this).parents('form').find('input[type="checkbox"]').not(this).prop( "checked", function( i, val ) {
-					return !val;
-				});
-			});
-		},
-
 		scrollTo: function( speed, offsetAdd ){
 
 			var selector = this.selector.length == 0 ? this : $(this.selector);
@@ -146,14 +91,17 @@ Project.clickEvent = [];
 			}, speed);
 		},
 		
-		scrollOnAction: function( offsetAdd ){
+		scrollToAction: function( offsetAdd ){
 
+			var offsetTop = 1;
 			var selector = this.selector.length == 0 ? this : $(this.selector);
+			if( selector.length > 0 )
+				offsetTop = selector.offset().top;
 
 			if( offsetAdd == undefined )
 				var offsetAdd = 0;
 
-			Project.Session.set('scrollTo', selector.offset().top + offsetAdd);
+			Project.Session.set('scrollTo', offsetTop + offsetAdd);
 		}
 	});
 
@@ -251,7 +199,8 @@ Project.clickEvent = [];
 			if(value == undefined || value.length == 0) return {};
 
 			value = value.replace(/^\s+|\s+$/g,"");
-			if( value.substr(0,1) == '{' || value.substr(0,1) == '[' ){
+			if( (value.substr(0,1) == '{' || value.substr(0,1) == '[') && (value.substr( (value.length - 1 ),1) == '}' || value.substr( (value.length - 1 ),1) == ']' ) ){
+			//if( value.substr(0,1) == '{' || value.substr(0,1) == '[' ){
 
 				if( complete ){
 
@@ -262,28 +211,11 @@ Project.clickEvent = [];
 				return $.parseJSON(value);
 			}
 			return {};
-		},
-
-		loadPackage: function(devMode){
-
-			var n = Date.now();
-			var version = '';
-			if( devMode == true )
-				version = '?ver=' + n;
-			var currentScript = $('script').last();
-
-			$(currentScript).after(
-				'<script src="/Template/js/project.storage.js' + version + '" type="text/javascript"></script>'+
-				'<script src="/Template/js/project.dialog.js' + version + '" type="text/javascript"></script>'+
-				'<script src="/Template/js/project.autocomplete.js' + version + '" type="text/javascript"></script>'+
-				'<script src="/Template/js/project.required.js' + version + '" type="text/javascript"></script>'+
-				'<script src="/Template/js/project.caret.js' + version + '" type="text/javascript"></script>'+
-				'<script src="/Template/js/project.tabs.js' + version + '" type="text/javascript"></script>'+
-				'<script src="/Template/js/project.language.js' + version + '" type="text/javascript"></script>'
-			);
 		}
 	});
 })(jQuery);
+
+var textSelect = false;
 
 $(document).ready(function(){
 
@@ -292,7 +224,29 @@ $(document).ready(function(){
 	   $(this).datepicker({dateFormat: "dd.mm.yy"});
 	});
 
+	$('div').mouseup(function() {
+
+		var text = null;
+		if (window.getSelection) {
+
+			text = window.getSelection().toString();
+		} 
+		else if (document.selection) {
+
+			text = document.selection.createRange().text;
+		}
+
+		if( text )
+			textSelect = true;
+	});
+
 	$('.link').live('click', function(e){
+
+		if( textSelect ){
+
+			textSelect = false;
+			return;
+		}
 
 		if( e.target.tagName.toUpperCase() == 'SPAN' ){
 

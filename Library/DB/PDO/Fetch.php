@@ -78,6 +78,7 @@ trait Fetch{
 
 		$this->buildQueryStatement( $where );
 		$rows = $this->stmt->fetchAll( $this->fetchMode );
+		$this->rebuildStatement = true;
 		return $this->extension( $rows, true );
 	}
 
@@ -88,6 +89,7 @@ trait Fetch{
 		$this->stmt->bindColumn( $column, $ret );
 		$this->stmt->fetch( $this->fetchMode );
 		$ret = $this->extension( $ret );
+		$this->rebuildStatement = true;
 		return $ret;
 	}
 

@@ -8,7 +8,7 @@ class Template extends \Library{
 	const DEBUG = (_DEBUG == 'template' ? true : false);
 	private $design;
 	private $template = '';
-	private $Includes = array();
+	private static $Includes = array();
 
 	public function __construct(){
 
@@ -43,8 +43,10 @@ class Template extends \Library{
 		if( empty($this->classMethod) )
 			return false;
 
-		if( $this->classMethod['none'] )
+		if( $this->classMethod['none'] ){
+
 			return $this->content('none');
+		}
 
 		if( !is_dir(__DIR__.'/'.$this->template) )
 			die('Template dont exists: '.__DIR__.'/'.$this->template);
@@ -59,7 +61,7 @@ class Template extends \Library{
 	public function header(){
 
 		$Includes = \Library\Component\Register::getRegister('INCLUDES');
-		$this->Includes = $Includes;
+		self::$Includes = $Includes;
 		\Library\Component\Register::cleanRegister('INCLUDES');
 
 		$this->header = array(
@@ -110,8 +112,10 @@ class Template extends \Library{
 
 			foreach($Includes as $href){
 
-				if( in_array($href, $this->Includes) )
+				if( in_array($href, self::$Includes) )
 					continue;
+
+				array_push(self::$Includes, $href);
 
 				if( substr(basename($href), -4) == '.css' )
 					$cssString .= file_Get_contents( $href ) . "\n";
@@ -120,7 +124,35 @@ class Template extends \Library{
 			}
 			if( $cssString )
 				echo '<style type="text/css">'.$cssString.'</style>';
-			
+
+			if( $jsString )
+				echo '<script type="text/javascript">'.$jsString.'</script>';
+		}
+	}
+
+	public static function includes(){
+
+		$Includes = \Library\Component\Register::getRegister('INCLUDES');
+		if( $Includes ){
+
+			$cssString = null;
+			$jsString = null;
+
+			foreach($Includes as $href){
+
+				if( in_array($href, self::$Includes) )
+					continue;
+
+				array_push(self::$Includes, $href);
+
+				if( substr(basename($href), -4) == '.css' )
+					$cssString .= file_Get_contents( $href ) . "\n";
+				if( substr(basename($href), -3) == '.js' )
+					$jsString .= file_Get_contents( $href ) . "\n";
+			}
+			if( $cssString )
+				echo '<style type="text/css">'.$cssString.'</style>';
+
 			if( $jsString )
 				echo '<script type="text/javascript">'.$jsString.'</script>';
 		}

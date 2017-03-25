@@ -16,6 +16,14 @@ foreach($elemList as $k => $row){
 ?>
 	<div class="form-group"><input type="submit" name="filter" class="btn btn-primary form-control" value="<?=$this->Language('Search');?>"> <a href="<?=($_SERVER['SCRIPT_URI'] ?? './');?>"><?=$this->Language('Clear');?></a></div>
 </div>
+
 <?
-$this->script('$(\'.filter_helper_form_show\').ClickFilter();');
+\Template\Template::includes();
 ?>
+
+<script type="text/javascript">
+$(document).ready(function(){
+
+	$('.filter_helper_form_show').ClickFilter();
+});
+</script>

@@ -1,29 +1,37 @@
 Project.Dialog = function( elem ){
 
-	if( elem.indexOf('#') == -1 ){
+	if( elem ){
 
-		alert('Dialog element selector must be ID like: #dialog');
-		return {};
+		if( elem.indexOf('#') == -1 ){
+
+			alert('Dialog element selector must be ID like: #dialog');
+			return {};
+		}
+
+		elem = elem.replace('#', '');
+
+		//var loader = elem + '_loader';
+		var loader = 'dialog_loader';
+		var style = 'background:white;';
+		style += 'border:1px solid #626262;';
+		style += 'padding:3px;';
+		style += 'position:fixed;';
+		style += 'display:none;';
+		style += 'z-index:1500;';
+		style += 'border:5px solid rgb(98, 98, 98);';
+		style += 'border-radius:0.55em;-moz-border-radius:0.55em;-webkit-border-radius:0.55em;';
+		style += 'padding:15px;';
+		style += 'font-weight:bold;';
+
+		//Project.Dialog.Object = this;
+		if( $('#'+elem).length == 0 )
+			$(document.body).append('<div id="' + elem + '" class="project-dialog" style="display:none;"></div>');
+
+		if( $('#'+loader).length == 0 )
+			$(document.body).append('<div id="' + loader + '" style="' + style + '"><img src="/Template/public/images/ajax-loader-big.gif" style="float:left;"/> <div style="float:left;margin-left:5px;margin-top:15px;">Loading ...</div></div>');
+
+		$('#'+loader).center(window);
 	}
-
-	elem = elem.replace('#', '');
-
-	var loader = elem + '_loader';
-	var style = 'background:white;';
-	style += 'border:1px solid #626262;';
-	style += 'padding:3px;';
-	style += 'position:fixed;';
-	style += 'display:none;';
-	style += 'z-index:1500;';
-	style += 'border:5px solid rgb(98, 98, 98);';
-	style += 'border-radius:0.55em;-moz-border-radius:0.55em;-webkit-border-radius:0.55em;';
-	style += 'padding:15px;';
-	style += 'font-weight:bold;';
-
-	//Project.Dialog.Object = this;
-	$(document.body).append('<div id="' + elem + '" style="display:none;"></div>');
-	$(document.body).append('<div id="' + loader + '" style="' + style + '"><img src="/Template/public/images/ajax-loader-big.gif" style="float:left;"/> <div style="float:left;margin-left:5px;margin-top:15px;">Loading ...</div></div>');
-	$('#'+loader).center(window);
 
 	return {
 
@@ -103,6 +111,18 @@ Project.Dialog = function( elem ){
 			return this;
 		},
 
+		//IN some cases is needed regular window.open
+		//$.dialog().window({'url' : '".$this->url( array('model' => '', 'method' => '') )."', 'width' : 800, 'height' : 800});
+
+		window : function( Object ){
+
+			var top = ( $(window).outerHeight() - Object.height ) / 2;
+			var left = ( $(window).outerWidth() - Object.width ) / 2;
+
+			window.open( Object.url, 'dialog', 'width=' + Object.width + ',height=' + Object.height + ',top=' + top + ',left=' + left );
+			return false;
+		},
+
 		create : function(){
 
 			this.createElement = true;
@@ -116,6 +136,16 @@ Project.Dialog = function( elem ){
 		},
 
 		close : function(){
+
+			if( this.selector == undefined ){
+
+				$('.project-dialog').each(function(){
+
+					$(this).dialog("close");
+				});
+
+				return;
+			}
 
 			$('#'+this.selector).dialog("close");
 		},
@@ -189,19 +219,14 @@ Project.Dialog = function( elem ){
 
 		appendDialogElem : function(data){
 
-			var selector = this.selector + '_' + this.counter;
+			var selector = this.selector.split('_')[0] + '_' + this.counter;
+			this.selector = selector;
 			var dialog = $.dialog('#'+selector);
+			var z_index = parseInt($('#'+selector).css('z-index'));
+			$('#'+selector).css({'z-index' : (z_index + 1) });
 			dialog.appendElement = true;
 			dialog.createDialogElem(data);
-
-			/*
-			$($.dialog.selector).html(data);
-			var properties = $.dialog.properties();
-			$('#'+$.dialog.loader).hide();
-			$($.dialog.selector).dialog(properties);
-			*/
-
-			dialog.counter ++;
+			this.counter ++;
 		},
 
 		onComplete : function(data){
@@ -216,6 +241,91 @@ Project.Dialog = function( elem ){
 			//var new_left = ( $(window).width()-$(".ui-dialog").width() )/2;
 			//$( ".ui-dialog" ).css({"position" : "fixed", "top" : (new_top <= 0 ? 10 : new_top - 10)+"px", "left" : (new_left <= 0 ? 10 : new_left - 10)+"px"});
 			return {'title' : this.Object.title};
+		},
+
+		dialogClick : function(e, attrClass){
+
+			if( textSelect ){
+
+				textSelect = false;
+				return false;
+			}
+
+			var elem = $(e.target);
+
+			if( e.target.tagName.toUpperCase() == 'SPAN' ){
+
+				if( elem.parent('label') && elem.parent('label').attr('for') != undefined ){
+
+					var id = elem.parent('label').attr('for');
+					if( elem.parent('label').prev().attr('id') != undefined && elem.parent('label').prev().attr('id') == id && elem.parent('label').prev()[0].tagName.toUpperCase() == 'INPUT' )
+						return false;
+				}
+			}
+			if( e.target.tagName.toUpperCase() == 'INPUT' || e.target.tagName.toUpperCase() == 'A' ){
+
+				if( typeof elem.attr('class') == 'undefined' || elem.attr('class').indexOf('dialog') == -1 )
+					return false;
+			}
+
+			if( elem.attr('disabled') != undefined )
+				return false;
+
+			return true;
+		},
+
+		bindClick : function( data, title, scrollTop ){
+
+			var self = this;
+
+			$('input[type="submit"]', $('#'+self.selector)).bind('click', function(event){
+
+				var form = $(this).parents('form');
+				var takeAction = true;
+				$('input[required],textarea[required]', form).each(function(k, inputElem){
+
+					if( $(this).val().length == 0 ){
+
+						if( $(this).attr('required-label') != undefined )
+							Project.Required.isInvalid(this, $(this).attr('required-label'));
+						takeAction = false;
+						return false;
+					}
+					else{
+
+						this.setCustomValidity('');
+						return false;
+					}
+				});
+
+				self.closeImmediately = $(this).attr('class') != undefined && $(this).attr('class').indexOf('dialog-close') > -1 ? true : false;
+
+				if( form.attr('action') != undefined && form.attr('action').length > 0 && takeAction == true ){
+
+					var formData = new FormData(
+						form[0]
+					);
+					formData.append($(this).attr('name'), $(this).attr('value'));
+
+					if( typeof CKEDITOR != 'undefined' && CKEDITOR.instances != undefined ){
+
+						$.each(CKEDITOR.instances, function(k, v){
+
+							formData.append(k, CKEDITOR.instances[k].getData());
+						})
+					}
+
+					self.post({'url' : form.attr('action'), 'data' : formData, 'title' : title, 'complete' : function(data){
+
+						self.bindClick( data, title, scrollTop );
+						self.reload = true;
+						if( scrollTop )
+							Project.Session.set('scrollTo', scrollTop);
+					}}).create();
+					return false;
+				}
+			});
+			return false;
 		},
 		
 		clickEvent : function(elem){
@@ -245,41 +355,10 @@ Project.Dialog = function( elem ){
 			}
 
 			var scrollTop = $('body').scrollTop();
-			self.get({'url' : href, 'data' : '', 'title' : title, 'complete' : function(data){
+			return self.get({'url' : href, 'data' : '', 'title' : title, 'complete' : function(data){
 
-				$('input[type="submit"]', $('#'+self.selector)).live('click', function(){
-
-					var elem = $(this).parents('form');
-					self.closeImmediately = $(this).attr('class') != undefined && $(this).attr('class').indexOf('dialog-close') > -1 ? true : false;
-
-					if( elem.attr('action') != undefined && elem.attr('action').length > 0 ){
-
-						var form = $(this).parents('form')[0];
-						var formData = new FormData(
-							form
-						);
-						formData.append($(this).attr('name'), $(this).attr('value'));
-
-						if( typeof CKEDITOR != 'undefined' && CKEDITOR.instances != undefined ){
-
-							$.each(CKEDITOR.instances, function(k, v){
-
-								formData.append(k, CKEDITOR.instances[k].getData());
-							})
-						}
-
-						self.post({'url' : elem.attr('action'), 'data' : formData, 'title' : title, 'complete' : function(data){
-
-							self.reload = true;
-							if( scrollTop )
-								Project.Session.set('scrollTo', scrollTop);
-						}}).create();
-						return false;
-					}
-					return true;
-				});
-			}}).create();
-			return false;
+				return self.bindClick(data, title, scrollTop);
+			}});
 		}
 	};
 };
@@ -292,24 +371,15 @@ $(document).ready(function(){
 
 	$('.dialog').live('click', function(e){
 
-		var elem = $(e.target);
+		if( dialog.dialogClick(e) )
+			dialog.clickEvent(this).create();
+		return false;
+	});
+	$('.dialog-append').live('click', function(e){
 
-		if( e.target.tagName.toUpperCase() == 'SPAN' ){
-
-			if( elem.parent('label') && elem.parent('label').attr('for') != undefined ){
-
-				var id = elem.parent('label').attr('for');
-				if( elem.parent('label').prev().attr('id') != undefined && elem.parent('label').prev().attr('id') == id && elem.parent('label').prev()[0].tagName.toUpperCase() == 'INPUT' )
-					return;
-			}
-		}
-		if( e.target.tagName.toUpperCase() == 'INPUT' || e.target.tagName.toUpperCase() == 'A' ){
-
-			if( typeof elem.attr('class') == 'undefined' || elem.attr('class').indexOf('dialog') == -1 )
-				return;
-		}
-
-		return dialog.clickEvent(this);
+		if( dialog.dialogClick(e) )
+			dialog.clickEvent(this).append();
+		return false;
 	});
 	$('button.ui-dialog-titlebar-close').live('click', function(){
 

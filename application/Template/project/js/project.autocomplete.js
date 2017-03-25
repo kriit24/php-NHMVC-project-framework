@@ -1,17 +1,14 @@
-//Project.Autocomplete.setSource('car_id', ['some', 'some2', 'some3'], minLength);
-//Project.Autocomplete.setSource('car_id', [{ value: "1", label: "some" },{ value: "2", label: "some 2" },{ value: "3", label: "some 3" }], minLength);
+//Project.Autocomplete.setSource('car_id', ['some', 'some2', 'some3']);
+//Project.Autocomplete.setSource('car_id', [{ value: "1", label: "some" },{ value: "2", label: "some 2" },{ value: "3", label: "some 3" }]);
+//GET values by input name, if u want to autofill input elements
 
 Project.Autocomplete = {
 
 	source : {},
 
-	minLength : 3,
-
-	setSource: function( elemName, source, minLength ){
+	setSource: function( elemName, source ){
 
 		this.source[ elemName ] = source;
-		if( minLength != undefined )
-			this.minLength = minLength;
 	},
 
 	method: function(elem, origElem, item){
@@ -48,7 +45,6 @@ Project.Autocomplete = {
 			return;
 		}
 
-		var minLength = this.minLength;
 		var source = this.source[name] != undefined ? this.source[name] : $(elem).attr('rel');
 		var value  = $(elem).attr('autocomplete-value') != undefined ? $(elem).attr('autocomplete-value') : $(elem).val();
 		var newElem = $(elem).clone(true);
@@ -64,16 +60,11 @@ Project.Autocomplete = {
 
 		$( elem ).autocomplete({
 			'source': source,
-			'minLength' : minLength,
+			'minLength' : 3,
 			'select' : function (event, ui) {
 				return Project.Autocomplete.method(this, newElem, ui.item);
 			}
-		}).data("ui-autocomplete")._renderItem = function (ul, item) {
-			 return $("<li></li>")
-				 .data("item.autocomplete", item)
-				 .append("<span>" + item.label + "</span>")
-				 .appendTo(ul);
-		 };
+		});
 	}
 };
 

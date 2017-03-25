@@ -190,79 +190,54 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='System users having access to the information system' AUTO_INCREMENT=1 ;
 
 
-CREATE TRIGGER TR_client
-BEFORE INSERT ON client
-FOR EACH ROW
+DELIMITER $$
+CREATE DEFINER=`d22341sa29375`@`217.146.69.5` FUNCTION `JSON_ARRAY_LIST`(json_array_string TEXT) RETURNS text CHARSET utf8
+    DETERMINISTIC
 BEGIN
-DECLARE fullAddress VARCHAR(1000) DEFAULT '';
 
-IF LENGTH(new.country) > 0 THEN
-	SET new.country = CONCAT(UCASE(LEFT(new.country, 1)), LCASE(SUBSTRING(new.country, 2)));
-	SET fullAddress = new.country;
-END IF;
+DECLARE returnValue TEXT;
 
-IF LENGTH(new.county) > 0 THEN
-	SET new.county = CONCAT(UCASE(LEFT(new.county, 1)), LCASE(SUBSTRING(new.county, 2)));
-	SET fullAddress = CONCAT(fullAddress, ', ', new.county);
-END IF;
+SET returnValue = CONCAT('{', json_array_string, '}');
 
-IF LENGTH(new.city) > 0 THEN
-	SET new.city = CONCAT(UCASE(LEFT(new.city, 1)), LCASE(SUBSTRING(new.city, 2)));
-	SET fullAddress = CONCAT(fullAddress, ', ', new.city);
-END IF;
+RETURN returnValue;
 
-IF LENGTH(new.street) > 0 THEN
-	SET new.street = CONCAT(UCASE(LEFT(new.street, 1)), LCASE(SUBSTRING(new.street, 2)));
-	SET fullAddress = CONCAT(fullAddress, ', ', new.street);
-END IF;
-
-IF LENGTH(new.house) > 0 THEN
-	SET fullAddress = CONCAT(fullAddress, ' ', new.house);
-END IF;
-
-IF LENGTH(new.apartment) > 0 THEN
-	SET fullAddress = CONCAT(fullAddress, ' - ', new.apartment);
-END IF;
-
-SET new.address = fullAddress;
-
-END;
+END$$
+DELIMITER ;
 
 
-CREATE TRIGGER TR_client_update
-BEFORE UPDATE ON client
-FOR EACH ROW
+
+DELIMITER $$
+CREATE DEFINER=`d22341sa29375`@`217.146.69.5` FUNCTION `JSON_ARRAY_STRING`(columnName varchar(30),val TEXT) RETURNS text CHARSET utf8
+    DETERMINISTIC
 BEGIN
-DECLARE fullAddress VARCHAR(1000) DEFAULT '';
 
-IF LENGTH(new.country) > 0 THEN
-	SET new.country = CONCAT(UCASE(LEFT(new.country, 1)), LCASE(SUBSTRING(new.country, 2)));
-	SET fullAddress = new.country;
-END IF;
+DECLARE returnValue TEXT;
 
-IF LENGTH(new.county) > 0 THEN
-	SET new.county = CONCAT(UCASE(LEFT(new.county, 1)), LCASE(SUBSTRING(new.county, 2)));
-	SET fullAddress = CONCAT(fullAddress, ', ', new.county);
-END IF;
+SET returnValue = CONCAT(
+            CONCAT('"', columnName, '": '),
+            CASE WHEN val IS NULL THEN 'null'
+                 WHEN val = ''    THEN 'null'
+                 ELSE CONCAT('"', REPLACE(val, '"', '\\"'), '"')
+            END
+			);
 
-IF LENGTH(new.city) > 0 THEN
-	SET new.city = CONCAT(UCASE(LEFT(new.city, 1)), LCASE(SUBSTRING(new.city, 2)));
-	SET fullAddress = CONCAT(fullAddress, ', ', new.city);
-END IF;
+RETURN returnValue;
 
-IF LENGTH(new.street) > 0 THEN
-	SET new.street = CONCAT(UCASE(LEFT(new.street, 1)), LCASE(SUBSTRING(new.street, 2)));
-	SET fullAddress = CONCAT(fullAddress, ', ', new.street);
-END IF;
+END$$
+DELIMITER ;
 
-IF LENGTH(new.house) > 0 THEN
-	SET fullAddress = CONCAT(fullAddress, ' ', new.house);
-END IF;
 
-IF LENGTH(new.apartment) > 0 THEN
-	SET fullAddress = CONCAT(fullAddress, ' - ', new.apartment);
-END IF;
 
-SET new.address = fullAddress;
+DELIMITER $$
+CREATE DEFINER=`d22341sa29375`@`217.146.69.5` FUNCTION `JSON_OBJECT`(json_array_list TEXT) RETURNS text CHARSET utf8
+    DETERMINISTIC
+BEGIN
 
-END;
+DECLARE returnValue TEXT;
+
+SET returnValue = CONCAT('[', json_array_list, ']');
+
+RETURN returnValue;
+
+END$$
+DELIMITER ;

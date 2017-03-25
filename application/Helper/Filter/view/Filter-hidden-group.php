@@ -30,5 +30,12 @@ foreach($formArray as $elemList){
 </div>
 
 <?
-$this->script('$(\'.filter_helper_form_group\').ClickFilter();');
+\Template\Template::includes();
 ?>
+
+<script type="text/javascript">
+$(document).ready(function(){
+
+	$('.filter_helper_form_group').ClickFilter();
+});
+</script>

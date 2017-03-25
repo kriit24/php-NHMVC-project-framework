@@ -34,6 +34,12 @@ trait Prepare{
 		list($where, $params) = $this->prepareLikeParams($where, $params);
 		list($where, $params) = $this->prepareWhereExpression($where, $params);
 
+		$where = preg_replace('/^([a-zA-Z0-9\_\._]+)([\s_]+)BETWEEN(.*?)\:(.*?)AND(.*?)\:/s', '`\\1`\\2BETWEEN\\3:\\4AND\\5:', $where);
+		$where = preg_replace('/^([a-zA-Z0-9\_\._]+)([\s_]+)LIKE(.*?)\:/s', '`\\1`\\2LIKE\\3:', $where);
+		$where = preg_replace('/^([a-zA-Z0-9\_\._]+)([\s_]+)IN\(/s', '`\\1`\\2IN(', $where);
+		$where = preg_replace('/([a-zA-Z0-9\__]+)([<>=!\s![LIKE]![BETWEEN]![AND]_]+)\:/s', '`\\1`\\2:', $where);
+		$where = preg_replace('/`([a-zA-Z0-9\__]+)\.([a-zA-Z0-9\__]+)`/s', '\\1.`\\2`', $where);
+
 		return array($where, $params);
 	}
 
@@ -41,6 +47,27 @@ trait Prepare{
 
 		preg_match('/\:([a-zA-Z0-9\.\__]+)/s', $string, $match);
 		return $match[1];
+	}
+
+	private function prepareQueryColumnName($columns){
+
+		if( !is_array($columns) )
+			return $columns;
+
+		$ret = array();
+		foreach($columns as $col){
+
+			if( preg_match('/\./i', $col) ){
+
+				list($alias, $colName) = explode('.', $col);
+				$ret[] = $alias . '.`'.$colName.'`';
+			}
+			else{
+
+				$ret[] = '`'.$col.'`';
+			}
+		}
+		return $ret;
 	}
 
 	private function prepareCVExpression($column, $value){
@@ -308,12 +335,12 @@ trait Prepare{
 		//problem is that preg_match_all gets all what named password - password and password_expires_at (this it gets partially)
 		//role_id = :role_idX-END-Z/, password = :passwordX-END-Z/, password_expires_at = :password_expires_atX-END-Z/, account_expires_at = :account_expires_atX-END-Z/
 
-		$set = preg_replace('/([a-zA-Z0-9\_\._]+)([<>=![:space:]_]+)\?/s', '\\1\\2:X-START-Z\\1X-END-Z/', $set);
-		preg_match_all('/([a-zA-Z0-9\_\._]+)([a-zA-Z0-9[:space:]\:\_\-\=\>\<\+\*\/\\\%\"\'\!\(\?\.\,_]+)\:X-START-Z\\1X-END-Z/s', $set, $matches);
+		$set = preg_replace('/([a-zA-Z0-9\_\._]+)([<>=![:space:]_]+)\?/s', '`\\1`\\2:X-START-Z\\1X-END-Z/', $set);
+		preg_match_all('/\`([a-zA-Z0-9\_\._]+)\`([a-zA-Z0-9[:space:]\:\_\-\=\>\<\+\*\/\\\%\"\'\!\(\?\.\,_]+)\:X-START-Z\\1X-END-Z/s', $set, $matches);
 		if( !empty($matches[0]) ){
 
 			foreach($matches[0] as $v1){
-
+				
 				$v1 = str_replace('X-START-Z', '', $v1);
 				$v1 = str_replace('X-END-Z', '', $v1);
 
@@ -333,7 +360,6 @@ trait Prepare{
 				}
 			}
 		}
-
 		return array(implode(', ', $retSet), $retParams);
 	}
 
@@ -372,7 +398,7 @@ trait Prepare{
 				}
 				if(
 					$action == 'UPDATE' && 
-					!preg_match('/SET([a-zA-Z0-9\_[:space:]_]+)(\=|\<|\>)(.*?)WHERE/i', strtoupper($Query))
+					!preg_match('/SET([a-zA-Z0-9\_[:space:]\`_]+)(\=|\<|\>)(.*?)WHERE/i', strtoupper($Query))
 				){
 
 					/*if( $returnError )

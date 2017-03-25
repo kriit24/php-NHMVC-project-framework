@@ -201,6 +201,7 @@ class Html{
 	private function closeTag($elem, $shortTag = false){
 
 		$elemAfter = $this->elemAfter[$elem['elem']] ? $this->elemAfter[$elem['elem']] : array();
+		unset($this->elemAfter[$elem['elem']]);
 		if( json_encode($elem['after']) != json_encode($elemAfter))
 			$elemAfter = array_merge($elemAfter, ($elem['after'] ? $elem['after'] : array()));
 

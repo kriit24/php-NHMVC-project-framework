@@ -33,9 +33,12 @@ trait Create{
 
 			$name = $this->elemsType['form'][0];
 
-			list(, $e) = $this->getElement($name);
+			list($eKey, $e) = $this->getElement($name);
 			if( isset($this->elemsType['file']) )
 				$e['attr']['enctype'] = 'multipart/form-data';
+
+			if( $this->elemAttr[$eKey][0] )
+				$e['attr'] = array_merge( ($e['attr'] ?: array()), $this->elemAttr[$eKey][0]);
 
 			$this->_remove($name);
 
@@ -373,7 +376,7 @@ trait Create{
 							$html .= $this->createRow( $attr, $k );
 							$k++;
 						}
-						if( gettype($data) == 'string' ){
+						if( gettype($data) == 'string' || strtolower(gettype($data)) == 'null' ){
 
 							$html .= $this->createRow( $attr, $k, $data );
 							$k++;

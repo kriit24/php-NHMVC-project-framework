@@ -55,22 +55,22 @@ class classIterator{
 			//$method = preg_replace('/\W/s', '_', $method);
 			$arguments = func_get_args();
 
-			if(method_exists($this, $method)){
+			$reflection = $this->reflection($this);
+			$namespace = $reflection->getNamespaceName();
+			$className = '\\' . $namespace . '\\Action\\' . $method;
+			$file = _DIR . DIRECTORY_SEPARATOR . _APPLICATION_PATH . str_replace('\\', DIRECTORY_SEPARATOR, $className) . '.php';
 
-				$ret = call_user_func_array(array($this, $method), ($arguments ? $arguments : array()));
+			if( is_file( $file ) ){
+
+				$ret = call_user_func_array(array($className, self::PRELOADERS[0]), ($arguments ? $arguments : array()));
 				if( !isset($ret) )
 					$ret = $this;
 			}
 			else{
 
-				$reflection = $this->reflection($this);
-				$namespace = $reflection->getNamespaceName();
-				$className = '\\' . $namespace . '\\Action\\' . $method;
-				$file = _DIR . DIRECTORY_SEPARATOR . _APPLICATION_PATH . str_replace('\\', DIRECTORY_SEPARATOR, $className) . '.php';
+				if(method_exists($this, $method)){
 
-				if( is_file( $file ) ){
-
-					$ret = call_user_func_array(array($className, self::PRELOADERS[0]), ($arguments ? $arguments : array()));
+					$ret = call_user_func_array(array($this, $method), ($arguments ? $arguments : array()));
 					if( !isset($ret) )
 						$ret = $this;
 				}

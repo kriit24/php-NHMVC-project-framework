@@ -1,5 +1,5 @@
 //ADD TABS elment attribute style="display:none;"
-//ADD BEFORE tabs div element
+//ADD AFTER tabs div element
 //<div class="tabs-loader"><img src="/Template/admin/images/ajax-loader-big.gif"/></div>
 /*
 //NB!!! DO NOT BUT this on $(window).load
@@ -11,54 +11,122 @@ $(document).ready(function(){
 
 Project.Tabs = function(selector){
 
-	var elem = $(selector);
+	var elem = selector;
 
 	return {
 
 		selector : elem,
+		selectorElem : $(elem),
+		timeoutId : '',
 
-		tabs : function(){
+		tabs : function( Object ){
 
 			var self = this;
+			if( Object == undefined )
+				Object = {};
 
-			$('ul a', self.selector).click(function(){
+			$('ul a', self.selectorElem).click(function(){
 
-				var urlObject = {};
-				urlObject[0] = this.href;
-				Project.Session.set('tab_url', urlObject);
+				if( this.href.indexOf('#') == -1 ){
+
+					var showLoader = true;
+					var id = this.id;
+					if( id != undefined ){
+
+						if( $('div[aria-labelledby="'+id+'"]').html().length > 0 )
+							showLoader = false;
+					}
+
+					if( showLoader )
+						$('.tabs-loader').show();
+					return;
+				}
 
 				window.location.href = this.href;
-				$(self.selector).tabs({'active' : self.getActiveTab()});
+				$('.tabs-loader').hide();
 				return;
 			});
 
-			$(window).load(function(){
+			//$(window).load(function(){
+			$(document).ready(function(){
 
-				$(self.selector).show();
-				$(self.selector).tabs({'active' : self.getActiveTab()});
-				$('.tabs-loader').hide();
+				var activeTab = self.getActiveTab();
+
+				if( typeof Object.complete != 'undefined' )
+					Object.complete( $( "li", self.selectorElem ).eq( activeTab ).find('a') );
+
+				$(self.selectorElem).tabs({
+					'active' : activeTab, 
+					'activate': function(event, ui){
+
+						if( self.timeoutId )
+							clearTimeout(self.timeoutId);
+
+						self.setActiveTab( ui.newTab );
+
+						if( typeof Object.complete != 'undefined' )
+							Object.complete( ui.newTab.find('a') );
+					},
+					'load': function(){
+
+						$('.tabs-loader').hide();
+						$(self.selectorElem).show();
+					},
+					'create': function(){
+
+						self.timeoutId = setTimeout(function(){
+
+							$('.tabs-loader').hide();
+							$(self.selectorElem).show();
+						}, 250);
+
+					}
+				});
+
+				if( window.location.href.indexOf('#') != -1 ){
+
+					$('.tabs-loader').hide();
+					$(self.selectorElem).show();
+				}
 			});
 		},
-		
+
 		getActiveTab : function(){
 
-			var id = window.location.href.split('#')[1];
-			if( id == undefined ){
+			var tab_active = Project.Session.get('tab_active');
+			if( tab_active != undefined && tab_active[ this.getUrlParam() ] != undefined ){
 
-				var tab_url = Project.Session.get('tab_url');
-				if( tab_url ){
-
-					var id = tab_url[0].split('#')[1];
-				}
+				return tab_active[ this.getUrlParam() ].active;
 			}
+			return 0;
+		},
 
-			if( id == undefined )
-				return 0;
+		setActiveTab : function( tabActive ){
 
-			var index = $('a[href="#' + id + '"]', this.selector).parent().index();
-			if( index < 0 )
-				index = 0;
-			return index;
+			var urlObject = Project.Session.get('tab_active') ? Project.Session.get('tab_active') : {};
+			urlObject[ this.getUrlParam() ] = {'active' : tabActive.index()};
+			Project.Session.set('tab_active', urlObject);
+		},
+
+		getUrlParam : function(){
+
+			var urlSplit = window.location.href.split('/');
+			var ret = urlSplit[0] + '/' + urlSplit[1] + '/' + urlSplit[2];
+			if( urlSplit[3] != undefined )
+				ret += '/' + urlSplit[3];
+
+			if( urlSplit[4] != undefined )
+				ret += '/' + urlSplit[4];
+
+			if( urlSplit[5] != undefined )
+				ret += '/' + urlSplit[5];
+
+			if( urlSplit[6] != undefined )
+				ret += '/' + urlSplit[6];
+
+			ret += '/' + this.selector;
+
+			return ret;
 		}
 	}
 };

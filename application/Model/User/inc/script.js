@@ -1,4 +1,4 @@
 $(document).ready(function(){
 
-	$('a.add-user').ptoggle(400);
+	Project.Toggle('a.add-user').ptoggle(400);
 });

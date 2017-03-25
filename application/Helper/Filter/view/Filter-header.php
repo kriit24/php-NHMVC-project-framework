@@ -28,6 +28,12 @@ foreach($elemList as $k => $row){
 		'</div>';
 	$filter .= $filter ? ','.$name : $name;
 }
-$this->script('$("'.$filter.'").HelperFilter("'.addslashes(json_encode($html)).'");');
-
+\Template\Template::includes();
 ?>
+
+<script type="text/javascript">
+$(document).ready(function(){
+
+	$("<?=$filter;?>").HelperFilter("<?=addslashes(json_encode($html));?>");
+});
+</script>

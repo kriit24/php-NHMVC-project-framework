@@ -30,8 +30,10 @@ class Url{
 
 		//pre($url);
 		//pre($this->_parent . ' >>> ' . $this->_method);
+		$url = array_merge($url, $merge);
 		$url = array_merge($this->build( $url ), $url);
-		//pre($url);
+		if( $url['route'] && $url['route'] == \Conf\Conf::_DEFAULT_ROUTE )
+			unset($url['route']);
 
 		$urlString = '';
 		foreach($url as $key => $value){

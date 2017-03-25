@@ -24,6 +24,7 @@
 /*DATEPICKER FIX DO NOT REMOVE*/
 .ui-datepicker{
 	display:none;
+	z-index:1010;
 }
 
 .table > thead > tr > th{
@@ -36,22 +37,21 @@
 }
 
 /*AUTOCOMPLETE*/
+.ui-autocomplete{
+	z-index:1010;
+}
 .ui-autocomplete .ui-menu-item{
 	cursor:pointer;
 	padding:5px;
 	white-space: nowrap;
 }
 
-.table td, .table th{
-	vertical-align:middle;
-}
-
 .ui-tabs, .ui-tabs-panel{
 	padding:0px !important;
 }
 
-
-.ui-tabs .ui-tabs-active.ui-state-active, .ui-tabs .ui-tabs-active.ui-state-active a{
-	background:#0275d8;
-	color:#ffffff;
+.ui-tabs .ui-state-active, .ui-tabs .ui-state-active a{
+	color: #fff;
+    background: #0275d8;
+    border-color: #0275d8;
 }

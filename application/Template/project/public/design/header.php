@@ -32,7 +32,6 @@
 var $_POST = $.canJSON('<?=addslashes(json_encode($_POST));?>');
 var $_GET = $.canJSON('<?=json_encode($_GET);?>');
 var language = '<?=_LANG;?>';
-//$.loadPackage('<?=\Conf\Conf::_DEV_MODE;?>');
 </script>
 
 <?=implode("", $this->header['JS']);?>

@@ -11,6 +11,10 @@
 <meta name="SKYPE_TOOLBAR" content="SKYPE_TOOLBAR_PARSER_COMPATIBLE"/>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<?
+$version = \Conf\Conf::_DEV_MODE ? '?v=' . strtotime('now') : '';
+?>
+
 <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css" type="text/css"/>
 <link rel="stylesheet" href="/Template/css/bootstrap/css/bootstrap.min.css" type="text/css"/>
 <link rel="stylesheet" href="/Template/css/font-awesome/css/font-awesome.min.css" type="text/css"/>
@@ -32,8 +36,16 @@ var $_POST = $.canJSON('<?=addslashes(json_encode($_POST));?>');
 var $_GET = $.canJSON('<?=json_encode($_GET);?>');
 timeoutId = setTimeout(function(){ window.location.href = window.location.href.split('#')[0]; }, 40 * 60 * 1000);
 var language = '<?=_LANG;?>';
-$.loadPackage('<?=\Conf\Conf::_DEV_MODE;?>');
 </script>
+
+<script src="/Template/js/project.storage.js<?=$version;?>" type="text/javascript"></script>
+<script src="/Template/js/project.dialog.js<?=$version;?>" type="text/javascript"></script>
+<script src="/Template/js/project.autocomplete.js<?=$version;?>" type="text/javascript"></script>
+<script src="/Template/js/project.required.js<?=$version;?>" type="text/javascript"></script>
+<script src="/Template/js/project.caret.js<?=$version;?>" type="text/javascript"></script>
+<script src="/Template/js/project.tabs.js<?=$version;?>" type="text/javascript"></script>
+<script src="/Template/js/project.toggle.js<?=$version;?>" type="text/javascript"></script>
+<script src="/Template/js/project.language.js<?=$version;?>" type="text/javascript"></script>
 
 <?=implode("", $this->header['JS']);?>
 </head>
