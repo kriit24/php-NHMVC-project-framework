@@ -22,35 +22,10 @@ class Controller extends \Library{
 		return $this;
 	}
 
-	public function addUser(){
-
-		$userName = trim($_POST['first_name'].'.'.$_POST['last_name']);
-
-		if( Action\addUser::init($_POST, $userName) ){
-
-			$this->message(
-				'User inserted<br>'.
-				'Username: {username}<br>'.
-				'Password: {password}',
-				array('username' => $userName, 'password' => $_POST['password'])
-			);
-		}
-	}
-
-	public function updateUser(){
-
-		Action\updateUser::init($_POST, $_GET['id']);
-	}
-
 	public function updateAccount(){
 
 		if( $_GET['id'] == \Session::userData()->user_id )
 			$this->updateUser();
-	}
-
-	public function deleteUser(){
-
-		Action\deleteUser::init($_GET['id']);
 	}
 }
 

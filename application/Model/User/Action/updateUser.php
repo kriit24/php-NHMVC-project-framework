@@ -3,7 +3,10 @@ namespace Model\User\Action;
 
 abstract class updateUser{
 
-	public static function init($data, $id){
+	public static function init(){
+
+		$data = $_POST;
+		$id = $_GET['id'];
 
 		$role_id = $data['role_id'] ? $data['role_id'] : \Session::userData()->role_id;
 		$type = \Table\role::singleton()->fetchColumn( 'type', array('id' => $role_id) );
