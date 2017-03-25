@@ -25,9 +25,12 @@ class Controller extends \Library{
 			->order("role_id, route, class, method")->fetchAll();
 		
 		$privileges = array();
-		foreach($rows as $row){
+		if( !empty($rows) ){
 
-			$privileges[$row['role_id']][$row['route']][$row['class']][$row['method']] = true;
+			foreach($rows as $row){
+
+				$privileges[$row['role_id']][$row['route']][$row['class']][$row['method']] = true;
+			}
 		}
 		$this->privileges = $privileges;
 
