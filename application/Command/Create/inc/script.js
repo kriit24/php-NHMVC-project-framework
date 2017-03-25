@@ -18,6 +18,27 @@ var getModelNames = function(elem, checked){
 	}
 };
 
+var getColumns = function( value ){
+
+	$.get('/Command/Create/getColumns/table/' + value, function(data){
+
+		$.canJSON(data, function(rows){
+
+			$.each(rows, function(key, value){
+
+				var uniqid = value;
+
+				var html = '<div>'+
+					'<input type="checkbox" name="table_column[]" value="'+value+'" id="table_column_'+uniqid+'" style="visibility: hidden; margin-bottom: 10px; display: inline-block; width: 15px;">'+
+					'<label for="table_column_'+uniqid+'" class="checkbox"><span></span>'+value+'</label>'+
+				'</div>';
+
+				$('.table-column').append( html );
+			})
+		});
+	});
+};
+
 $(document).ready(function(){
 
 	$('input[name="folder"]').change(function(){
@@ -36,4 +57,15 @@ $(document).ready(function(){
 
 		getModelNames(this, '');
 	});
+
+	$('select[name="table"]').change(function(){
+
+		$('.table-column').html( '' );
+		getColumns( this.value );
+	});
+
+	if( $_POST['addMethod'] ){
+
+		getColumns( $_POST['table'] );
+	}
 });

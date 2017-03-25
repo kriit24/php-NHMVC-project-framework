@@ -5,8 +5,10 @@ abstract class add{uname}{
 
 	public static function init(){
 
-		pre($_POST);
-		//$insertId = \Table\tableName::singleton()->Insert($data);
+		$data = $_POST;
+
+		pre($data);
+		//$insertId = \Table\{table}::singleton()->Insert($data);
 	}
 }
 ?>

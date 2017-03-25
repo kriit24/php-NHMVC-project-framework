@@ -238,6 +238,7 @@ class Form{
 			if( $ret ){
 
 				unset($ret['elem']);
+				unset($elem['attr']['elem']);
 				$elem['attr'] = array_merge($elem['attr'], $ret);
 			}
 		}

@@ -10,21 +10,19 @@ class Index extends Controller{
 
 		$this->Validate = new Validate;
 
-		//$this->tableName = new \Table\tableName;
+		$this->{table} = new \Table\{table};
 	}
 
 	protected function Index(){
 
-		if( $this->Validate->validateIndexData() )
-			$this->POST('add')->action();
+		$this->POST('add{uname}')->action();
 
 		$this->getData()->view('Index');
 	}
 
 	protected function Index_Admin(){
 
-		if( $this->Validate->validateIndexData() )
-			$this->POST('add')->action();
+		$this->POST('add{uname}')->action();
 
 		$this->getData()->view('Index_Admin');
 	}

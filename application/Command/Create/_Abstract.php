@@ -9,7 +9,8 @@ abstract class _Abstract implements \Library_Interface_Abstract{
 			'admin' => array(
 				'Index_Admin' => array('position' => 'content', 'is_static' => false, 'is_first_page' => false, 'is_route' => true)
 			),
-			'getModels' => array('is_route' => true)
+			'getModels' => array('is_route' => true),
+			'getColumns' => array('is_route' => true)
 		);
 	}
 
@@ -18,6 +19,7 @@ abstract class _Abstract implements \Library_Interface_Abstract{
 		return array(
 			'Index_Admin' => array('SUPERADMIN'),
 			'getModels' => array('SUPERADMIN'),
+			'getColumns' => array('SUPERADMIN'),
 		);
 	}
 	

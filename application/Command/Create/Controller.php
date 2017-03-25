@@ -14,6 +14,14 @@ class Controller extends \Library{
 		return $this;
 	}
 
+	public function getColumnsData(){
+
+		$db = \Conf\Conf::_DB_CONN['_default']['_database'];
+		$sql = new \Library\Sql;
+
+		die(json_encode(\Library\ArrayIterator::singleton()->arrayValues($sql->Query("SHOW COLUMNS FROM ".$db.".".$_GET['table'])->fetchAll(), 'Field')));
+	}
+
 	public function addMethod(){
 
 		$this->create( $_POST['create'] );

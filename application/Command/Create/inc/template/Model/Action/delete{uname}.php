@@ -7,7 +7,7 @@ abstract class delete{uname}{
 
 		pre($_GET);
 
-		//\Table\tableName::singleton()->Delete(array('id' => $id));
+		//\Table\{table}::singleton()->Delete(array('id' => $_GET['id']));
 	}
 }
 ?>

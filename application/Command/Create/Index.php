@@ -16,12 +16,17 @@ class Index extends Controller{
 		if( $this->Validate->isValidAddMethodAction() )
 			$this->POST('addMethod')->action();
 
-		$this->view('Index');
+		$this->view('Index_Admin');
 	}
 
 	protected function getModels(){
 
 		$this->getModelsByFolder()->view('getModelsByFolder');
+	}
+
+	protected function getColumns(){
+
+		$this->getColumnsData();
 	}
 
 	public static function shell($command){

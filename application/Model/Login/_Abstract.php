@@ -7,13 +7,13 @@ abstract class _Abstract implements \Library_Interface_Abstract{
 
 		return array(
 			'public' => array(
-				'BoxLeftPublic' => array('position' => 'header-left', 'is_static' => true, 'is_first_page' => false, 'is_route' => false),
-				'BoxRightPublic' => array('position' => 'header-right', 'is_static' => true, 'is_first_page' => false, 'is_route' => false),
+				'LoggedBoxLeftPublic' => array('position' => 'header-left', 'is_static' => true, 'is_first_page' => false, 'is_route' => false),
+				'LoggedBoxRightPublic' => array('position' => 'header-right', 'is_static' => true, 'is_first_page' => false, 'is_route' => false),
 			),
 			'admin' => array(
-				'BoxLeft' => array('position' => 'header-left', 'is_static' => true, 'is_first_page' => false, 'is_route' => false),
-				'BoxRight' => array('position' => 'header-right', 'is_static' => true, 'is_first_page' => false, 'is_route' => false),
-				'LoginBox' => array('position' => 'content', 'is_static' => true, 'is_first_page' => false, 'is_route' => false),
+				'LoggedBoxLeftAdmin' => array('position' => 'header-left', 'is_static' => true, 'is_first_page' => false, 'is_route' => false),
+				'LoggedBoxRightAdmin' => array('position' => 'header-right', 'is_static' => true, 'is_first_page' => false, 'is_route' => false),
+				'LoginBoxAdmin' => array('position' => 'content', 'is_static' => true, 'is_first_page' => false, 'is_route' => false),
 			),
 			'method_name_without_template' => array()
 		);
@@ -22,11 +22,11 @@ abstract class _Abstract implements \Library_Interface_Abstract{
 	public static function privilege(): array{
 
 		return array(
-			'BoxLeft' => array('CLIENT', 'ADMIN', 'SUPERADMIN'),
-			'BoxRight' => array('CLIENT', 'ADMIN', 'SUPERADMIN'),
-			'LoginBox' => array('USER'),
-			//'BoxLeftPublic' => array('CLIENT', 'ADMIN', 'SUPERADMIN'),
-			'BoxRightPublic' => array('CLIENT', 'ADMIN', 'SUPERADMIN'),
+			'LoggedBoxLeftAdmin' => array('CLIENT', 'ADMIN', 'SUPERADMIN'),
+			'LoggedBoxRightAdmin' => array('CLIENT', 'ADMIN', 'SUPERADMIN'),
+			'LoginBoxAdmin' => array('USER'),
+			//'LoggedLoggedBoxLeftPublic' => array('CLIENT', 'ADMIN', 'SUPERADMIN'),
+			'LoggedBoxLeftPublic' => array('CLIENT', 'ADMIN', 'SUPERADMIN'),
 		);
 	}
 	

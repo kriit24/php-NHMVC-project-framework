@@ -44,8 +44,7 @@ trait Create{
 
 			$dataArray = $this->data;
 			$data = $dataArray[0];
-			//$data = json_decode($dataArray[0], true);
-			//die(pre($dataArray));
+			unset($data['table']);
 
 			$this->Form->setData($data);
 			$this->Html->setData($data);

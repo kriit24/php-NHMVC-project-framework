@@ -15,47 +15,74 @@ class Form extends \Library{
 
 	public function buildForm(){
 
+		$sql = new \Library\Sql;
+
 		$form = new \Library\Form( 'list' );
 		$form->addElem('form', '', array());
 
-		$validators = \Library\Validate::get('addMethod');
+		$form->addElem('text', 'folder', array(
+			'label' => $this->Language('Application folder'),
+			'required' => 'true',
+			'required-label' => $this->Language( 'Application folder required' )
+		));
 
-		$elem = array(
-			'folder' => 'text',
-			'create' => 'select',
-			'model_name' => 'select',
-			'name' => 'text',
-			'addMethod' => 'submit',
+		$form->addElem('select', 'create', array(
+			'label' => $this->Language('Create by template'),
+			'option' => self::CREATE
+		))->selected( $_POST['create'] );
+
+		$form->addElem('select', 'model_name', array(
+			'label' => $this->Language('Model name'),
+			'' => '',
+		));
+
+		$form->addElem('text', 'name', array(
+			'label' => $this->Language('Name'),
+			'required' => 'true',
+			'required-label' => $this->Language( 'Name required' )
+		));
+
+		$tables = array_merge(
+			array($this->Language( 'Select' )),
+			\Library\ArrayIterator::singleton()->arrayValues($sql->query("SHOW FULL TABLES WHERE Table_Type = 'BASE TABLE'")->fetchAll(), 'Tables_in_' . \Conf\Conf::_DB_CONN['_default']['_database'])
 		);
 
-		$attr = array(
-			'folder' => array(
-				'label' => $this->Language('Application folder'),
-				'validators' => $validators
-			),
-			'create' => array(
-				'label' => $this->Language('Create by template'),
-				'option' => self::CREATE
-			),
-			'model_name' => array(
-			),
-			'name' => array(
-				'validators' => $validators
-			),
-			'addMethod' => array(
-				'value' => $this->Language('Add method'),
-				'label' => ''
-			),
-		);
+		$form->addElem('select', 'table', array(
+			'label' => $this->Language('Table'),
+			'option' => $tables,
+		))->selected($_POST['table']);
 
-		$form->addElem($elem, '', $attr);
+		$form->addElem('span', 'table_column', array(
+			'label' => $this->Language('Table columns'),
+			'class' => 'table-column',
+			'value' => '&nbsp;'
+		));
 
-		$form->selected( $_POST['create'], 'create' );
+		$form->addElem('submit', 'addMethod', array(
+			'value' => $this->Language('Add method'),
+		));
 
 		$form->errorLabel( $this->getError() );
 		$form->messageLabel( $this->getMessage() );
 
 		$form->setData( $_POST );
+		$form->toString();
+	}
+
+	public function CreateForm(){
+
+		$form = new \Library\Form( 'list' );
+
+		$form->addElem('form', '', array(
+			'' => '',
+		));
+
+		$form->addElem('text', 'application_folder', array(
+			'label' => $this->Language('Application folder'),
+			'' => '',
+		));
+
+		$form->setData($_POST);
 		$form->toString();
 	}
 }

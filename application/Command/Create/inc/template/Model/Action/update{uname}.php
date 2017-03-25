@@ -5,9 +5,11 @@ abstract class update{uname}{
 
 	public static function init(){
 
-		pre($_POST);
+		$data = $_POST;
+
+		pre($data);
 		pre($_GET);
-		//\Table\tableName::singleton()->Update($data, array('id' => $id));
+		//\Table\{table}::singleton()->Update($data, array('id' => $_GET['id']));
 	}
 }
 ?>

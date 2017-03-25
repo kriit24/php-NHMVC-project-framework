@@ -13,27 +13,27 @@ class Index extends Controller{
 		$this->Form = new \Library\Form('');
 	}
 
-	protected function BoxLeftPublic(){
+	protected function LoggedBoxLeftPublic(){
 
 		$this->view( $this->getView() . '-left-public' );
 	}
 
-	protected function BoxRightPublic(){
+	protected function LoggedBoxRightPublic(){
 
 		$this->view( $this->getView() . '-right-public' );
 	}
 
-	protected function BoxLeft(){
+	protected function LoggedBoxLeftAdmin(){
 
 		$this->view( $this->getView() . '-left' );
 	}
 
-	protected function BoxRight(){
+	protected function LoggedBoxRightAdmin(){
 
 		$this->view( $this->getView() . '-right' );
 	}
 
-	protected function LoginBox(){
+	protected function LoginBoxAdmin(){
 
 		$this->view( 'Login-box' );
 	}
