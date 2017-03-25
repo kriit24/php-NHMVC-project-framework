@@ -11,23 +11,25 @@
 <meta name="SKYPE_TOOLBAR" content="SKYPE_TOOLBAR_PARSER_COMPATIBLE"/>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<? $version = \Conf\Conf::_DEV_MODE ? '?v=' . strtotime('now') : ''; ?>
+
 <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css" type="text/css"/>
 <link rel="stylesheet" href="/Template/css/bootstrap/css/bootstrap.min.css" type="text/css"/>
 <link rel="stylesheet" href="/Template/css/font-awesome/css/font-awesome.min.css" type="text/css"/>
 <link rel="stylesheet" href="/Template/css/flag-icon-css/css/flag-icon.required.css" type="text/css"/>
-<link rel="stylesheet" href="/Template/css/style.css" type="text/css"/>
-<link rel="stylesheet" href="/Template/css/fixes.css" type="text/css"/>
-<link rel="stylesheet" href="/Template/public/css/style.css" type="text/css"/>
-<link rel="stylesheet" href="/Template/public/css/media.css" type="text/css"/>
+<link rel="stylesheet" href="/Template/css/style.css<?=$version;?>" type="text/css"/>
+<link rel="stylesheet" href="/Template/css/fixes.css<?=$version;?>" type="text/css"/>
+<link rel="stylesheet" href="/Template/public/css/style.css<?=$version;?>" type="text/css"/>
+<link rel="stylesheet" href="/Template/public/css/media.css<?=$version;?>" type="text/css"/>
 
 <?=implode("", $this->header['CSS']);?>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js" type="text/javascript"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js" type="text/javascript"></script>
-<script src="/Template/js/project.js" type="text/javascript"></script>
-<script src="/Template/js/project.dialog.js" type="text/javascript"></script>
-<script src="/Template/js/project.storage.js" type="text/javascript"></script>
+<script src="/Template/js/project.js<?=$version;?>" type="text/javascript"></script>
+<script src="/Template/js/project.dialog.js<?=$version;?>" type="text/javascript"></script>
+<script src="/Template/js/project.storage.js<?=$version;?>" type="text/javascript"></script>
 
 <script type="text/javascript">
 var $_POST = $.canJSON('<?=addslashes(json_encode($_POST));?>');

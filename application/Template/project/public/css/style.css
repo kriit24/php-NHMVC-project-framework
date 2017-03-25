@@ -18,6 +18,10 @@ body {
 	position:relative;
 }
 
+form{
+    margin: 0;
+}
+
 a, a:link, a:visited, a:hover{
 	color:#337ab7;
 	text-decoration:none;
@@ -106,7 +110,7 @@ body > .container-fluid{
 	padding:20px;
 }
 
-.dialog{
+.dialog, .dialog-append, .link, .pointer{
 	cursor:pointer;
 }
 .clear{
@@ -123,4 +127,8 @@ body > .container-fluid{
 .table-horizontal th{
 	background:#f9f9f9;
 	vertical-align:middle;
+}
+
+.center{
+	text-align:center;
 }
