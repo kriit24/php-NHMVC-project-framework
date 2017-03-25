@@ -1,9 +1,9 @@
 <?
-namespace Helper\Form\Form;
+namespace Helper\Checkbox;
 
-class Checkbox{
+class Form{
 
-	/*$form = \Helper\Form\Form\Checkbox::get( $form, 'create_form', array(
+	/*$form = \Helper\Checkbox\Form::get( $form, 'create_form', 'select', array(
 		'value' => 1, 
 		'label' => $this->Language( 'Create form' ),
 		'complete' => function($row){
@@ -14,7 +14,7 @@ class Checkbox{
 	$form->checked( 1, 'create_form' );
 	*/
 
-	public static function get( $form, $name, $attr = array() ){
+	public static function get( $form, $name, $spanText = '', $attr = array() ){
 
 		$id = uniqid($name . '_');
 
@@ -26,7 +26,7 @@ class Checkbox{
 		$form->addElem('label', $name . '_span', array(
 			'for' => $id,
 			'class' => 'checkbox',
-			'value' => '<span></span>'
+			'value' => '<span></span>' . $spanText
 		))->after($name);
 
 		return $form;
