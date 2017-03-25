@@ -54,6 +54,9 @@ abstract class install{
 			preg_match_all('/\n'.$startLine.'(.*?)'.$endLine.'/s', $dbString, $matches);
 			foreach($matches[0] as $query){
 
+				$query = str_replace('DELIMITER $$', '', $query);
+				$query = str_replace('DELIMITER ;', '', $query);
+				$query = str_replace('END$$', 'END;', $query);
 				if( $query )
 					$db->query($query);
 			}
