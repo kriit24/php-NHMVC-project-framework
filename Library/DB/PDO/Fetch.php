@@ -76,6 +76,9 @@ trait Fetch{
 
 	function fetchAll($where = ''){
 
+		if( !$this->isConnected() )
+			return false;
+
 		$this->buildQueryStatement( $where );
 		$rows = $this->stmt->fetchAll( $this->fetchMode );
 		$this->rebuildStatement = true;
@@ -83,6 +86,9 @@ trait Fetch{
 	}
 
 	function fetchColumn($column, $where = ''){
+
+		if( !$this->isConnected() )
+			return false;
 
 		$this->buildQueryStatement( $where );
 		$ret;
@@ -95,6 +101,9 @@ trait Fetch{
 
 	function fetch($where = ''){
 
+		if( !$this->isConnected() )
+			return false;
+
 		$this->buildQueryStatement( $where );
 		$row = $this->stmt->fetch( $this->fetchMode );
 		return $this->extension( $row );
@@ -103,12 +112,18 @@ trait Fetch{
 	
 	public function fetchObject($where = ''){
 
+		if( !$this->isConnected() )
+			return false;
+
 		$this->buildQueryStatement( $where );
 		$row = $this->stmt->fetch( $this->fetchMode );
 		$this->row = $this->extension( $row );
 	}
 
 	function fetchNumrows($where = ''){
+
+		if( !$this->isConnected() )
+			return false;
 
 		$this->buildQueryStatement( $where );
 		return $this->numrows();

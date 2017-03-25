@@ -15,6 +15,7 @@ class Language{
 		define('_DLANG', \Conf\Conf::_DLANG);
 
 		$redis = new \Library\Redis;
+		$sql = new \Library\Sql;
 		if( $redis->isConnected() ){
 
 			$lang = $redis->get('language');
@@ -22,7 +23,8 @@ class Language{
 		}
 		else{
 
-			$lang = $this->getAllLanguageFromDb();
+			$self = new self();
+			$lang = $self->getAllLanguageFromDb();
 			\Library\Component\Register::register('LANGUAGE', $lang, \Library\Component\Register::IS_ARRAY);
 		}
 	}

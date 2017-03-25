@@ -10,16 +10,19 @@ trait Log{
 
 		if( self::explainLog($table, $queryType, $Query, array(), true) ){
 
-			$self = new \Library\Sql();
+			$sql = new \Library\Sql();
 
-			$PDO = $self->getConnection( $self->_connName );
-			$stmt = $PDO->prepare("EXPLAIN EXTENDED " . $Query);
-			$stmt->execute($params);
-			$r = $stmt->fetchAll( $self->fetchMode );
-			$ExplainQuery = $self->prepareGetQuery($Query, $params);
+			$PDO = $sql->getConnection( $sql->_connName );
+			if( $sql->isConnected() ){
 
-			self::explainLog($table, $queryType, $Query, $r, false);
-			self::noIndexUsedLog($table, $queryType, $ExplainQuery, $r);
+				$stmt = $PDO->prepare("EXPLAIN EXTENDED " . $Query);
+				$stmt->execute($params);
+				$r = $stmt->fetchAll( $sql->fetchMode );
+				$ExplainQuery = $sql->prepareGetQuery($Query, $params);
+
+				self::explainLog($table, $queryType, $Query, $r, false);
+				self::noIndexUsedLog($table, $queryType, $ExplainQuery, $r);
+			}
 		}
 	}
 

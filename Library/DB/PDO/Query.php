@@ -6,6 +6,8 @@ trait Query{
 	function Query($Query = '', $params = array()){
 
 		$this->PDO = $this->getConnection( $this->_connName );
+		if( !$this->PDO )
+			return $this;
 
 		if( \Conf\Conf::_DEV_MODE ){
 
@@ -58,6 +60,9 @@ trait Query{
 
 	function numrows(){
 
+		if( !$this->isConnected() )
+			return;
+
 		if( !$this->stmt && $this->stmtArray ){
 
 			$numrows = $this->fetchNumrows();
@@ -73,7 +78,7 @@ trait Query{
 	}
 
 	function insertId(){
-		
+
 		if( $this->PDO == NULL ){
 
 			$row = $this->Query("SHOW TABLE STATUS FROM `".\Conf\Conf::_DB_CONN['_default']['_database']."` WHERE `name` LIKE '".$this->_name."'")->fetch();
