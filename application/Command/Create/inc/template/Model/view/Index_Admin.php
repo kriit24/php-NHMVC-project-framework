@@ -3,7 +3,7 @@ $formClass = new \{route}\{name}\Form\Index();
 ?>
 
 <div class="ibox float-e-margins">	
-	<div class="ibox-title dropdown border-dark" for="new-table-data">
+	<div class="ibox-title dropdown border-dark" for="new-{name}">
 		<h5><?=$this->Language( '{uname}' )?></h5>
 
 		<div class="ibox-tools">
@@ -13,18 +13,24 @@ $formClass = new \{route}\{name}\Form\Index();
 		</div>
 	</div>
 
-	<div class="ibox-content border new-table-data" style="<?=( $this->getError() ? 'display:block;' : 'display:none;' );?>padding:0px;">
+	<div class="ibox-content border new-{name}" style="<?=( $this->getError() ? 'display:block;' : 'display:none;' );?>padding:0px;">
 		<? $formClass->AddForm(); ?>
 	</div>
 </div>
 
 <?
+$attr = array();
 $form = $formClass->ListForm();
 while($row = $this->{table}->fetch()){
 
+	/*$attr['tbody']['tr'][] = array(
+		'class' => 'dialog',
+		'rel' => $this->url( $_GET, array('method' => 'Edit', 'id' => $row['id']) )
+	);*/
+
 	$form->setData($row);
 }
-$form->toString();
+$form->toString( $attr );
 
 
 ?>

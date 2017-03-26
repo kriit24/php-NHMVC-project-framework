@@ -5,8 +5,6 @@ abstract class createModel{
 
 	public static function init( $folder ){
 
-		return ;
-
 		$fileSystem = new \Library\FileSystem;
 		$success = false;
 
@@ -17,7 +15,7 @@ abstract class createModel{
 
 		if( is_dir($scandir) ){
 
-			$column_elems_form = self::createForm();
+			$column_elems_form = self::createForm( 'text' );
 			$column_elems_data = self::createForm( 'data' );
 
 			foreach($fileSystem->scandir($scandir, true) as $v){
@@ -62,34 +60,22 @@ abstract class createModel{
 		return $success;
 	}
 
-	private static function createForm( $type = null ){
+	private static function createForm( $type ){
 
-		if( !$_POST['table_column'] )
+		$table_column = \Session::columnsData() ? \Session::columnsData(true) : $_POST['table_column'];
+		\Session::clear('columnsData');
+
+		if( empty($table_column) )
 			return '';
 
 		$db = \Conf\Conf::_DB_CONN['_default']['_database'];
 		$sql = new \Library\Sql;
-		$columns = $sql->Query("SHOW COLUMNS FROM ".$db.".".$_POST['table'])->fetchAll();
 		$ret = '';
 
-		foreach($_POST['table_column'] as $column){
+		foreach($table_column as $column){
 
-			foreach($columns as $col){
-
-				if( $col['Field'] == $column ){
-
-					if( !$type ){
-
-						if( preg_match('/char|text/i', $col['Type']) ){
-
-							$type = 'text';
-						}
-					}
-
-					$ret .= $ret ? "\n\n\t\t" : '';
-					$ret .= '$form->addElem(\''.$type.'\', \''.$column.'\', array('."\n\t\t\t".'\'label\' => $this->Language(\''.ucfirst(str_replace('_', ' ', $column)).'\'),'."\n\t\t\t".'\'\' => \'\','."\n\t\t".'));';
-				}
-			}
+			$ret .= $ret ? "\n\n\t\t" : '';
+			$ret .= '$form->addElem($type, \''.$column.'\', array('."\n\t\t\t".'\'label\' => $this->Language(\''.ucfirst(str_replace('_', ' ', $column)).'\'),'."\n\t\t\t".'\'\' => \'\','."\n\t\t".'));';
 		}
 		return $ret;
 	}

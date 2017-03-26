@@ -3,6 +3,13 @@ namespace {namespace};
 
 class Index extends \Library{
 
+	private function Form( $form, $type ){
+
+		{column_elems_form}
+
+		return $form;
+	}
+
 	public function AddForm(){
 
 		$form = new \Library\Form('list');
@@ -11,9 +18,9 @@ class Index extends \Library{
 			'' => '',
 		));
 
-		{column_elems_form}
+		$form = $this->Form( $form, 'text' );
 
-		$form->addElem('submit', 'add', array(
+		$form->addElem('submit', 'add{uname}', array(
 			'value' => $this->Language('Add'),
 			'' => '',
 		));
@@ -29,7 +36,7 @@ class Index extends \Library{
 
 		$form = new \Library\Form('row');
 
-		{column_elems_data}
+		$form = $this->Form( $form, 'data' );
 
 		return $form;
 	}

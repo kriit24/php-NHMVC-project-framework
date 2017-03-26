@@ -1,5 +1,5 @@
 var Project = {};
-Project.clickEvent = [];
+var Project.textSelect = false;
 (function($){
 
 	//$p.toggle
@@ -215,8 +215,6 @@ Project.clickEvent = [];
 	});
 })(jQuery);
 
-var textSelect = false;
-
 $(document).ready(function(){
 
 	$(".datepicker").live("focusin", function(){
@@ -237,14 +235,14 @@ $(document).ready(function(){
 		}
 
 		if( text )
-			textSelect = true;
+			Project.textSelect = true;
 	});
 
 	$('.link').live('click', function(e){
 
-		if( textSelect ){
+		if( Project.textSelect ){
 
-			textSelect = false;
+			Project.textSelect = false;
 			return;
 		}
 
@@ -265,8 +263,6 @@ $(document).ready(function(){
 	});
 
 	$('.dropdown').live('click', function(){
-
-		Project.clickEvent[$(this).attr('id')] = true;
 
 		var className = '.' + $(this).attr('id');
 		if( $(className) == undefined || $(className).length == 0 )

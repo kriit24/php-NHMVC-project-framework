@@ -22,6 +22,29 @@ class Controller extends \Library{
 		die(json_encode(\Library\ArrayIterator::singleton()->arrayValues($sql->Query("SHOW COLUMNS FROM ".$db.".".$_GET['table'])->fetchAll(), 'Field')));
 	}
 
+	public function saveColumnsData(){
+
+		if( !$_POST['table_column'] )
+			return;
+
+		$col = array($_POST['table'] => $_POST['table_column']);
+		\Session::tableColumns( array($_POST['table'] => $_POST['table_column']) );
+		$col = \Session::tableColumns(true);
+
+		$array = array();
+
+		foreach($col as $v){
+
+			foreach($v as $v1){
+
+				if( !in_array($v1, $array) )
+					$array[] = $v1;
+			}
+		}
+
+		\Session::columnsData( $array );
+	}
+
 	public function addMethod(){
 
 		$this->create( $_POST['create'] );

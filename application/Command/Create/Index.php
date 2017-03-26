@@ -29,6 +29,11 @@ class Index extends Controller{
 		$this->getColumnsData();
 	}
 
+	protected function saveColumns(){
+
+		$this->saveColumnsData();
+	}
+
 	public static function shell($command){
 
 		$c = new Controller;

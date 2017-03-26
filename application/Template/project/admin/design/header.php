@@ -34,7 +34,7 @@ $version = \Conf\Conf::_DEV_MODE ? '?v=' . strtotime('now') : '';
 <script type="text/javascript">
 var $_POST = $.canJSON('<?=addslashes(json_encode($_POST));?>');
 var $_GET = $.canJSON('<?=json_encode($_GET);?>');
-timeoutId = setTimeout(function(){ window.location.href = window.location.href.split('#')[0]; }, 40 * 60 * 1000);
+setTimeout(function(){ window.location.href = window.location.href.split('#')[0]; }, 40 * 60 * 1000);
 var language = '<?=_LANG;?>';
 </script>
 
