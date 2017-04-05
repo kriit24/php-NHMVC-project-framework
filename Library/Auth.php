@@ -46,6 +46,10 @@ class Auth extends Component\isPrivate{
 				'type' => 'NOT-INSTALLED'
 			));
 		}
+		else if( _SHELL ){
+
+			$this->shellPrivilege();
+		}
 		else{
 			
 			$this->defaultPrivilege();
@@ -104,7 +108,7 @@ class Auth extends Component\isPrivate{
 					$row['name'] = $row2['first_name'].' '.$row2['last_name'];
 				}
 				if( $row['level'] != 10 )
-					$row['privileges'] = $this->getPrivileges( $row['role_id'] );
+					$row['privileges'] = $this->getPrivileges();
 
 				\Library\Session::clear('userData');
 				\Library\Session::userData($row);
@@ -140,13 +144,29 @@ class Auth extends Component\isPrivate{
 				->where(array('type' => 'USER'))
 				->fetch();
 
-			$row['privileges'] = $this->getPrivileges( $row['role_id'] );
+			$row['privileges'] = $this->getPrivileges();
 		}
 
 		\Library\Session::userData($row);
 	}
 
-	private function getPrivileges($role_id){
+	private function shellPrivilege(){
+
+		if( \Library\Session::userData() )
+			return true;
+
+		$role = new \Table\role;
+		$row = $role->Select()
+			->column(array('*', 'id' => 'role_id'))
+			->where(array('type' => 'SYSTEM'))
+			->fetch();
+
+		$row['privileges'] = $this->getPrivileges();
+
+		\Library\Session::userData($row);
+	}
+
+	private function getPrivileges(){
 
 		$ret = array();
 
