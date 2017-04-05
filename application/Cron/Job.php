@@ -34,18 +34,50 @@ class Job extends JobLoader{
 	private function getJob($jobName){
 		
 		$jobClass = '\\'.__NAMESPACE__.'\\'.$jobName.'\\Index';
-		if( class_exists($jobClass) ){
+		try{
 
-			$time = $jobClass::CRONTIME;
-			$escape = $jobClass::ESCAPE;
-			$loadCron = $this->cronTime($time);
+			//if some php error interrupts cronjob then dont execute that cron next time
+			if( $this->loadClass( $jobName, true ) ){
 
-			$this->logJob($jobName, $time, $loadCron);
-			if( $loadCron == true )
-				$this->loadJob($jobClass, $jobName, $escape);
+				if( class_exists($jobClass) ){
+
+					$this->loadClass( $jobName, false );
+
+					$time = $jobClass::CRONTIME;
+					$escape = $jobClass::ESCAPE;
+					$loadCron = $this->cronTime($time);
+
+					$this->logJob($jobName, $time, $loadCron);
+					if( $loadCron == true )
+						$this->loadJob($jobClass, $jobName, $escape);
+				}
+				else
+					new \Library\Component\Error('Job class not found '.$jobClass, '', false, true, true);
+			}
 		}
-		else
-			new \Library\Component\Error('Job class not found '.$jobClass, '', false, false);
+		catch(\Exception $e){
+		}
+	}
+
+	private function loadClass( $jobName, $load ){
+
+		$file = $this->logDir.'/'.$jobName.'.error';
+
+		if( $load ){
+
+			if( is_file($file) ){
+
+				new \Library\Component\Error('Cronjob PHP ERROR @ '.$jobName.'', '', false, true, true);
+				return false;
+			}
+
+			file_put_contents($file, 'true');
+		}
+		else{
+
+			unlink($file);
+		}
+		return true;
 	}
 
 	private static function destruct(){

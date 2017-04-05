@@ -33,5 +33,23 @@ class Image{
 		$self = new self();
 		return $self->_crop($file, $width, $height, $location_dir);
 	}
+
+	public static function rotate($file, $location_dir, $degrees){
+
+		$self = new self();
+		return $self->_rotate($file, $location_dir, $degrees);
+	}
+
+	public static function autoRotate($file){
+
+		$self = new self();
+		return $self->_autoRotate($file);
+	}
+
+	public static function watermark($file, $watermarkFile, $watermarkX, $watermarkY){
+
+		$self = new self();
+		$self->_watermark($file, $watermarkFile, $watermarkX, $watermarkY);
+	}
 }
 ?>

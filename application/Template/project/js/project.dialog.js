@@ -53,6 +53,9 @@ Project.Dialog = function( elem ){
 		},
 
 		/*
+		IF U HAVE DIALOG OPENED
+		$.dialog('#dialog').clickEvent(this).create();
+
 		FOR SHORT LOADING
 		$.dialog('#elem').get({'url' : '/ajax.php?model=s&page=s', 'data' : 'GETDATA', 'title' : 'title', 'complete' : function(data){
 			$(elem).live('click', function(){ $.dialog.post(); });
@@ -245,9 +248,9 @@ Project.Dialog = function( elem ){
 
 		dialogClick : function(e, attrClass){
 
-			if( Project.textSelect ){
+			if( textSelect ){
 
-				Project.textSelect = false;
+				textSelect = false;
 				return false;
 			}
 
@@ -294,7 +297,6 @@ Project.Dialog = function( elem ){
 					else{
 
 						this.setCustomValidity('');
-						return false;
 					}
 				});
 

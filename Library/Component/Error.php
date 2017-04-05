@@ -16,17 +16,19 @@ class Error{
 	private $catch;
 	private $setTrace = true;
 	private $trace;
+	private $reportViaEmail;
 	private $table;
 	private $error = array();
 	private $message = array();
 
-	function __construct( $key, $message = '', $catch = false, $setTrace = true ){
+	function __construct( $key, $message = '', $catch = false, $setTrace = true, $reportViaEmail = false ){
 
 		$this->error[$key] = $key;
 		if( $message )
 			$this->message[$key] = $message;
 		$this->catch = $catch;
 		$this->setTrace = $setTrace;
+		$this->reportViaEmail = $reportViaEmail;
 	}
 
 	static function catch(){
@@ -100,10 +102,14 @@ class Error{
 
 	private function manageError(){
 
-		if( self::_PARSE_ERROR )
+		if( self::_PARSE_ERROR && $this->reportViaEmail == false ){
+
 			die($this->showError());
-		else
+		}
+		else{
+
 			$this->emailError();
+		}
 	}
 
 	function __destruct(){

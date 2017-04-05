@@ -7,6 +7,7 @@ class Index extends Controller{
 
 		//$this->inc( __DIR__ . '/inc/script.js' );
 		//$this->inc( __DIR__ . '/inc/style.css' );
+		parent::__construct();
 	}
 
 	protected function Index(){

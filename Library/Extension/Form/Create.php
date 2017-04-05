@@ -44,7 +44,8 @@ trait Create{
 
 			$dataArray = $this->data;
 			$data = $dataArray[0];
-			unset($data['table']);
+			if( is_array($data) )
+				unset($data['table']);
 
 			$this->Form->setData($data);
 			$this->Html->setData($data);

@@ -68,9 +68,9 @@ trait Query{
 
 		if( !$this->stmt && $this->stmtArray ){
 
-			$numrows = $this->fetchNumrows();
+			$this->buildQueryStatement( $where );
 			$this->rebuildStatement = false;
-			return $numrows;
+			return $this->stmt->rowCount();
 		}
 		if( !$this->stmt && !$this->stmtArray ){
 

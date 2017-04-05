@@ -10,8 +10,7 @@ class Index extends Controller{
 
 		//$this->Form = new Form;
 		//$this->Validate = new Validate;
-
-		//$this->tableName = new \Table\tableName;
+		parent::__construct();
 	}
 
 	protected function Index(){

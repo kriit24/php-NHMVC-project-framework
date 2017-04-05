@@ -94,6 +94,13 @@ Project.Tabs = function(selector){
 		getActiveTab : function(){
 
 			var tab_active = Project.Session.get('tab_active');
+			if( window.location.href.indexOf('#') != -1 ){
+
+				var id = window.location.href.split('#')[1];
+				var index = $('a[href="#' + id + '"]', this.selector).parent().index();
+				if( $('a[href="#' + id + '"]', this.selector).length > 0 )
+					return index;
+			}
 			if( tab_active != undefined && tab_active[ this.getUrlParam() ] != undefined ){
 
 				return tab_active[ this.getUrlParam() ].active;

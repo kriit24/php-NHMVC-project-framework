@@ -64,7 +64,7 @@ trait Email{
 
         $mail->Host = "localhost";
         $mail->From = $this->getOption('from_email');
-        $mail->FromName = $this->getOption('from_name');
+       $mail->FromName = "=?utf-8?b?".base64_encode($this->getOption('from_name'))."?=";
 
 		if( is_Array($this->getOption('to_email')) ){
 

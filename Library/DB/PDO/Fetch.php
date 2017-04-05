@@ -126,6 +126,7 @@ trait Fetch{
 			return false;
 
 		$this->buildQueryStatement( $where );
+		$this->rebuildStatement = true;
 		return $this->numrows();
 	}
 

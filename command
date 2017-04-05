@@ -4,9 +4,9 @@ if [ "$1" == "Cron" ]
 then
 	if [ -z "$2" ]
 	then
-		php index.php Cron/Cron
+		php index.php Cron
 	else
-		php index.php Cron/Cron/$2
+		php index.php Cron/$2
 	fi
 elif [ -n "$1" ] && [ -z "$2" ]
 then

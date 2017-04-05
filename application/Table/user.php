@@ -29,17 +29,17 @@ class user extends \Library\Sql{
 		return $row;
 	}
 
-	public function prepareUserData($data, $userName){
+	public function prepareUserData($data){
 
 		$roleType = $this->role->Select()
 			->where("id = ".$data['role_id'])
 			->fetchColumn('name');
 
 		return array_merge($data, array(
-			'name' => $userName,
+			'name' => $data['first_name'] . '.' . $data['last_name'],
 			'password' => md5($data['password']),
-			'password_expires_at' => !$data['password_expires_at'] ? null : $this->toDate($data['password_expires_at']),
-			'account_expires_at' => !$data['account_expires_at'] ? null : $this->toDate($data['account_expires_at']),
+			'password_expires_at' => !$data['password_expires_at'] ? null : date('Y-m-d', strtotime($data['password_expires_at'])),
+			'account_expires_at' => !$data['account_expires_at'] ? null : date('Y-m-d', strtotime($data['account_expires_at'])),
 			'type' => $roleType
 		));
 	}

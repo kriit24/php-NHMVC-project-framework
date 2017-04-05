@@ -4,7 +4,7 @@ namespace Cron;
 class JobLoader extends \Library{
 
 	private $toDay;
-	private $logDir = _DIR.'/tmp/logs/cronjob';
+	protected $logDir = _DIR.'/tmp/logs/cronjob';
 
 	const DEBUG = (_DEBUG == 'cron' ? true : false);
 
@@ -24,11 +24,12 @@ class JobLoader extends \Library{
 				unlink($this->logDir.'/'.$jobName);
 
 				$this->toDayDir( $jobName );
-				$end = file_get_contents($this->logDir.'/'.$this->toDay.'/'.$jobName);
+
+				$end = is_file($this->logDir.'/'.$this->toDay.'/'.$jobName) ? file_get_contents($this->logDir.'/'.$this->toDay.'/'.$jobName) : '';
 				$end = str_replace('{end}', ' DECLINED '.date("H:i:s"), $end);
 				file_put_contents($this->logDir.'/'.$this->toDay.'/'.$jobName, $end);
 
-				new \Library\Component\Error('Cronjob loadtime exceeded. Jobname: '.$jobName);
+				new \Library\Component\Error('Cronjob loadtime exceeded. Jobname: '.$jobName, '', false, true, true);
 			}
 		}
 	}
@@ -81,7 +82,7 @@ class JobLoader extends \Library{
 			$this->endCron( $jobName );
 		}
 		else
-			new \Library\Component\Error('Cronjob LOADING. Jobname: '.$jobName, '', false, false);
+			echo('Cronjob LOADING. Jobname: '.$jobName);
 	}
 
 	public function logJob($jobName, $time, $loadCron){

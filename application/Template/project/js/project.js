@@ -1,5 +1,4 @@
-var Project = {};
-var Project.textSelect = false;
+var Project = { 'textSelect' : false };
 (function($){
 
 	//$p.toggle

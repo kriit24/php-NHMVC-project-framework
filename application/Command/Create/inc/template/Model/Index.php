@@ -9,8 +9,7 @@ class Index extends Controller{
 		//$this->inc( __DIR__ . '/inc/style.css' );
 
 		$this->Validate = new Validate;
-
-		$this->{table} = new \Table\{table};
+		parent::__construct();
 	}
 
 	protected function Index(){
