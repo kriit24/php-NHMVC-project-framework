@@ -18,7 +18,7 @@ class Index extends Controller{
 
 	protected function Index_Admin(){
 
-		$this->view('Admin');
+		$this->getDataList()->view('Admin');
 	}
 
 	protected function Submenu( $name ){

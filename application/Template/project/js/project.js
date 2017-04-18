@@ -258,7 +258,7 @@ $(document).ready(function(){
 		if( e.target.tagName.toUpperCase() == 'INPUT' || e.target.tagName.toUpperCase() == 'A' )
 			return;
 
-		window.location.href = $(this).attr('rel');
+		window.location.href = $(this).attr('data-href');
 	});
 
 	$('.dropdown').live('click', function(){
@@ -282,6 +282,36 @@ $(document).ready(function(){
 				}
 			});
 		}
+	});
+
+	//<div class="form-control autosize" autosize="min-width:400px;min-height:200px;"
+	$('.autosize').live('focus', function(){
+
+		var styleArray = {};
+		var style = $(this).attr('autosize');
+
+		if( $(this).attr('style') )
+			Project.autoSizeStyle[this] = $(this).attr('style');
+
+		var tmp = style.split(';');
+		$.each(tmp, function(k, v){
+
+			if( v.length > 0 ){
+
+				var sp = v.split(':');
+				styleArray[ sp[0] ] = sp[1];
+			}
+		});
+		$( this ).css( styleArray );
+	});
+
+	$('.autosize').live('focusout', function(){
+
+		//it is needed for sliding ibox
+		setTimeout(() => {
+
+			$(this).attr('style', Project.autoSizeStyle[this]);
+		 }, 100);
 	});
 
 	$('.no-click').live('click', function(){

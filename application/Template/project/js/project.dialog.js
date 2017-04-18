@@ -345,14 +345,14 @@ Project.Dialog = function( elem ){
 			if( $(elem).prop('href') && $(elem).prop('href').length > 0 )
 				href = $(elem).prop('href');
 			else
-				href = $(elem).attr('rel');
+				href = $(elem).attr('data-href');
 
 			if( $(elem).prop('title') )
 				title = $(elem).prop('title');
 
 			if( href == undefined || href.length == 0 ){
 
-				alert('DIALOG url missing: if A element then attr("href") if TR element attr("rel")');
+				alert('DIALOG url missing: if A element then attr("href") if TR element attr("data-href")');
 				return false;
 			}
 

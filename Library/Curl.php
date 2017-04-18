@@ -9,15 +9,6 @@ class Curl{
 	private static $ch;
 	private static $cookie;
 
-	/**
-	* send regular curl request
-	* @param String $url - http://domain/
-	* @param Array $post_data=array() - array('key' => 'value')
-	* @param String $login = '' - if .htaccess login "user:password"
-	* @param String $in_file='' - full file path "/var/www/file.pdf"
-	* @param Int $in_file_size=0 - filesize('/var/www/file.pdf')
-	* @return result
-	*/
 	public static function get($url, $sshLogin = ''){
 
 		register_shutdown_function(array(new self(), 'close'));
@@ -35,10 +26,6 @@ class Curl{
 	private static function makeRequest($url, $post_data=array(), $sshLogin = '', $in_file='', $in_file_size=0){
 
 		$ch = self::$ch ? self::$ch : curl_init();
-		$cookieFile = uniqid('_cookie', true);
-
-		if( !is_dir(get_include_path() . '/tmp/cookies') )
-			mkdir(get_include_path() . '/tmp/cookies');
 
 		curl_setopt($ch, CURLOPT_URL, $url);
 		if(is_array($post_data) && count($post_data)>0){
@@ -62,11 +49,21 @@ class Curl{
 		curl_setopt($ch, CURLOPT_USERAGENT,'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/32.0.1700.107 Chrome/32.0.1700.107 Safari/537.36');
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 
+		if( self::$cookie ){
+
+			curl_setopt($ch, CURLOPT_COOKIE, self::$cookie);
+		}
 		if( !self::$cookie ){
+
+			$cookieFile = get_include_path() . '/tmp/cookies/' . uniqid('cookie_');
+
+			if( !is_dir(dirname($cookieFile)) )
+				mkdir(dirname($cookieFile));
 
 			curl_setopt($ch, CURLOPT_COOKIESESSION, true);
 			curl_setopt($ch, CURLOPT_COOKIEJAR, $cookieFile);  //could be empty, but cause problems on some hosts
-			curl_setopt($ch, CURLOPT_COOKIEFILE, get_include_path() . '/tmp/cookies');  //could be empty, but cause problems on some hosts
+			curl_setopt($ch, CURLOPT_COOKIEFILE, $cookieFile);  //could be empty, but cause problems on some hosts
+			self::$cookie = $cookieFile;
 		}
 		$Result = curl_exec($ch);
 
@@ -75,7 +72,6 @@ class Curl{
 			die( curl_error($ch) );
 		}
 		self::$ch = $ch;
-		self::$cookie = $cookieFile;
 		return $Result;
 	}
 

@@ -8,7 +8,8 @@ class Template extends \Library{
 	const DEBUG = (_DEBUG == 'template' ? true : false);
 	private $design;
 	private $template = '';
-	private static $Includes = array();
+	public static $Includes = array();
+	public $header = array('CSS' => array(), 'JS' => array());
 
 	public function __construct(){
 
@@ -104,30 +105,9 @@ class Template extends \Library{
 
 	public function footer(){
 
-		$Includes = \Library\Component\Register::getRegister('INCLUDES');
-		if( $Includes ){
-
-			$cssString = null;
-			$jsString = null;
-
-			foreach($Includes as $href){
-
-				if( in_array($href, self::$Includes) )
-					continue;
-
-				array_push(self::$Includes, $href);
-
-				if( substr(basename($href), -4) == '.css' )
-					$cssString .= file_Get_contents( $href ) . "\n";
-				if( substr(basename($href), -3) == '.js' )
-					$jsString .= file_Get_contents( $href ) . "\n";
-			}
-			if( $cssString )
-				echo '<style type="text/css">'.$cssString.'</style>';
-
-			if( $jsString )
-				echo '<script type="text/javascript">'.$jsString.'</script>';
-		}
+		$self = new self();
+		$self::$Includes = self::$Includes;
+		$self->includes();
 	}
 
 	public static function includes(){

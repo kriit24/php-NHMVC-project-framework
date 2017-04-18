@@ -7,6 +7,12 @@ class Controller extends \Library{
 
 		pre($_POST);
 	}
+
+	public function getDataList(){
+
+		$this->crons = glob(_DIR .'/application/Cron/*', GLOB_ONLYDIR);
+		return $this;
+	}
 }
 
 ?>

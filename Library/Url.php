@@ -37,19 +37,28 @@ class Url{
 		//pre($url);
 
 		$urlString = '';
+		$logicalString = '';
 		foreach($url as $key => $value){
 
 			if( empty($value) && $value !== 0 )
 				continue;
 
-			$urlString .= $urlString ? '/' : '';
-			$urlString .= !is_numeric($key) && !in_Array($key, array('route', $this->routeName, 'method')) ? $key.'/'.$value : $value;
+			if( preg_match('/\//i', urldecode($value)) ){
+
+				$logicalString .= ($logicalString ? '&' : '');
+				$logicalString .= $key . '=' . $value;
+			}
+			else{
+
+				$urlString .= $urlString ? '/' : '';
+				$urlString .= !is_numeric($key) && !in_Array($key, array('route', $this->routeName, 'method')) ? $key.'/'.$value : $value;
+			}
 		}
 
 		if( substr($urlString, -1) != '/' && !preg_match('/\/\?/i', $urlString) )
 			$urlString .= '/';
 
-		return (preg_match('/\/admin\//i', $_SERVER['SCRIPT_NAME']) ? '/admin/' : '/').$urlString;
+		return (preg_match('/\/admin\//i', $_SERVER['SCRIPT_NAME']) ? '/admin/' : '/').$urlString . ($logicalString ? '?' . $logicalString : '');
 	}
 
 	private function build($url){
