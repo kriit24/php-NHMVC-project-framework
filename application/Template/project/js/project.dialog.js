@@ -248,9 +248,9 @@ Project.Dialog = function( elem ){
 
 		dialogClick : function(e, attrClass){
 
-			if( textSelect ){
+			if( Project.textSelect ){
 
-				textSelect = false;
+				Project.textSelect = false;
 				return false;
 			}
 
