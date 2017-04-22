@@ -38,17 +38,17 @@ Project.Autocomplete = {
 
 		var name = $(elem).attr('name');
 
-		if( $(elem).attr('rel') == undefined && this.source[name] == undefined ){
+		if( $(elem).attr('data-href') == undefined && this.source[name] == undefined ){
 
 			alert('Elem: ' + $(elem).attr('name') + ' source missing: rel="ajax-url" ');
 			$( elem ).css({'background' : '#ff0000'});
 			return;
 		}
 
-		var source = this.source[name] != undefined ? this.source[name] : $(elem).attr('rel');
+		var source = this.source[name] != undefined ? this.source[name] : $(elem).attr('data-href');
 		var value  = $(elem).attr('autocomplete-value') != undefined ? $(elem).attr('autocomplete-value') : $(elem).val();
 		var newElem = $(elem).clone(true);
-		newElem.attr({'type' : 'hidden', 'rel' : ''});
+		newElem.attr({'type' : 'hidden', 'data-href' : ''});
 		$(elem).after(newElem);
 		$(elem).attr({'name' : name + '_autocomplete_label', 'value' : value});
 		

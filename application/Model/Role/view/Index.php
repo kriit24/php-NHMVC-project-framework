@@ -18,7 +18,7 @@ while($row = $this->role->fetch()){
 	else{
 
 		$form->setData( $row );
-		$attr['tbody']['tr'][] = array('class' => 'edit', 'rel' => $this->url('?action=edit&id='.$row['id']) );
+		$attr['tbody']['tr'][] = array('class' => 'edit', 'data-href' => $this->url('?action=edit&id='.$row['id']) );
 	}
 }
 $form->toString( $attr );

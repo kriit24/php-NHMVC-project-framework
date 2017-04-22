@@ -17,7 +17,7 @@ $this->Paginator->paginate(
 while($row = $this->language->fetch()){
 
 	$form->setData( $row );
-	$attr['tbody']['tr'][] = array('class' => 'dialog', 'rel' => $this->url(array('model' => 'Translate', 'method' => 'Edit', '?id='.$row['id'])), 'title' => 'Edit' );
+	$attr['tbody']['tr'][] = array('class' => 'dialog', 'data-href' => $this->url(array('model' => 'Translate', 'method' => 'Edit', '?id='.$row['id'])), 'title' => 'Edit' );
 }
 $form->toString( $attr );
 

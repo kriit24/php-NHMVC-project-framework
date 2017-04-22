@@ -13,7 +13,7 @@ $this->Paginator->paginate($this->user);
 while( $row = $this->user->fetch() ){
 
 	$form->attr(array('href' => $this->url('?action=deleteUser&id='.$row['id'])), 'delete');
-	$attr['tbody']['tr'][] = array('class' => 'dialog', 'rel' => $this->url( array('model' => 'User', 'method' => 'Edit', '?id='.$row['id']) ), 'title' => $row['user_name']);
+	$attr['tbody']['tr'][] = array('class' => 'dialog', 'data-href' => $this->url( array('model' => 'User', 'method' => 'Edit', '?id='.$row['id']) ), 'title' => $row['user_name']);
 
 	$form->setData($row);
 }

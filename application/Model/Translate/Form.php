@@ -99,12 +99,12 @@ class Form extends \Library{
 		$form->addElem('text', 'name', array(
 			'label' => $this->Language('Name'),
 			'class' => 'autocomplete form-control',
-			'rel' => $this->url( array('route' => 'Helper', 'helper' => 'Autocomplete', 'method' => 'Index', 'action' => 'Translate', 'getBy' => 'name') )
+			'data-href' => $this->url( array('route' => 'Helper', 'helper' => 'Autocomplete', 'method' => 'Index', 'action' => 'Translate', 'getBy' => 'name') )
 		));
 		$form->addElem('text', 'value2', array(
 			'label' => $this->Language('Value'),
 			'class' => 'autocomplete form-control',
-			'rel' => $this->url( array('route' => 'Helper', 'helper' => 'Autocomplete', 'method' => 'Index', 'action' => 'Translate', 'getBy' => 'value') )
+			'data-href' => $this->url( array('route' => 'Helper', 'helper' => 'Autocomplete', 'method' => 'Index', 'action' => 'Translate', 'getBy' => 'value') )
 		));
 		$form->addElem('select', 'model2', array(
 			'option' => $models,

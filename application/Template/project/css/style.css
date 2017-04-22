@@ -98,6 +98,16 @@ a[class~="btn"][disabled="disabled"]:active{
     color: #c4c4c4;
 }
 
+.ibox-title.ibox-label .ibox-tools{
+	position: absolute;
+    right: 5px;
+	margin-top: 13px;
+	color:#ffffff;
+}
+.ibox-title.ibox-label .ibox-tools a{
+	color:#ffffff;
+}
+
 .ibox-content {
 	margin:0 auto;
     background-color: #ffffff;

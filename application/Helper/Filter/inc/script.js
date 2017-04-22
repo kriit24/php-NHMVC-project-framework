@@ -135,7 +135,7 @@ var latestTag = '';
 
 					if( item.value.length > 0 ){
 
-						if( item.type == 'radio' ){
+						if( item.type == 'radio' || item.type == 'checkbox' ){
 
 							if( item.checked == true )
 								serialized += serialized ? '&'+item.name+'='+encodeURIComponent(item.value) : item.name+'='+encodeURIComponent(item.value);
