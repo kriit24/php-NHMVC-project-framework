@@ -74,6 +74,9 @@ trait Prepare{
 
 		if( preg_match('/\:([a-zA-Z0-9\.\__]+)/i', $column) || preg_match('/\?/i', $column) )
 			return array($column, $value);
+
+		if( $this->prepareSqlFunction( $column ) && preg_match('/[[:space:]]/i', $column) && $column && isset($value) )
+			return array($column . ' = '.$value, '');
 		
 		if( preg_match('/[[:space:]]/i', $column) && $column && !isset($value) )
 			return array($column, $value);

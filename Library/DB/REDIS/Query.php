@@ -27,7 +27,10 @@ trait Query{
 	function append($name, $value){
 
 		$ret = $this->get($name);
-		$ret = array_merge($ret, $value);
+		if( !empty($ret) )
+			$ret = array_merge($ret, $value);
+		else
+			$ret = $value;
 		$this->set($name, $ret);
 	}
 

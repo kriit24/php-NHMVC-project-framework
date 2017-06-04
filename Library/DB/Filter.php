@@ -3,22 +3,25 @@ namespace Library\DB;
 
 class Filter{
 
-	static function getWhere($where){
+	static function getWhere($where, $data){
 
-		return $where;
-		/*if( !is_array($where) )
-			return $where;
-
-		$retWhere = array();
 		foreach($where as $k => $v){
 
-			$column = !is_numeric($k) ? $k : $v;
-			$value = !is_numeric($k) ? $v : ':'.$v;
-			if( !preg_match('/(=|<|>|BETWEEN|IN\()/', $column.$value) )
-				$column .= ' =';
-			$retWhere[$column] = $value;
+			if( !is_numeric($k) ){
+
+				if( !$data[ $k ] ){
+
+					unset( $where[ $k ] );
+				}
+				else{
+
+					unset( $where[ $k ] );
+					$where[] = $v;
+				}
+			}
 		}
-		return $retWhere;*/
+
+		return $where;
 	}
 }
 

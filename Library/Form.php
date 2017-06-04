@@ -5,7 +5,7 @@ class Form extends Component\isPrivate{
 
 	private $createFooter = true;
 	private $bodyType = 'row';//list
-	private $tableClass = 'table table-hover';
+	private $tableClass = 'table table-hover table-vertical';
 
 	use Extension\Form, Extension\Form\Create;
 

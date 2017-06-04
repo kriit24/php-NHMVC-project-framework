@@ -8,13 +8,18 @@ class Index extends \Library{
 		$this->inc( __DIR__.'/inc/style.css' );
 	}
 
-	public function paginate( $paginator ){
+	public function paginate( $paginator, $showCount = true ){
 
-		if( !empty($paginator->paginator) ){
+		if( $showCount == false && empty($paginator->paginator) )
+			return;
 
+		//if( !empty($paginator->paginator) ){
+
+			$this->q = $paginator;
 			$this->pages = $paginator->paginator;
+			$this->showCount = $showCount;
 			$this->view('Paginate');
-		}
+		//}
 	}
 }
 

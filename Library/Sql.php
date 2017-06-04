@@ -41,6 +41,7 @@ class Sql extends Extension\Sql{
 		$paginator = new DB\Paginator( $limit );
 		$paginator->setStmt( $this->getStmtArray(), $this->getParams() );
 		$this->paginator = $paginator->getPaginator();
+		$this->rowsCount = $paginator->rowsCount;
 
 		return $this->limit($paginator->start, $paginator->limit);
 	}
@@ -48,7 +49,7 @@ class Sql extends Extension\Sql{
 	//->filter(array('first_name' => 'LIKE %?%', 'last_name' => 'LIKE %?%', 'is_temporary' => 'IN(?)', 'changed_at' => 'BETWEEN', 'city'), $_GET)
 	function filter($where, $data){
 
-		return $this->where(DB\Filter::getWhere($where), $data);
+		return $this->where(DB\Filter::getWhere($where, $data), $data);
 	}
 
 	//->sort(array('first_name', 'last_name'), $_GET['sort'])

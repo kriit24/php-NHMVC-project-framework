@@ -154,8 +154,8 @@ trait Create{
 			$elem['attr'] = array_merge($elem['attr'], $elemAttr);
 			$elemHtml = $this->createHtmlElement($elem);
 
-			list($attrTr, $attr) = $this->getHtmlElemAttr($attr, 'tr', 'td', $i);
-			list($attrTd, ) = $this->getHtmlElemAttr($attr, 'td', '', $i);
+			list($attrTr, $attrTrArray) = $this->getHtmlElemAttr($attr, 'tr', 'td', $i);
+			list($attrTd, ) = $this->getHtmlElemAttr($attrTrArray, 'td', '', $i);
 			list($attrLabel, ) = $this->getHtmlElemAttr($elem, 'label-attr');
 
 			$labelValue = $elem['label'] && strip_tags($elem['label']) == $elem['label'] ? $elem['label'] : $elem['label'];

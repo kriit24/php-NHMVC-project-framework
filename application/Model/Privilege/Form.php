@@ -3,7 +3,7 @@ namespace Model\Privilege;
 
 class Form extends \Library{
 
-	const ROUTE = array('Api', 'Model');
+	const ROUTE = array('Api', 'Model', 'Helper');
 	const SUBMIT = array(
 		'add' => 'addPrivilege',
 		'clone' => 'clonePrivilege',

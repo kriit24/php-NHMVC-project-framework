@@ -9,7 +9,7 @@ while($row = $this->role->fetch()){
 	?>
 	<div class="ibox float-e-margins">
 		<div class="ibox-title dropdown" for="privilege-<?=$row['id'];?>">
-		    <h5><b><?=($row['name']);?></b> (<?=($row['description']);?>)</h5>
+		    <h5><b><?=($row['name']);?></b></h5>
 
 		    <div class="ibox-tools">
 				<a class="collapse-link">
@@ -75,7 +75,7 @@ while($row = $this->role->fetch()){
 				}
 			}
 			?>
-			<input type="submit" name="updatePrivilege" value="<?=($this->Language( 'Update' ));?>" class="btn btn-primary">&nbsp;&nbsp;<span style="color:red;font-size:20px;"><?=($this->Language( 'NB! Saving new privileges will override pre defined privileges watch that USER have all public privileges' ));?></span>
+			<input type="submit" name="updatePrivilege" value="<?=($this->Language( 'Update' ));?>" class="btn btn-primary">
 			</form>
 		</div>
 	</div>

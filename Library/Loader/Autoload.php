@@ -107,6 +107,7 @@ class Autoload{
 			if( _DEBUG == 'autoload' ){
 
 				print '<pre>';
+				print_r( array('base_path' => $this->_dir) );
 				print_r ($this->option);
 				print '</pre>';
 				echo 'REQUIRE='.$this->getPath(). DIRECTORY_SEPARATOR .$this->getFile().'<br>';

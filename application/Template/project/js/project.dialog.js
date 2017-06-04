@@ -12,6 +12,7 @@ Project.Dialog = function( elem ){
 
 		//var loader = elem + '_loader';
 		var loader = 'dialog_loader';
+		var submit_loader = 'dialog_submit_loader';
 		var style = 'background:white;';
 		style += 'border:1px solid #626262;';
 		style += 'padding:3px;';
@@ -23,9 +24,24 @@ Project.Dialog = function( elem ){
 		style += 'padding:15px;';
 		style += 'font-weight:bold;';
 
+		var submit_loader_style = 'display:none;';
+		submit_loader_style += 'position:fixed;';
+		submit_loader_style += 'z-index:1000;';
+		submit_loader_style += 'top:0;';
+		submit_loader_style += 'left:0;';
+		submit_loader_style += 'width:100%;';
+		submit_loader_style += 'height:100%;';
+		submit_loader_style += 'padding:0;';
+		submit_loader_style += 'margin:0;';
+		submit_loader_style += 'background:#ebebeb;';
+		submit_loader_style += 'opacity:0;';
+
 		//Project.Dialog.Object = this;
 		if( $('#'+elem).length == 0 )
 			$(document.body).append('<div id="' + elem + '" class="project-dialog" style="display:none;"></div>');
+
+		if( $('#'+submit_loader).length == 0 )
+			$(document.body).append('<div id="' + submit_loader + '" class="project-dialog-submit" style="'+submit_loader_style+'"></div>');
 
 		if( $('#'+loader).length == 0 )
 			$(document.body).append('<div id="' + loader + '" style="' + style + '"><img src="/Template/public/images/ajax-loader-big.gif" style="float:left;"/> <div style="float:left;margin-left:5px;margin-top:15px;">Loading ...</div></div>');
@@ -248,9 +264,9 @@ Project.Dialog = function( elem ){
 
 		dialogClick : function(e, attrClass){
 
-			if( Project.textSelect ){
+			if( textSelect ){
 
-				Project.textSelect = false;
+				textSelect = false;
 				return false;
 			}
 
@@ -323,6 +339,10 @@ Project.Dialog = function( elem ){
 						self.reload = true;
 						if( scrollTop )
 							Project.Session.set('scrollTo', scrollTop);
+
+						$('.project-dialog-submit').show();
+						$('.project-dialog-submit').animate({'opacity': 0.5}, 500);
+						$('input[type="submit"]', $('#'+self.selector)).after('<span style="margin-left:20px;color:#008c00;"><b>'+$.language('Uuendus edukalt tehtud')+'</b></span>');
 					}}).create();
 					return false;
 				}
@@ -345,14 +365,14 @@ Project.Dialog = function( elem ){
 			if( $(elem).prop('href') && $(elem).prop('href').length > 0 )
 				href = $(elem).prop('href');
 			else
-				href = $(elem).attr('data-href');
+				href = $(elem).attr('rel');
 
 			if( $(elem).prop('title') )
 				title = $(elem).prop('title');
 
 			if( href == undefined || href.length == 0 ){
 
-				alert('DIALOG url missing: if A element then attr("href") if TR element attr("data-href")');
+				alert('DIALOG url missing: if A element then attr("href") if TR element attr("rel")');
 				return false;
 			}
 
@@ -373,15 +393,17 @@ $(document).ready(function(){
 
 	$('.dialog').live('click', function(e){
 
-		if( dialog.dialogClick(e) )
+		var dialogClick = dialog.dialogClick(e);
+		if( dialogClick )
 			dialog.clickEvent(this).create();
-		return false;
+		return (dialogClick == false ? true : false);
 	});
 	$('.dialog-append').live('click', function(e){
 
-		if( dialog.dialogClick(e) )
+		var dialogClick = dialog.dialogClick(e);
+		if( dialogClick )
 			dialog.clickEvent(this).append();
-		return false;
+		return (dialogClick == false ? true : false);
 	});
 	$('button.ui-dialog-titlebar-close').live('click', function(){
 

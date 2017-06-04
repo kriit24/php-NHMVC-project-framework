@@ -1,0 +1,11 @@
+.help-est li, .help-eng li{
+	padding:5px 0px;
+}
+
+.filepicker-div{
+	display:none;
+	position:absolute;
+	background:#ffffff;
+	border:1px solid #d3d3d3;
+	padding:25px;
+}

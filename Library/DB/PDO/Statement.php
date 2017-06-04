@@ -98,9 +98,17 @@ trait Statement{
 		$ret = array();
 		foreach($values as $k => $v){
 
-			list($column, ) = explode(' ', (is_numeric($k) ? $v : $k));
-			if( in_array($column, $this->_validFields) )
+			$col = (is_numeric($k) ? $v : $k);
+			if( !$this->prepareSqlFunction($col) ){
+
+				list($column, ) = explode(' ', $col);
+				if( in_array($column, $this->_validFields) )
+					$ret[$k] = $v;
+			}
+			else{
+
 				$ret[$k] = $v;
+			}
 		}
 		return $ret;
 	}
@@ -147,14 +155,23 @@ trait Statement{
 	function jsonColumn($columnsArray){
 
 		$JSON_ARRAY_STRING = '';
+
 		foreach($columnsArray as $k => $v){
 
-			$key = is_numeric($k) ? $v : $k;
-			if( preg_match('/\./i', $key) )
-				list(, $key) = explode('.', $key);
-			$column = $v;
+			if( is_array($v) && !is_numeric($k) ){
 
-			$JSON_ARRAY_STRING .= ($JSON_ARRAY_STRING ? ", ',', " : "") . "JSON_ARRAY_STRING('".$key."', " . $column . ")";
+				$v = array_map(function($value) use ($k) { return $k.'.'.$value; }, $v);
+				return $this->jsonColumn($v);
+			}
+			else{
+
+				$key = is_numeric($k) ? $v : $k;
+				if( preg_match('/\./i', $key) )
+					list(, $key) = explode('.', $key);
+				$column = $v;
+
+				$JSON_ARRAY_STRING .= ($JSON_ARRAY_STRING ? ", ',', " : "") . "JSON_ARRAY_STRING('".$key."', " . $column . ")";
+			}
 		}
 
 		return "JSON_OBJECT(

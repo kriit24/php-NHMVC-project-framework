@@ -13,10 +13,12 @@ class PDO extends Connection{
 	public $_connName = '_default';
 	private $PDO;
 	private $stmt = null;
-	private $preDefinedColumns = array();
+	private $errorLvl = 1;
+	private $error = array();
+	public $preDefinedColumns = array();
 	private $stmtArray = array();
 	private $stmtQueye = array(
-		'SELECT', 'INSERT INTO', 'UPDATE', 'DELETE', 'COLUMN', 'FROM', 'JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN', 'SET', 'VALUES', 'WHERE', 'ORDER BY', 'GROUP BY', 'HAVING', 'LIMIT'
+		'SELECT', 'INSERT INTO', 'UPDATE', 'DELETE', 'COLUMN', 'FROM', 'JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN', 'SET', 'VALUES', 'WHERE', 'GROUP BY', 'ORDER BY', 'HAVING', 'LIMIT'
 	);
 	private $params = array();
 	private $columnParams = array();
@@ -38,6 +40,22 @@ class PDO extends Connection{
 		return $this->getConn( $connName );
 	}
 
+	/*
+	$error level
+	0 - ignore errors
+	1 - show and break
+	2 - dont show and continue
+	*/
+	public function error( $level = 1 ){
+
+		$this->errorLvl = $level;
+	}
+
+	public function getError(){
+
+		return $this->error;
+	}
+
 	function getStmtArray(){
 
 		return $this->stmtArray;
@@ -46,11 +64,6 @@ class PDO extends Connection{
 	public function getColumns( $exclude = array() ){
 
 		return array_diff($this->_validFields, $exclude);
-	}
-
-	public function getAlias( $exclude = array() ){
-
-		return array_diff($this->_aliasFields, $exclude);
 	}
 
 	function getParams(){

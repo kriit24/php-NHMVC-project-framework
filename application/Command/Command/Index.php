@@ -23,6 +23,11 @@ class Index extends \Library{
 
 		\Command\Table\Index::shell( Params::get() );
 	}
+
+	protected function Patch(){
+
+		\Command\Patch\Index::shell( Params::get() );
+	}
 }
 
 ?>

@@ -35,13 +35,13 @@ class Form extends \Library{
 
 		foreach($elemlist as $k => $v){
 
-			if( $v['name'] == $row['name'] && $k != $key ){
+			$exp = explode('[', $v['name']);
+			$name_2 = $exp[0];
 
-				$exp = explode('[', $v['name']);
-				$name = $exp[0];
+			if( $name_2 == $name && $k != $key ){
 
 				$ret .= '<div class="form-group">'.
-							'<label for="filterElem' . ucfirst(str_replace(' ', '_', $name)) . '">'.($v['label'] ? $v['label'] : $name).'</label>'.
+							'<label for="filterElem' . ucfirst(str_replace(' ', '_', $name_2)) . '">'.($v['label'] ? $v['label'] : $name_2).'</label>'.
 							$v['html'].
 						'</div>';
 				$this->continue[$k] = true;
@@ -57,14 +57,17 @@ class Form extends \Library{
 		foreach($elem as $k => $v){
 
 			$exp = explode('[', $v['name']);
+			$exp_2 = explode(']', $exp[1]);
 			$name = $exp[0];
+			$name_2 = $exp_2[0];
 
 			$elemI[$name] = isset($elemI[$name]) ? $elemI[$name] : 0;
+			$elemI[$name] = $name_2 ? $name_2 : $elemI[$name];
 
 			$className = $v['className'];
 			$class = $form->$className;
 			$method = $v['elem'];
-			$value = (is_array($_GET[$name]) ? $_GET[$name][$elemI[$name]] : $_GET[$name]);
+			$value = (is_array($_GET[$name]) ? $_GET[$name][ $elemI[$name] ] : $_GET[$name]);
 
 			$v['attr']['id'] = 'filterElem' . ucfirst(str_replace(' ', '_', $name));
 			if( !$v['attr']['class'] )

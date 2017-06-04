@@ -42,6 +42,12 @@ Project.Toggle = function(selector){
 
 					if( elem ){
 
+						$.each(this.attributes, function(){
+
+							if( this.name != 'class' && this.name != 'for' )
+								$(elem).attr(this.name, this.value);
+						});
+
 						$(parent).css({'padding-right' : '30px'});
 						$(elem).after('<img src="/Template/public/images/close_enabled.png" style="position:absolute;padding:5px;" class="toggle hidden" for="'+forAttr+'">');
 						$(elem).bind('change paste keyup', function(){
@@ -75,6 +81,12 @@ Project.Toggle = function(selector){
 					}
 
 					if( elem ){
+
+						$.each(this.attributes, function(){
+
+							if( this.name != 'class' && this.name != 'for' && this.name != 'src' && this.name != 'style' )
+								$(elem).attr(this.name, this.value);
+						});
 
 						$(elem).toggle(0, function(){ $(elem).focus(); });
 						$(this).toggle();

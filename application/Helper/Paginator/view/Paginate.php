@@ -1,29 +1,29 @@
 <?
 $getName = \Library\DB\Paginator::PAGINATOR_GET;
-$GET = $_GET;
-unset($GET[$getName]);
-$url = '';
-foreach( explode('&', substr($_SERVER['QUERY_STRING'], strrpos($_SERVER['QUERY_STRING'], '/'))) AS $v ){
 
-	$v = str_replace('/', '', $v);
-	list($key, $value) = explode('=', $v);
-	$key = preg_replace('/\[( . *?)\]/s', '', $key);
-	if( $key != $getName )
-		$url .= $url ? '&' . $v : $v;
-	unset($GET[$key]);
-}
-$href = $this->url($GET);
-if( substr($href, -1) != '/' )
-	$href .= '/';
-if( $url )
-	$url = (preg_match('/\?/i', $href) ? '&' : '?') . $url;
+$exp = explode('?', $_SERVER['REQUEST_URI']);
+$GET = $_GET;
+if( $GET['route'] == \Conf\Conf::_DEFAULT_ROUTE )
+	unset($GET['route']);
 
 echo '<div class="paginator_helper">';
+	
+	if( $this->showCount )
+		echo '<div class="paginator_counter">'.$this->Language( 'Objekte kokku:' ) .' <span>'. $this->q->rowsCount.'</span></div>';
 
-echo '<a href="' . $href . $getName . '/1/' . $url . '">' . htmlspecialchars('<<') . '</a>';
-foreach($this->pages as $page => $maxPages)
-	echo '<a href="' . $href . $getName . '/' . $page . '/' . $url . '">' . $page . '</a>';
-echo '<a href="' . $href . $getName . '/' . $maxPages . '/' . $url . '">' . htmlspecialchars('>>') . '</a>';
+	if( !empty($this->pages) ){
+
+		echo '<a href="' . $this->url( array_merge($GET, array($getName => 1)) ) . ( !empty($exp[1]) ? '?' . $exp[1] : '') . '">' . htmlspecialchars('<<') . '</a>';
+		foreach($this->pages as $page => $maxPage){
+
+			echo '<a href="' . $this->url( array_merge($GET, array($getName => $page)) ) . ( !empty($exp[1]) ? '?' . $exp[1] : '') . '">' . $page . '</a>';
+		}
+		echo '<a href="' . $this->url( array_merge($GET, array($getName => $maxPage)) ) . ( !empty($exp[1]) ? '?' . $exp[1] : '') . '">' . htmlspecialchars('>>') . '</a>';
+	}
+	else{
+
+		echo '<div style="clear:both;display:inline-block;"></div>';
+	}
 
 echo '</div>';
 

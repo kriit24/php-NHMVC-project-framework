@@ -42,6 +42,7 @@ class Paginator{
 	function getPaginator(){
 
 		$rowsCount = $this->Query();
+		$this->rowsCount = $rowsCount;
 
 		$page = $this->page > 5 ? ($this->page-5) : 1;
 		$maxPages = round($rowsCount/$this->limit);
@@ -52,6 +53,9 @@ class Paginator{
 			$start = $maxPages - ($count - 1);
 		if( $maxPages > 1 )
 			return array_fill($start, $count, $maxPages);
+
+		if( $maxPages == 1 && $rowsCount > $this->limit )
+			return array_fill($start, 2, 2);
 	}
 }
 

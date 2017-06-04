@@ -1,5 +1,5 @@
 <?
-$formClass = new \{route}\{name}\Form\Index();
+$formClass = new \{route}\{name}\Form\Index_Admin();
 ?>
 
 <div class="ibox float-e-margins">	

@@ -134,14 +134,23 @@ trait Fetch{
 
 		$ret = $row;
 		foreach( $onComplete as $method ){
+			
+			if( gettype($method) == 'object' ){
 
-			$reflectionMethod = new \ReflectionMethod($method[0], $method[1]);
-			if( !$reflectionMethod->isPublic() )
-				die($method[1] . ' is not public');
+				$ret2 = call_user_func_array($method, array($ret));
+				if( !empty($ret2) )
+					$ret = $ret2;
+			}
+			else{
 
-			$ret2 = call_user_func_array(array($method[0], $method[1]), array($ret, $method[2]));
-			if( !empty($ret2) )
-				$ret = $ret2;
+				$reflectionMethod = new \ReflectionMethod($method[0], $method[1]);
+				if( !$reflectionMethod->isPublic() )
+					die($method[1] . ' is not public');
+
+				$ret2 = call_user_func_array(array($method[0], $method[1]), array($ret, $method[2]));
+				if( !empty($ret2) )
+					$ret = $ret2;
+			}
 		}
 		return $ret;
 	}

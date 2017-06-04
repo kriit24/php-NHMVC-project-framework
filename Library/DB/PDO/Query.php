@@ -9,8 +9,6 @@ trait Query{
 			$this->StatementReConstruct();
 
 		$this->PDO = $this->getConnection( $this->_connName );
-		if( !$this->PDO )
-			return $this;
 
 		if( \Conf\Conf::_DEV_MODE ){
 
@@ -33,16 +31,31 @@ trait Query{
 
 		@$this->stmt->execute($params);
 
+		if( $this->errorLvl ){
+
+			$this->errorHandling($Query, $params);
+		}
+		return $this;
+	}
+
+	function errorHandling($Query, $params){
+
 		//ERROR HANDLING
 		if( $this->stmt->errorInfo()[0] && PDO::ERROR_INFO[$this->stmt->errorInfo()[0]] )
-			new \Library\Component\Error( PDO::ERROR_INFO[$this->stmt->errorInfo()[0]], $this->prepareGetQuery($Query, $params) );
+			$error = array( PDO::ERROR_INFO[$this->stmt->errorInfo()[0]], $this->prepareGetQuery($Query, $params) );
 
 		if( $this->stmt->errorInfo()[0] != 00000 && !PDO::ERROR_INFO[$this->stmt->errorInfo()[0]] )
-			new \Library\Component\Error( implode(';', $this->stmt->errorInfo()), $this->prepareGetQuery($Query, $params) );
+			$error = array( implode(';', $this->stmt->errorInfo()), $this->prepareGetQuery($Query, $params) );
 
 		if( $this->stmt->errorInfo()[2] )
-			new \Library\Component\Error( $this->stmt->errorInfo()[2], $this->prepareGetQuery($Query, $params) );
-		return $this;
+			$error = array( $this->stmt->errorInfo()[2], $this->prepareGetQuery($Query, $params) );
+
+		$this->error = $error;
+
+		if( $this->errorLvl == 1 && !empty($error) ){
+
+			new \Library\Component\Error( $error[0], $error[1] );
+		}
 	}
 
 	function getQuery(){
@@ -63,14 +76,12 @@ trait Query{
 
 	function numrows(){
 
-		if( !$this->isConnected() )
-			return;
-
 		if( !$this->stmt && $this->stmtArray ){
 
-			$this->buildQueryStatement( $where );
+			$this->buildQueryStatement();
+			$numrows = $this->stmt->rowCount();
 			$this->rebuildStatement = false;
-			return $this->stmt->rowCount();
+			return $numrows;
 		}
 		if( !$this->stmt && !$this->stmtArray ){
 

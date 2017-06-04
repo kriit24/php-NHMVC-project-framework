@@ -25,12 +25,9 @@ class Controller extends \Library{
 			->order("role_id, route, class, method")->fetchAll();
 		
 		$privileges = array();
-		if( !empty($rows) ){
+		foreach($rows as $row){
 
-			foreach($rows as $row){
-
-				$privileges[$row['role_id']][$row['route']][$row['class']][$row['method']] = true;
-			}
+			$privileges[$row['role_id']][$row['route']][$row['class']][$row['method']] = true;
 		}
 		$this->privileges = $privileges;
 
@@ -56,31 +53,42 @@ class Controller extends \Library{
 	public function getMethodListing($route, $className){
 
 		$class = '\\'.$route.'\\'.$className.'\\_Abstract';
-		$register = $class::register();
-		$array = array();
 		
-		if( $register['admin'] ){
+		if( !is_file(_DIR .'/'._APPLICATION_PATH.'/' . str_replace( '\\', DIRECTORY_SEPARATOR, $class ) . '.php') || preg_match('/\./i', $class) || preg_match('/\s/i', $class) )
+			return array();
 
-			foreach($register['admin'] as $method => $prop){
+		try{
 
-				if( !in_array($method, $array) )
+			$register = $class::register();
+			$array = array();
+			
+			if( $register['admin'] ){
+
+				foreach($register['admin'] as $method => $prop){
+
+					if( !in_array($method, $array) )
+						$array[] = $method;
+				}
+			}
+			if( $register['public'] ){
+
+				foreach($register['public'] as $method => $prop){
+
+					if( !in_array($method, $array) )
+						$array[] = $method;
+				}
+			}
+			foreach($register as $method => $prop){
+
+				if( !in_array($method, array('public', 'admin', 'method_name_without_template')) && !in_array($method, $array) )
 					$array[] = $method;
 			}
+			return $array;
 		}
-		if( $register['public'] ){
+		catch(\Excpetion $e){
 
-			foreach($register['public'] as $method => $prop){
-
-				if( !in_array($method, $array) )
-					$array[] = $method;
-			}
+			pre($e);
 		}
-		foreach($register as $method => $prop){
-
-			if( !in_array($method, array('public', 'admin', 'method_name_without_template')) && !in_array($method, $array) )
-				$array[] = $method;
-		}
-		return $array;
 	}
 
 	/*

@@ -8,7 +8,7 @@ class Index extends Controller{
 
 	public function __construct(){
 
-		echo __FILE__;
+		echo __FILE__ . "\n";
 		$this->control();
 	}
 }

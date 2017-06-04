@@ -83,6 +83,8 @@ trait Form{
 
 		$elemAttr = $this->unsetMainAttr($attr);
 		$elemClass = $this->getClass($type);
+		if( !$elemClass )
+			die('FORM element error: type is wrong or missing <b>(element: "'.$name.'")</b>');
 		$elem = array_merge($elemClass->addElem($type, $name, $elemAttr), (!is_array($attr) ? array() : $attr));
 		if( $return )
 			return $elem;

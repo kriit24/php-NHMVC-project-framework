@@ -37,7 +37,14 @@ class FileSystem{
 
 			foreach($tmpData as $newPath){
 
-				$dataRows = self::scanFileRecursive( $newPath, $fileMask, $baseName );
+				$getRows = self::scanFileRecursive( $newPath, $fileMask, $baseName );
+				if( !empty($getRows) ){
+
+					foreach($getRows as $r_1){
+
+						$dataRows[] = $r_1;
+					}
+				}
 			}
 		}
 		return $dataRows;

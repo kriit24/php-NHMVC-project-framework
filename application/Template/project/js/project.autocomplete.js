@@ -40,7 +40,7 @@ Project.Autocomplete = {
 
 		if( $(elem).attr('data-href') == undefined && this.source[name] == undefined ){
 
-			alert('Elem: ' + $(elem).attr('name') + ' source missing: rel="ajax-url" ');
+			alert('Elem: ' + $(elem).attr('name') + ' source missing: data-href="ajax-url" ');
 			$( elem ).css({'background' : '#ff0000'});
 			return;
 		}

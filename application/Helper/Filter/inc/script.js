@@ -69,7 +69,7 @@ var latestTag = '';
 							var attrClass = 'filter_tags filter_tag_name_'+item;
 							if( window.location.href.indexOf('?') > -1 ){
 
-								if( window.location.href.indexOf(item+'=') > -1 || window.location.href.indexOf(item+'[]=') > -1 ){
+								if( window.location.href.indexOf(item+'=') > -1 || window.location.href.indexOf(item+'[') > -1 ){
 
 									attrClass += ' filter_checked';
 								}

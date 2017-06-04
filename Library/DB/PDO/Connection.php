@@ -25,10 +25,11 @@ class Connection{
 					$_DSN = $_CONN['_driver'].':host='.$_CONN['_host'].($_CONN['_port'] && $_CONN['_port'] != 3306 ? ':'.$_CONN['_port'] : '').';dbname='.$_CONN['_database'];
 
 					$connection = new \PDO($_DSN, $_CONN['_user'], $_CONN['_password'], array(
-						\PDO::MYSQL_ATTR_INIT_COMMAND => "SET SESSION group_concat_max_len = 6000;",
+						\PDO::MYSQL_ATTR_INIT_COMMAND => "SET SESSION group_concat_max_len = 1000000;",
 						\PDO::MYSQL_ATTR_INIT_COMMAND => "SET SESSION sql_mode = '';",
 						\PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC
 					));
+					$connection->exec("SET SESSION group_concat_max_len = 1000000");
 					$connection->exec("set names utf8");
 				}
 				catch (\PDOException $e) {

@@ -12,7 +12,7 @@ foreach($elemList as $k => $row){
 	$name = $exp[0];
 
 	$html[$name] = 
-		'<div class="filter_helper filter_helper_header filter_helper_'.$name.'" rel="'.$row['name'].'">'.
+		'<div class="filter_helper filter_helper_header filter_helper_'.$name.'" rel="'.$name.'">'.
 			'<div class="fa fa-close close"></div>'.
 			$this->Form->tr($elemList, $k, $row).
 			(isset($_GET[$name]) ? 

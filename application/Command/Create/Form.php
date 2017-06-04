@@ -58,8 +58,6 @@ class Form extends \Library{
 			'value' => '&nbsp;'
 		));
 
-		pre( \Session::columnsData() );
-
 		$form->addElem('submit', 'addTableColumns', array(
 			'value' => $this->Language('Add columns'),
 		));
