@@ -1,6 +1,7 @@
 var Project = {};
 Project.clickEvent = [];
 Project.autoSizeStyle = {};
+Project.textSelect = {'selected' : false, 'elem' : null};
 (function($){
 
 	//$p.toggle
@@ -108,6 +109,12 @@ Project.autoSizeStyle = {};
 				var offsetAdd = 0;
 
 			Project.Session.set('scrollTo', offsetTop + offsetAdd);
+		},
+		
+		findElementByText: function( text ){
+
+			return $( this.selector + ":contains("+text+")")
+            .filter(function(){ return $(this).children().length === 0;});
 		}
 	});
 
@@ -221,8 +228,6 @@ Project.autoSizeStyle = {};
 	});
 })(jQuery);
 
-var textSelect = false;
-
 $(document).ready(function(){
 
 	$(".datepicker").live("focusin", function(){
@@ -230,27 +235,68 @@ $(document).ready(function(){
 	   $(this).datepicker({dateFormat: "dd.mm.yy"});
 	});
 
+	$('div').mousedown(function(e){
+
+		if( Project.textSelect.selected ){
+
+			Project.textSelect.selected = false;
+
+			var sel = window.getSelection ? window.getSelection() : document.selection;
+			if (sel) {
+
+				if (sel.removeAllRanges) {
+
+					sel.removeAllRanges();
+				} 
+				else if (sel.empty) {
+
+					sel.empty();
+				}
+			}
+		}
+	});
+
 	$('div').mouseup(function(e) {
 
-		var text = null;
-		if (window.getSelection) {
+		//if( Project.textSelect.selected == false ){
 
-			text = window.getSelection().toString();
-		} 
-		else if (document.selection) {
+			var text = null;
+			if (window.getSelection) {
 
-			text = document.selection.createRange().text;
-		}
+				text = window.getSelection().toString();
+			} 
+			else if (document.selection) {
 
-		if( text )
-			textSelect = true;
+				text = document.selection.createRange().text;
+			}
+
+			if( text && text.length > 0 ){
+
+				var jSpot = $( 'td' ).findElementByText( text ).parent();
+
+				if( jSpot.length == 0 )
+					jSpot = $( 'tr' ).findElementByText( text ).parent();
+
+				if( jSpot.length == 0 )
+					jSpot = $( 'table' ).findElementByText( text ).parent();
+
+				if( jSpot.length == 0 )
+					jSpot = $( 'p' ).findElementByText( text ).parent();
+
+				if( jSpot.length == 0 )
+					jSpot = $( 'div' ).findElementByText( text ).parent();
+
+				Project.textSelect.selected = true;
+				Project.textSelect.elem = jSpot;
+			}
+		//}
 	});
 
 	$('.link').live('click', function(e){
 
-		if( textSelect ){
+		if( Project.textSelect.selected ){
 
-			textSelect = false;
+			Project.textSelect.selected = false;
 			return;
 		}
 

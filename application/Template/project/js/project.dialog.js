@@ -59,6 +59,7 @@ Project.Dialog = function( elem ){
 		closeImmediately : false,
 		reload : false,
 		Object : {},
+		textSelect : false,
 
 		start : function(){
 
@@ -262,12 +263,16 @@ Project.Dialog = function( elem ){
 			return {'title' : this.Object.title};
 		},
 
-		dialogClick : function(e, attrClass){
+		dialogClick : function(e, elem){
 
-			if( textSelect ){
+			if( Project.textSelect.selected ){
 
-				textSelect = false;
-				return false;
+				this.textSelect = true;
+				if( $(elem).is( Project.textSelect.elem ) ){
+
+					return false;
+				}
+				return true;
 			}
 
 			var elem = $(e.target);
@@ -301,6 +306,7 @@ Project.Dialog = function( elem ){
 
 				var form = $(this).parents('form');
 				var takeAction = true;
+				var submitElem = this;
 				$('input[required],textarea[required]', form).each(function(k, inputElem){
 
 					if( $(this).val().length == 0 ){
@@ -340,9 +346,9 @@ Project.Dialog = function( elem ){
 						if( scrollTop )
 							Project.Session.set('scrollTo', scrollTop);
 
-						$('.project-dialog-submit').show();
-						$('.project-dialog-submit').animate({'opacity': 0.5}, 500);
-						$('input[type="submit"]', $('#'+self.selector)).after('<span style="margin-left:20px;color:#008c00;"><b>'+$.language('Uuendus edukalt tehtud')+'</b></span>');
+						//$('.project-dialog-submit').show();
+						//$('.project-dialog-submit').animate({'opacity': 0.5}, 500);
+						//$('input[type="submit"]', $('#'+self.selector)).after('<span style="margin-left:20px;color:#008c00;"><b>'+$.language('Uuendus edukalt tehtud')+'</b></span>');
 					}}).create();
 					return false;
 				}
@@ -393,16 +399,20 @@ $(document).ready(function(){
 
 	$('.dialog').live('click', function(e){
 
-		var dialogClick = dialog.dialogClick(e);
+		var dialogClick = dialog.dialogClick(e, this);
 		if( dialogClick )
 			dialog.clickEvent(this).create();
+		if( dialog.textSelect )
+			return false;
 		return (dialogClick == false ? true : false);
 	});
 	$('.dialog-append').live('click', function(e){
 
-		var dialogClick = dialog.dialogClick(e);
+		var dialogClick = dialog.dialogClick(e, this);
 		if( dialogClick )
 			dialog.clickEvent(this).append();
+		if( dialog.textSelect )
+			return false;
 		return (dialogClick == false ? true : false);
 	});
 	$('button.ui-dialog-titlebar-close').live('click', function(){

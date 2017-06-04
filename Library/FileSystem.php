@@ -150,26 +150,52 @@ class FileSystem extends Component\FileSystem{
 		rmdir( $path );
 	}
 
-	function uploadFile($uploadName, $allowUpload = array(), $dir = '', $fileName = ''){
+	function uploadFile($uploadName, $allowUpload = array(), $dir = '', $fileName = '', $createUniqName = false){
 
 		if($_FILES[$uploadName] && $_FILES[$uploadName]['size'] > 0){
 
-			if( !$dir )
-				$dir = _DIR.'/tmp/upload';
-			$this->mkdir($dir);
-			$tmpFile = $_FILES[$uploadName];
+			if( is_Array($_FILES[$uploadName]['name']) ){
 
-			$ext = pathinfo($tmpFile['name'], PATHINFO_EXTENSION);
-			$fileNameExt = pathinfo($fileName, PATHINFO_EXTENSION);
-			if( !empty($allowUpload) && !in_array($ext, $allowUpload) ){
+				$ret = array();
+				$files = $_FILES;
 
-				new \Library\Component\Error('Not allowed filetype', '', true);
-				return false;
+				foreach($files[$uploadName]['name'] as $k => $f){
+
+					unset($_FILES);
+					$_FILES[$uploadName] = array(
+						'name' => $files[$uploadName]['name'][$k],
+						'type' => $files[$uploadName]['type'][$k],
+						'tmp_name' => $files[$uploadName]['tmp_name'][$k],
+						'error' => $files[$uploadName]['error'][$k],
+						'size' => $files[$uploadName]['size'][$k],
+					);
+
+					$ret[] = $this->uploadFile($uploadName, $allowUpload, $dir, $fileName, $createUniqName);
+				}
+				return $ret;
 			}
-			$dir = (substr($dir, -1) == '/' ? substr($dir, 0, -1) : $dir);
-			$fileName = $fileName ? $fileName . '.' . ($fileNameExt ? $fileNameExt : $ext) : $tmpFile['name'];
-			move_uploaded_file($tmpFile['tmp_name'], $dir .'/'. $fileName );
-			return $dir.'/'.$fileName;
+			else{
+
+				if( $createUniqName )
+					$fileName = uniqid();
+
+				if( !$dir )
+					$dir = _DIR.'/tmp/upload';
+				$this->mkdir($dir);
+				$tmpFile = $_FILES[$uploadName];
+
+				$ext = pathinfo($tmpFile['name'], PATHINFO_EXTENSION);
+				$fileNameExt = pathinfo($fileName, PATHINFO_EXTENSION);
+				if( !empty($allowUpload) && !in_array($ext, $allowUpload) ){
+
+					new \Library\Component\Error('Not allowed filetype', '', true);
+					return false;
+				}
+				$dir = (substr($dir, -1) == '/' ? substr($dir, 0, -1) : $dir);
+				$fileName = $fileName ? $fileName . '.' . ($fileNameExt ? $fileNameExt : $ext) : $tmpFile['name'];
+				move_uploaded_file($tmpFile['tmp_name'], $dir .'/'. utf8_decode($fileName) );
+				return $dir.'/'.$fileName;
+			}
 		}
 	}
 
