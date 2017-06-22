@@ -8,7 +8,7 @@ class Controller extends \Library{
 		//$this->tableName = new \Table\tableName;
 	}
 
-	public function getData(){
+	public function IndexData(){
 
 		//$this->tableName->Select()->fetchAll();
 		//pre($rows);

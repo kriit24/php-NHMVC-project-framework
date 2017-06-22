@@ -21,7 +21,7 @@ class Index extends Controller{
 		*/
 		$this->POST('add')->action();
 
-		$this->getData()->view('Index');
+		$this->IndexData()->view('Index');
 	}
 }
 

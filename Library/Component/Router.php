@@ -17,7 +17,7 @@ class Router extends \Library\classIterator{
 				$_URI = '//'.$_SERVER['HTTP_HOST'];
 		}
 		else
-			$_URI = \Conf\Conf::_URI;//DEFAULT_URI
+			$_URI = (preg_match('/http:/i', $_SERVER['SCRIPT_URI']) || !$_SERVER['SCRIPT_URI'] ? 'http:' : 'https:') . \Conf\Conf::_URI;//DEFAULT_URI
 		define('_URI', strip_tags($_URI));
 
 		if( _SHELL )

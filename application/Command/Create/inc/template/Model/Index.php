@@ -16,14 +16,14 @@ class Index extends Controller{
 
 		$this->POST('add{uname}')->action();
 
-		$this->getData()->view('Index');
+		$this->IndexData()->view('Index');
 	}
 
 	protected function Index_Admin(){
 
 		$this->POST('add{uname}')->action();
 
-		$this->getData()->view('Index_Admin');
+		$this->Index_AdminData()->view('Index_Admin');
 	}
 
 	/*public function Dashboard(){

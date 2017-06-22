@@ -10,8 +10,8 @@ $formClass = new \{route}\{name}\Form\Index();
 
 <?
 $attr = array();
-$form = $formClass->ListForm();
-while($row = $this->{table}->fetch()){
+$form = $formClass->IndexForm();
+//while($row = $this->{table}->fetch()){
 
 	/*$attr['tbody']['tr'][] = array(
 		'class' => 'link',
@@ -19,7 +19,7 @@ while($row = $this->{table}->fetch()){
 	);*/
 
 	$form->setData($row);
-}
+//}
 $form->toString( $attr );
 
 

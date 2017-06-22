@@ -1,6 +1,8 @@
 <?
 namespace {namespace};
 
+//ADD _Abstract if need to access over url
+
 class Index extends Controller{
 
 	public function __construct(){
@@ -12,7 +14,7 @@ class Index extends Controller{
 
 	protected function Index(){
 
-		$this->getData()->view('Index');
+		$this->IndexData()->view('Index');
 	}
 }
 

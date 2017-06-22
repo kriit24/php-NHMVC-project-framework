@@ -1,4 +1,4 @@
-	public function get{uname}Data(){
+	public function {uname}Data(){
 
 		return $this;
 	}

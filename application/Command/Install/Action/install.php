@@ -89,6 +89,7 @@ abstract class install{
 			$_URI = substr($_URI, 0, -1);
 		if( $_SERVER['REDIRECT_URL'] )
 			$_URI = '//'.$_SERVER['HTTP_HOST'];
+		$_URI = str_replace( array('https:', 'http:'), '', $_URI );
 
 		$connString = '';
 		$post = $_POST;

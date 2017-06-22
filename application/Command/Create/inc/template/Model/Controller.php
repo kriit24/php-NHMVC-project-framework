@@ -5,12 +5,19 @@ class Controller extends \Library{
 
 	public function __construct(){
 
-		$this->{table} = new \Table\{table};
+		//$this->{table} = new \Table\{table};
 	}
 
-	public function getData(){
+	public function IndexData(){
 
-		$this->{table}->Select();
+		//$this->{table}->Select();
+
+		return $this;
+	}
+
+	public function Index_AdminData(){
+
+		//$this->{table}->Select();
 
 		return $this;
 	}

@@ -1,4 +1,4 @@
 	protected function {method}(){
 
-		$this->get{uname}Data()->view('{uname}');
+		$this->{uname}Data()->view('{uname}');
 	}

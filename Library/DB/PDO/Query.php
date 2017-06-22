@@ -5,6 +5,9 @@ trait Query{
 
 	function Query($Query = '', $params = array()){
 
+		if( !$this->isConnected() )
+			return;
+
 		if( $Query && empty($this->stmtArray) )
 			$this->StatementReConstruct();
 
@@ -75,6 +78,9 @@ trait Query{
 	}
 
 	function numrows(){
+
+		if( !$this->isConnected() )
+			return;
 
 		if( !$this->stmt && $this->stmtArray ){
 

@@ -21,7 +21,7 @@ class Language{
 			$lang = $redis->get('language');
 			\Library\Component\Register::register('LANGUAGE', $lang, \Library\Component\Register::IS_ARRAY);
 		}
-		else{
+		else if( $sql->isConnected() ){
 
 			$self = new self();
 			$lang = $self->getAllLanguageFromDb();

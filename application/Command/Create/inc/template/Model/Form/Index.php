@@ -32,7 +32,7 @@ class Index extends \Library{
 		$form->toString();
 	}
 
-	public function ListForm(){
+	public function IndexForm(){
 
 		$form = new \Library\Form('row');
 
