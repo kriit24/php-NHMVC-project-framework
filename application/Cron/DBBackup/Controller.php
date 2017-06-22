@@ -67,8 +67,8 @@ class Controller{
 					$content = trim($content, ", \n")."\n";
 
 					file_put_contents($_bakupDir.'/'.$table.'.sql', $content);
+					break;
 				}
-				break;
 			}
 		}
 	}

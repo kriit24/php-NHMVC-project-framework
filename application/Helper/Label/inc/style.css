@@ -1,24 +1,4 @@
-span.label{
-	display:inline-block;
-	height:34px;
-	width:98%;
+/*
+.class{
 }
-span.label label{
-	border:1px solid blue;
-	display:inline-block;
-	width:100%;
-	font-size:16px;
-	margin-top:5px;
-	margin-left:5px;
-	position:relative;
-	border-radius: 8px 3px 0px 0px;
-	-moz-border-radius: 8px 3px 0px 0px;
-	-webkit-border-radius: 8px 3px 0px 0px;
-	border-top: 1px solid #ECEEEF;
-	border-left: 1px solid #ECEEEF;
-	border-right: 1px solid #ECEEEF;
-	border-bottom:0px;
-	padding:7px 12px;
-	background:#0275d8;
-	color:white;
-}
+*/

@@ -1,5 +1,5 @@
 <?
-$formClass = new \{route}\{name}\Form\Index_Admin();
+$formClass = new \{route}\{name}\Form\Index();
 ?>
 
 <div class="ibox float-e-margins">	
@@ -25,7 +25,7 @@ while($row = $this->{table}->fetch()){
 
 	/*$attr['tbody']['tr'][] = array(
 		'class' => 'dialog',
-		'data-href' => $this->url( $_GET, array('method' => 'Edit', 'id' => $row['id']) )
+		'rel' => $this->url( $_GET, array('method' => 'Edit', 'id' => $row['id']) )
 	);*/
 
 	$form->setData($row);

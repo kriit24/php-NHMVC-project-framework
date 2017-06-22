@@ -66,6 +66,11 @@ class PDO extends Connection{
 		return array_diff($this->_validFields, $exclude);
 	}
 
+	public function getJsonColumns( $columns ){
+
+		return $this->jsonColumn( $columns );
+	}
+
 	function getParams(){
 
 		return $this->params;

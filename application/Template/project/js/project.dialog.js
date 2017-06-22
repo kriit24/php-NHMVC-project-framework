@@ -60,6 +60,7 @@ Project.Dialog = function( elem ){
 		reload : false,
 		Object : {},
 		textSelect : false,
+		disabled : false,
 
 		start : function(){
 
@@ -265,6 +266,8 @@ Project.Dialog = function( elem ){
 
 		dialogClick : function(e, elem){
 
+			this.disabled = false;
+
 			if( Project.textSelect.selected ){
 
 				this.textSelect = true;
@@ -292,8 +295,11 @@ Project.Dialog = function( elem ){
 					return false;
 			}
 
-			if( elem.attr('disabled') != undefined )
+			if( elem.attr('disabled') != undefined ){
+
+				this.disabled = true;
 				return false;
+			}
 
 			return true;
 		},
@@ -385,6 +391,15 @@ Project.Dialog = function( elem ){
 			var scrollTop = $('body').scrollTop();
 			return self.get({'url' : href, 'data' : '', 'title' : title, 'complete' : function(data){
 
+				if( $(elem).is('tr') ){
+
+					self.trElement = $(elem);
+				}
+				else{
+
+					self.trElement = $(elem).parent('td').parent('tr');
+				}
+
 				return self.bindClick(data, title, scrollTop);
 			}});
 		}
@@ -402,7 +417,7 @@ $(document).ready(function(){
 		var dialogClick = dialog.dialogClick(e, this);
 		if( dialogClick )
 			dialog.clickEvent(this).create();
-		if( dialog.textSelect )
+		if( dialog.textSelect || dialog.disabled )
 			return false;
 		return (dialogClick == false ? true : false);
 	});
@@ -411,7 +426,7 @@ $(document).ready(function(){
 		var dialogClick = dialog.dialogClick(e, this);
 		if( dialogClick )
 			dialog.clickEvent(this).append();
-		if( dialog.textSelect )
+		if( dialog.textSelect || dialog.disabled )
 			return false;
 		return (dialogClick == false ? true : false);
 	});

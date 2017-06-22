@@ -19,6 +19,7 @@ class Conf{
 	const _DLANG = false;
 	const _DEFAULT_ROUTE = 'Model';
 	const _ROUTE_URL = 'simple';//advanced
+	const _URI = false;
 
 	const LANGUAGE = array(
 		'gb' => 'eng', 

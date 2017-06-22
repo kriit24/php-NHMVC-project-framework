@@ -12,6 +12,7 @@ abstract class _Abstract implements \Library_Interface_Abstract{
 			'Create' => array('is_route' => false),
 			'Table' => array('is_route' => false),
 			'Patch' => array('is_route' => false),
+			'Git' => array('is_route' => false),
 		);
 	}
 
@@ -24,6 +25,7 @@ abstract class _Abstract implements \Library_Interface_Abstract{
 			'Create' => array('*'),
 			'Table' => array('*'),
 			'Patch' => array('*'),
+			'Git' => array('*'),
 		);
 	}
 	

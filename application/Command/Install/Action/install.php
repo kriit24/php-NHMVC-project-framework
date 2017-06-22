@@ -49,14 +49,11 @@ abstract class install{
 	private static function installDb($db, $redis){
 
 		$dbString = file_get_contents( dirname(__DIR__).'/inc/database.sql' );
-		foreach(array('DROP FUNCTION' => '\;', 'DROP PROCEDURE' => '\;', 'DROP TABLE' => '\;', 'CREATE TABLE' => '\;', 'INSERT INTO' => '\;', 'UPDATE' => '\;', 'CREATE TRIGGER' => 'END\;', 'DELIMITER \$\$' => 'DELIMITER \;', 'CREATE PROCEDURE' => 'END\;', 'CREATE FUNCTION' => 'END\;', 'CREATE DEFINER' => 'END\;') as $startLine => $endLine){
+		foreach(array('CREATE TABLE' => '\;', 'INSERT INTO' => '\;', 'UPDATE' => '\;', 'CREATE TRIGGER' => 'END\;', 'DELIMITER \$\$' => 'DELIMITER \;', 'CREATE PROCEDURE' => 'END\;', 'CREATE FUNCTION' => 'END\;', 'CREATE DEFINER' => 'END\;') as $startLine => $endLine){
 
 			preg_match_all('/\n'.$startLine.'(.*?)'.$endLine.'/s', $dbString, $matches);
 			foreach($matches[0] as $query){
 
-				$query = str_replace('DELIMITER $$', '', $query);
-				$query = str_replace('DELIMITER ;', '', $query);
-				$query = str_replace('END$$', 'END;', $query);
 				if( $query )
 					$db->query($query);
 			}
@@ -87,6 +84,12 @@ abstract class install{
 
 	private static function updateConf($conn, $conn2, $redisConnected){
 
+		$_URI = str_replace('/admin', '', $_SERVER['SCRIPT_URI']);
+		if( substr($_URI, -1) == DIRECTORY_SEPARATOR )
+			$_URI = substr($_URI, 0, -1);
+		if( $_SERVER['REDIRECT_URL'] )
+			$_URI = '//'.$_SERVER['HTTP_HOST'];
+
 		$connString = '';
 		$post = $_POST;
 		$post['db_driver'] = 'mysql';
@@ -103,6 +106,7 @@ abstract class install{
 			$content = str_replace("const _DB_REDIS = false;", "const _DB_REDIS = array(".$connString2.");", $content);
 		$content = str_replace("const _EMAIL = false;", "const _EMAIL = '".$_POST['admin_email']."';", $content);
 		$content = str_replace("const _DLANG = false;", "const _DLANG = '".$_POST['default_language']."';", $content);
+		$content = str_replace("const _URI = false;", "const _URI = '".$_URI."';", $content);
 		file_put_contents(dirname(__DIR__, 3) .'/Conf/Conf.php', $content);
 	}
 

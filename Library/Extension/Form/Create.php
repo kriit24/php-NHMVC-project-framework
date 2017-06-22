@@ -357,7 +357,7 @@ trait Create{
 
 						$html .= $this->createList($attr);
 					}
-					if( gettype($data) == 'string' || strtolower(gettype($data)) == 'null' ){
+					if( gettype($data) == 'string' || strtolower(gettype($data)) == 'null' || strtolower(gettype($data)) == 'boolean' ){
 
 						$html .= $this->createList($attr);
 					}

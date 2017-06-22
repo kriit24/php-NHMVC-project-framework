@@ -28,6 +28,11 @@ class Index extends \Library{
 
 		\Command\Patch\Index::shell( Params::get() );
 	}
+
+	protected function Git(){
+
+		\Command\Git\Index::shell( Params::get() );
+	}
 }
 
 ?>
