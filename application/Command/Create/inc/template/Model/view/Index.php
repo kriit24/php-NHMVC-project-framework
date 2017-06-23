@@ -1,14 +1,8 @@
 <?
 $formClass = new \{route}\{name}\Form\Index();
-?>
 
-<div class="ibox float-e-margins">	
-	<div class="ibox-title border-dark">
-		<h5><?=$this->Language( '{uname}' )?></h5>
-	</div>
-</div>
+new \Helper\Label( '{uname}' );
 
-<?
 $attr = array();
 $form = $formClass->IndexForm();
 //while($row = $this->{table}->fetch()){

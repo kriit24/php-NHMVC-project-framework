@@ -45,7 +45,7 @@
 		if( \Library\Session::userData()->type == 'SUPERADMIN' ){
 
 			echo '<div class="dropdown-menu">
-				<h6 class="dropdown-header"><a href="'.$this->url(array('route' => 'Cron')).'">'.$this->Language('Cron').'</a></h6>';
+				<h6 class="dropdown-header"><a href="'.$this->url(array('route' => 'Cron', 'cron' => '')).'">'.$this->Language('Cron').'</a></h6>';
 			$this->Submenu('admin/Cron');
 			echo '</div>';
 		}

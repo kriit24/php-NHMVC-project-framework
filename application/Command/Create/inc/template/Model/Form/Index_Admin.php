@@ -3,13 +3,6 @@ namespace {namespace};
 
 class Index_Admin extends \Library{
 
-	private function Form( $form, $type ){
-
-		{column_elems_form}
-
-		return $form;
-	}
-
 	public function AddForm(){
 
 		$form = new \Library\Form('list');

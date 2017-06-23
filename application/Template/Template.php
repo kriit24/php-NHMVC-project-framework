@@ -1,7 +1,7 @@
 <?
 namespace Template;
 
-class Template extends \Library{
+class Template{
 
 	const D_PUBLIC = 'public';
 	const D_ADMIN = 'admin';
@@ -11,7 +11,7 @@ class Template extends \Library{
 	public static $Includes = array();
 	public $header = array('CSS' => array(), 'JS' => array());
 
-	public function __construct(){
+	public function construct(){
 
 		list($classMethod, $template) = \Library\Structur\Loader::getLoader();
 		$this->setObject( $classMethod );
@@ -52,7 +52,7 @@ class Template extends \Library{
 		if( !is_dir(__DIR__.'/'.$this->template) )
 			die('Template dont exists: '.__DIR__.'/'.$this->template);
 
-		$this->header();
+		//$this->header();
 
 		require_once __DIR__.'/'.$this->template.'/'.$this->design.'/design/header.php';
 		require_once __DIR__.'/'.$this->template.'/'.$this->design.'/design/body.php';
@@ -107,10 +107,10 @@ class Template extends \Library{
 
 		$self = new self();
 		$self::$Includes = self::$Includes;
-		$self->includes();
+		$self->includes( $this->template );
 	}
 
-	public static function includes(){
+	public static function includes( $template = '' ){
 
 		$Includes = \Library\Component\Register::getRegister('INCLUDES');
 		if( $Includes ){
@@ -124,6 +124,10 @@ class Template extends \Library{
 					continue;
 
 				array_push(self::$Includes, $href);
+
+				$templateFolder = basename(__DIR__);
+				if( substr($href, 0, (strlen($templateFolder) + 2) ) == '/'.$templateFolder.'/' )
+					$href = __DIR__ . str_replace($templateFolder, $template, $href);
 
 				if( substr(basename($href), -4) == '.css' )
 					$cssString .= file_Get_contents( $href ) . "\n";
