@@ -16,7 +16,7 @@ echo '<div class="paginator_helper">';
 		echo '<a href="' . $this->url( array_merge($GET, array($getName => 1)) ) . ( !empty($exp[1]) ? '?' . $exp[1] : '') . '">' . htmlspecialchars('<<') . '</a>';
 		foreach($this->pages as $page => $maxPage){
 
-			echo '<a href="' . $this->url( array_merge($GET, array($getName => $page)) ) . ( !empty($exp[1]) ? '?' . $exp[1] : '') . '">' . $page . '</a>';
+			echo '<a href="' . $this->url( array_merge($GET, array($getName => $page)) ) . ( !empty($exp[1]) ? '?' . $exp[1] : '') . '" '.($_GET[ $getName ] == $page ? 'class="paginator-active"' : '').'>' . $page . '</a>';
 		}
 		echo '<a href="' . $this->url( array_merge($GET, array($getName => $maxPage)) ) . ( !empty($exp[1]) ? '?' . $exp[1] : '') . '">' . htmlspecialchars('>>') . '</a>';
 	}

@@ -33,10 +33,14 @@ class Paginator{
 	private function Query(){
 
 		$sql = new \Library\Sql;
+		$sql_1 = new \Library\Sql;
 		$sql->setStmtArray($this->stmtArray);
 		$sql->setParams($this->params);
-		$sql->column(array('COUNT(1)' => 'rowsCount'));
-		return $sql->fetchColumn('rowsCount');
+		$sql->column(" 1 AS count ");
+		$qString = $sql->getQuery();
+
+		$sql_1->Query( " SELECT COUNT(1) AS rowsCount FROM ( " . $qString ." ) AS a" );
+		return $sql_1->fetchColumn('rowsCount');
 	}
 
 	function getPaginator(){

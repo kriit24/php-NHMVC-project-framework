@@ -163,15 +163,13 @@ trait Statement{
 				$v = array_map(function($value) use ($k) { return $k.'.'.$value; }, $v);
 				return $this->jsonColumn($v);
 			}
-			else{
 
-				$key = is_numeric($k) ? $v : $k;
-				if( preg_match('/\./i', $key) )
-					list(, $key) = explode('.', $key);
-				$column = $v;
+			$key = is_numeric($k) ? $v : $k;
+			if( preg_match('/\./i', $key) )
+				list(, $key) = explode('.', $key);
+			$column = $v;
 
-				$JSON_ARRAY_STRING .= ($JSON_ARRAY_STRING ? ", ',', " : "") . "JSON_ARRAY_STRING('".$key."', " . $column . ")";
-			}
+			$JSON_ARRAY_STRING .= ($JSON_ARRAY_STRING ? ", ',', " : "") . "JSON_ARRAY_STRING('".$key."', " . $column . ")";
 		}
 
 		return "JSON_OBJECT(

@@ -72,26 +72,51 @@ trait Prepare{
 
 	private function prepareCVExpression($column, $value){
 
-		if( preg_match('/\:([a-zA-Z0-9\.\__]+)/i', $column) || preg_match('/\?/i', $column) )
-			return array($column, $value);
+		if( preg_match('/\:([a-zA-Z0-9\.\__]+)/i', $column) || preg_match('/\?/i', $column) ){
 
-		if( $this->prepareSqlFunction( $column ) && preg_match('/[[:space:]]/i', $column) && $column && isset($value) )
+			return array($column, $value);
+		}
+
+		if( $this->prepareSqlFunction( $column ) && preg_match('/[[:space:]]/i', $column) && $column && isset($value) ){
+
 			return array($column . ' = '.$value, '');
+		}
 		
-		if( preg_match('/[[:space:]]/i', $column) && $column && !isset($value) )
-			return array($column, $value);
+		if( preg_match('/[[:space:]]/i', $column) && $column && !isset($value) ){
 
-		if( preg_match('/[[:space:]]/i', $column) && $column && isset($value) )
+			return array($column, $value);
+		}
+
+		if( preg_match('/[[:space:]]/i', $column) && $column && isset($value) ){
+
 			return array($column . ' ' . $value, '');
+		}
 		
-		if( !preg_match('/[[:space:]]/i', $column) && $column && isset($value) && preg_match('/\:/i', $value) )
+		if( !preg_match('/[[:space:]]/i', $column) && $column && isset($value) && preg_match('/\:/i', $value) ){
+
+			$dt = \DateTime::createFromFormat("Y-m-d", $value);
+			$dt_2 = \DateTime::createFromFormat("Y-m-d H:i:s", $value);
+
+			if( ($dt !== false && !array_sum($dt->getLastErrors())) || ($dt_2 !== false && !array_sum($dt_2->getLastErrors())) ){
+
+				return array($column, $value);
+			}
+		}
+		
+		if( !preg_match('/[[:space:]]/i', $column) && $column && isset($value) && preg_match('/\:/i', $value) ){
+
 			return array($column . ' = '.$value, '');
+		}
 
-		if( !preg_match('/[[:space:]]/i', $column) && $column && isset($value) )
+		if( !preg_match('/[[:space:]]/i', $column) && $column && isset($value) ){
+
 			return array($column . ' = :'.$column, $value);
+		}
 
-		if( $column && !isset($value) )
+		if( $column && !isset($value) ){
+
 			return array($column, $value);
+		}
 	}
 
 	private function prepareWhereString($where){
@@ -443,6 +468,22 @@ trait Prepare{
 
 		if( strtoupper(explode(' ', $start)[0]) == 'CASE' )
 			return true;
+
+		if( !$start )
+			return false;
+
+		/*
+
+		echo 'VALUE=' . $value.'<br>';
+		echo 'START=' . $start.'<br>';
+		echo gettype($value) .'== string && '. 
+			$start .'=='. strtoupper($start) .' && '. 
+			strlen($start) .' > 1 && '. 
+			substr($value, -1) .' == ) && '. 
+			!preg_match('/\s/i', trim($start)) .' && '. 
+			preg_match('/([A-Z\_[:space:]_]+)\(/i', $value)
+			.'<br><br>';
+		*/
 
 		if(gettype($value) == 'string' && $start == strtoupper($start) && strlen($start) > 1 && substr($value, -1) == ')' && !preg_match('/\s/i', trim($start)) && preg_match('/([A-Z\_[:space:]_]+)\(/i', $value))
 			return true;

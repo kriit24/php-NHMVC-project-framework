@@ -28,6 +28,7 @@
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js" type="text/javascript"></script>
 <script src="/Template/js/project.js<?=$version;?>" type="text/javascript"></script>
+<script src="/Template/js/project.extends.js<?=$version;?>" type="text/javascript"></script>
 <script src="/Template/js/project.dialog.js<?=$version;?>" type="text/javascript"></script>
 <script src="/Template/js/project.storage.js<?=$version;?>" type="text/javascript"></script>
 

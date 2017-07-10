@@ -287,6 +287,18 @@ class Form{
 
 		$elem = $this->onComplete($elem);
 
+		if( !isset($this->selected[ $elem['name'] ]) ){
+
+			if( is_array($this->data) ){
+
+				if( isset($this->data[ $elem['name'] ]) ){
+
+					$val = $this->data[ $elem['name'] ];
+					$this->selected[ $elem['name'] ][][ $val ] = true;
+				}
+			}
+		}
+
 		return $this->buildSiblingElem($elem['before']) . '<' . $elem['elem'] . $this->buildAttr($elem) . '>' . ($elem['optgroup'] ? $this->optgroup($elem) : $this->option($elem)) . '</' . $elem['elem'] . '>' . $this->buildSiblingElem($elem['after']) . $this->buildSiblingElem($elem['append']);
 	}
 

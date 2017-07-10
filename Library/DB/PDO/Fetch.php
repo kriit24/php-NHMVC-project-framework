@@ -90,13 +90,9 @@ trait Fetch{
 		if( !$this->isConnected() )
 			return false;
 
-		$this->buildQueryStatement( $where );
-		$ret;
-		$this->stmt->bindColumn( $column, $ret );
-		$this->stmt->fetch( $this->fetchMode );
-		$ret = $this->extension( $ret );
+		$row = $this->fetch($where);
 		$this->rebuildStatement = true;
-		return $ret;
+		return $row[ $column ];
 	}
 
 	function fetch($where = ''){
@@ -109,24 +105,13 @@ trait Fetch{
 		return $this->extension( $row );
 	}
 
-	
-	public function fetchObject($where = ''){
-
-		if( !$this->isConnected() )
-			return false;
-
-		$this->buildQueryStatement( $where );
-		$row = $this->stmt->fetch( $this->fetchMode );
-		$this->row = $this->extension( $row );
-	}
-
 	function fetchNumrows($where = ''){
 
 		if( !$this->isConnected() )
 			return false;
 
-		$this->buildQueryStatement( $where );
 		$this->rebuildStatement = true;
+		$this->buildQueryStatement( $where );
 		return $this->numrows();
 	}
 

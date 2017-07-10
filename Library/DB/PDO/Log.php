@@ -47,7 +47,7 @@ trait Log{
 		$noIndex = array();
 		foreach($data as $row){
 
-			if( $row['key'] === \NULL ){
+			if( $row['key'] === \NULL || $row['key'] == \NULL ){
 
 				$noIndex = $data;
 				break;

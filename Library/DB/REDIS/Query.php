@@ -28,7 +28,7 @@ trait Query{
 
 		$ret = $this->get($name);
 		if( !empty($ret) )
-			$ret = array_merge($ret, $value);
+		$ret = array_merge($ret, $value);
 		else
 			$ret = $value;
 		$this->set($name, $ret);

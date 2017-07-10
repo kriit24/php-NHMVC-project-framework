@@ -13,3 +13,7 @@
 .paginator_counter span{
 	font-weight:bold;
 }
+
+.paginator_helper a.paginator-active{
+	color:red;
+}
