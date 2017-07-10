@@ -1,3 +1,3 @@
 <?
-$this->script('$("elem").confirm("'.$this->Language('Message').'");');
+$this->script('$("elem").confirm("'._tr('Message').'");');
 ?>

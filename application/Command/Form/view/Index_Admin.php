@@ -1,6 +1,6 @@
 <?
 \Model\Dashboard\Index::singleton()->title(
-	$this->Language('Create Form')
+	_tr('Create Form')
 );
 
 $this->Form->createForm();

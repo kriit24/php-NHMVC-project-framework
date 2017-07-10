@@ -35,6 +35,12 @@ function _trim( $textOrArray ){
 	return $trim;
 }
 
+function _tr( $text ){
+
+	$Library = new \Library;
+	return $Library->Translate( $text );
+}
+
 function Table($name){
 
 	$className = '\\'. \Conf\Conf::_DB_ROOT_DIR .'\\'. $name;

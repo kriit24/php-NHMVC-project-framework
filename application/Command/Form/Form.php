@@ -16,18 +16,18 @@ class Form extends \Library{
 		$form->addElem('form');
 
 		$form->addElem('text', 'route_name', array(
-			'label' => $this->Language('Route name'),
+			'label' => _tr('Route name'),
 			'required' => 'true',
-			'required-label' => $this->Language( 'Route name' )
+			'required-label' => _tr( 'Route name' )
 		));
 
 		$form->addElem('text', 'app_name', array(
-			'label' => $this->Language('App name'),
+			'label' => _tr('App name'),
 			'required' => 'true'
 		));
 
 		$form->addElem('text', 'form_name', array(
-			'label' => $this->Language('Form name'),
+			'label' => _tr('Form name'),
 			'required' => 'true'
 		));
 
@@ -48,7 +48,7 @@ class Form extends \Library{
 		))->after('column_type');
 
 		$form->addElem('submit', self::FORM['addColumn'], array(
-			'value' => $this->Language('Add column'),
+			'value' => _tr('Add column'),
 			'class' => 'column-name btn btn-primary',
 		))->after('column_type');
 
@@ -73,24 +73,24 @@ class Form extends \Library{
 				))->after('update[column_type][]');
 
 				$form->addElem('submit', self::FORM['updateColumn'], array(
-					'value' => $this->Language('Update column'),
+					'value' => _tr('Update column'),
 					'class' => 'column-name  btn btn-primary',
 				))->after('update[column_type][]');
 
 				$form->addElem('a', self::FORM['deleteColumn'], array(
 					'href' => $this->url('?action=deleteColumn&id='.$k),
-					'value' => $this->Language('Delete column'),
+					'value' => _tr('Delete column'),
 					'class' => 'column-name confirm',
 				))->after('update[column_type][]');
 			}
 		}
 
 
-		$form->addElem('submit', self::FORM['add'], $this->Language('Add Form'));
+		$form->addElem('submit', self::FORM['add'], _tr('Add Form'));
 
 		$form->addElem('a', 'clear', array(
 			'href' => '?action=clearForm',
-			'value' => $this->Language('Clear'),
+			'value' => _tr('Clear'),
 			'style' => 'margin-left:5px;'
 		))->after(self::FORM['add']);
 
@@ -105,7 +105,7 @@ class Form extends \Library{
 		$form->setData($post);
 		$form->toString();
 
-		$this->script("$('.confirm').confirm('".$this->Language('Delete Column ?')."');");
+		$this->script("$('.confirm').confirm('"._tr('Delete Column ?')."');");
 	}
 }
 

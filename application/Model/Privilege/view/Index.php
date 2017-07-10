@@ -1,7 +1,7 @@
 <?
 Model\Dashboard\Index::singleton()->title(
-	$this->Language('Privilege'), 
-	array('<a href="" class="add-privilege btn btn-primary">'.$this->Language('Add privilege').'</a>')
+	_tr('Privilege'), 
+	array('<a href="" class="add-privilege btn btn-primary">'._tr('Add privilege').'</a>')
 );
 
 $this->Form->addPrivilegeForm();
@@ -19,7 +19,7 @@ $form->toString();
 $this->script(array(
 	'classUrl' => $this->url(array('model' => 'Privilege', 'method' => 'getClass')),
 	'methodUrl' => $this->url(array('model' => 'Privilege', 'method' => 'getMethod')),
-	'$(".delete").confirm("'.$this->Language('Confirm delete').'")',
+	'$(".delete").confirm("'._tr('Confirm delete').'")',
 ));
 
 ?>

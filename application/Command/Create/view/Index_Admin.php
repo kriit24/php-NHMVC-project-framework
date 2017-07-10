@@ -1,6 +1,6 @@
 <?
 \Model\Dashboard\Index::singleton()->title(
-	$this->Language('Build')
+	_tr('Build')
 );
 
 $this->Form->buildForm();

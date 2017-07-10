@@ -8,7 +8,7 @@ abstract class Translate{
 		if( !$_GET['term'] )
 			return array();
 
-		$language = new \Table\language;
+		$translate = new \Table\translate;
 
 		$column = array('name' => 'label');
 		$where = array('name LIKE ?' => "%".$_GET['term']."%", 'language = ?' => _LANG);
@@ -19,7 +19,7 @@ abstract class Translate{
 			$where = array('value LIKE ?' => "%".$_GET['term']."%", 'language = ?' => _LANG);
 		}
 
-		$rows = $language->Select()
+		$rows = $translate->Select()
 			->column( $column )
 			->where( $where )
 			->fetchAll();

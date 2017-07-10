@@ -79,7 +79,7 @@ trait Create{
 
 			list($attrLabel, ) = $this->getHtmlElemAttr($elem, 'label-attr', $i);
 
-			//$labelValue = $elem['label'] && strip_tags($elem['label']) == $elem['label'] ? $this->Language($elem['label']) : $elem['label'];
+			//$labelValue = $elem['label'] && strip_tags($elem['label']) == $elem['label'] ? _tr($elem['label']) : $elem['label'];
 			$labelValue = $elem['label'] && strip_tags($elem['label']) == $elem['label'] ? $elem['label'] : $elem['label'];
 			if( !empty($attr) ){
 

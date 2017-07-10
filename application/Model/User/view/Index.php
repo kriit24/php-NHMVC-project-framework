@@ -1,7 +1,7 @@
 <?
 \Model\Dashboard\Index::singleton()->title(
-	$this->Language('User'), 
-	array('<a href="" class="add-user btn btn-primary">'.$this->Language('Add user').'</a>')
+	_tr('User'), 
+	array('<a href="" class="add-user btn btn-primary">'._tr('Add user').'</a>')
 );
 //new user
 $this->Form->newUserForm();
@@ -24,6 +24,6 @@ $this->Filter->header(
 );
 $this->Paginator->paginate($this->user);
 
-$this->script('$(".delete").confirm("'.$this->Language( 'Delete user ?' ).'");');
+$this->script('$(".delete").confirm("'._tr( 'Delete user ?' ).'");');
 
 ?>

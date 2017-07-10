@@ -1,3 +1,3 @@
 <ul class="submenu">
-	<li><a href="<?=$this->url(array('model' => 'Page', 'view' => 'sub'));?>"><?=$this->Language('Sub');?></a></li>
+	<li><a href="<?=$this->url(array('model' => 'Page', 'view' => 'sub'));?>"><?=_tr('Sub');?></a></li>
 </ul>

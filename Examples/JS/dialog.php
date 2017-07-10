@@ -1,6 +1,6 @@
 <?
 //for those examples dialog will be created automatically
-echo '<a href="'.$this->url(array('model' => 'ModelName', 'method' => 'PageName')).'" class="dialog">'.$this->Language('Edit').'</a>';
+echo '<a href="'.$this->url(array('model' => 'ModelName', 'method' => 'PageName')).'" class="dialog">'._tr('Edit').'</a>';
 echo '<tr rel="'.$this->url(array('model' => 'ModelName', 'method' => 'PageName')).'" class="dialog"></tr>';
 
 //for this example dialog content will be taken from url

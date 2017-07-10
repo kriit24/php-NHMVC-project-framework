@@ -14,7 +14,7 @@ class Index_Admin extends \Library{
 		$form = $this->Form( $form, 'text' );
 
 		$form->addElem('submit', 'add{uname}', array(
-			'value' => $this->Language('Add'),
+			'value' => _tr('Add'),
 			'' => '',
 		));
 
@@ -36,7 +36,7 @@ class Index_Admin extends \Library{
 		$form = $this->Form( $form, 'text' );
 
 		$form->addElem('submit', 'update{uname}', array(
-			'value' => $this->Language('Update'),
+			'value' => _tr('Update'),
 			'' => '',
 		));
 

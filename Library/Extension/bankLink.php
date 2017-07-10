@@ -315,7 +315,7 @@ trait bankLink{
 				<input type="hidden" name="VK_LANG" value="EST">
 				<input type="hidden" name="VK_CHARSET" value="UTF-8">
 				<img src="'.$this->$imgName.'" align="left" class="bank-logo">
-				<input type="submit" value="'.$this->Language('Maksma').'" class="bank-button">
+				<input type="submit" value="'._tr('Maksma').'" class="bank-button">
 			</form>';
 		}
 		if( $data['VK_SERVICE'] == 1012 ){
@@ -336,7 +336,7 @@ trait bankLink{
 				<input type="hidden" name="VK_LANG" value="EST">
 				<input type="hidden" name="VK_ENCODING" value="UTF-8">
 				<img src="'.$this->$imgName.'" align="left" class="bank-logo">
-				<input type="submit" value="'.$this->Language('Maksma').'" class="bank-button">
+				<input type="submit" value="'._tr('Maksma').'" class="bank-button">
 			</form>';
 		}
 		if( $data['VK_SERVICE'] == 4001 ){
@@ -352,7 +352,7 @@ trait bankLink{
 				<input type="hidden" name="VK_CHARSET" value="UTF-8">
 				<input type="hidden" name="VK_MAC" value="'.$data['VK_MAC'].'">
 				<img src="'.$this->$imgName.'" align="left" class="bank-logo">
-				<input type="submit" value="'.$this->Language('Tuvastama').'" class="bank-button">
+				<input type="submit" value="'._tr('Tuvastama').'" class="bank-button">
 			</form>';
 		}
 		if( $data['VK_SERVICE'] == 4011 ){
@@ -368,7 +368,7 @@ trait bankLink{
 				<input type="hidden" name="VK_ENCODING" value="UTF-8">
 				<input type="hidden" name="VK_MAC" value="'.$data['VK_MAC'].'">
 				<img src="'.$this->$imgName.'" align="left" class="bank-logo">
-				<input type="submit" value="'.$this->Language('Tuvastama').'" class="bank-button">
+				<input type="submit" value="'._tr('Tuvastama').'" class="bank-button">
 			</form>';
 		}
 	}

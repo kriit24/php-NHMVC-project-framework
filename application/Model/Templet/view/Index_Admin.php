@@ -1,10 +1,10 @@
 <div id="tabs" class="tabs">
 	<ul>
-		<li><a href="#tabs-simple"><?=$this->Language( 'Simple' )?></a></li>
-		<li><a href="#tabs-advanced"><?=$this->Language( 'Advanced' )?></a></li>
-		<li><a href="#tabs-style"><?=$this->Language( 'Style' )?></a></li>
-		<li><a href="#tabs-restore"><?=$this->Language( 'Restore' )?></a></li>
-		<li><a href="#tabs-help"><?=$this->Language( 'Help' )?></a></li>
+		<li><a href="#tabs-simple"><?=_tr( 'Simple' )?></a></li>
+		<li><a href="#tabs-advanced"><?=_tr( 'Advanced' )?></a></li>
+		<li><a href="#tabs-style"><?=_tr( 'Style' )?></a></li>
+		<li><a href="#tabs-restore"><?=_tr( 'Restore' )?></a></li>
+		<li><a href="#tabs-help"><?=_tr( 'Help' )?></a></li>
 	</ul>
 	
 	<div id="tabs-simple">
@@ -45,7 +45,7 @@
 </div>
 
 <script type="text/javascript">
-$('.deleteFile').confirm("<?=( $this->Language('Delete file?') );?>");
+$('.deleteFile').confirm("<?=( _tr('Delete file?') );?>");
 
 $('input[name="reUpdateDesign"]').click(function(){
 

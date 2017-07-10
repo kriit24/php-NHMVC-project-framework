@@ -1,7 +1,7 @@
 <?
 \Model\Dashboard\Index::singleton()->title(
-	$this->Language('Role'), 
-	array('<a href="#" id="add-role-2" class="btn btn-primary add-role">'.$this->Language('Add role').'</a>')
+	_tr('Role'), 
+	array('<a href="#" id="add-role-2" class="btn btn-primary add-role">'._tr('Add role').'</a>')
 );
 
 $this->Form->AddRoleForm();

@@ -18,20 +18,20 @@ class Form extends \Library{
 		));
 
 		$form->addElem('text', 'name', array(
-			'label' => $this->Language('Name')
+			'label' => _tr('Name')
 		));
 		$form->addElem('text', 'level', array(
-			'label' => $this->Language('Level')
+			'label' => _tr('Level')
 		));
 		$form->addElem('text', 'type', array(
-			'label' => $this->Language('Type')
+			'label' => _tr('Type')
 		));
 		$form->addElem('textarea', 'description', array(
-			'label' => $this->Language('Description')
+			'label' => _tr('Description')
 		));
 		$form->addElem('submit', Form::SUBMIT['add'], array(
 			'class' => 'btn btn-primary',
-			'value' => $this->Language('Add role')
+			'value' => _tr('Add role')
 		));
 		
 		//use next lines in view
@@ -47,16 +47,16 @@ class Form extends \Library{
 		$form = new \Library\Form( 'row' );
 		$form->addElem('form', '');
 		$form->addElem('data', 'name', array(
-			'label' => $this->Language('Name')
+			'label' => _tr('Name')
 		));
 		$form->addElem('data', 'level', array(
-			'label' => $this->Language('Level')
+			'label' => _tr('Level')
 		));
 		$form->addElem('data', 'type', array(
-			'label' => $this->Language('Type')
+			'label' => _tr('Type')
 		));
 		$form->addElem('data', 'description', array(
-			'label' => $this->Language('Description')
+			'label' => _tr('Description')
 		));
 		$form->addElem('data', Form::SUBMIT['update']);
 		return $form;
@@ -72,7 +72,7 @@ class Form extends \Library{
 		$form->addElem('submit', Form::SUBMIT['update'], 'Update');
 		$form->addElem('a', '', array(
 			'href' => './',
-			'value' => $this->Language('Cancel'),
+			'value' => _tr('Cancel'),
 			'class' => 'edit',
 			'style' => 'margin-left:5px;'
 		))->after(Form::SUBMIT['update']);

@@ -7,7 +7,7 @@ class Controller extends \Library{
 
 		$lang = $_GET['byLanguage'] ? $_GET['byLanguage'] : _LANG;
 
-		$this->language->Select()
+		$this->translate->Select()
 			->column("*, value AS `".$lang."`")
 			->id($_GET['id'])
 			->complete(array($this, 'othersByLanguage'))
@@ -17,9 +17,9 @@ class Controller extends \Library{
 
 	public function othersByLanguage($row){
 
-		$this->language->Select()
+		$this->translate->Select()
 			->where("name = ? AND language != ?",  $row);
-		while($row1 = $this->language->fetch()){
+		while($row1 = $this->translate->fetch()){
 
 			$row[ $row1['language'] ] = $row1['value'];
 		}
@@ -38,7 +38,7 @@ class Controller extends \Library{
 
 		$lang = $_GET['byLanguage'] ? $_GET['byLanguage'] : _LANG;
 
-		$this->language->Select()
+		$this->translate->Select()
 			->column("*, value AS value2, model AS model2")
 			->where("language = '".$lang."'")
 			->filter(array(
@@ -56,7 +56,7 @@ class Controller extends \Library{
 
 		$translate = urldecode($_GET['translate']);
 
-		$row = $this->language->Select()
+		$row = $this->translate->Select()
 			->column( array('name', 'value') )
 			->where( array('value' => $translate, 'language' => _LANG) )
 			->limit(1)
@@ -64,7 +64,7 @@ class Controller extends \Library{
 
 		if( empty($row) ){
 
-			$this->language->Insert(array(
+			$this->translate->Insert(array(
 				'name' => $translate,
 				'value' => $translate,
 				'language' => _DLANG,
@@ -73,7 +73,7 @@ class Controller extends \Library{
 
 			if( _LANG != _DLANG ){
 
-				$this->language->Insert(array(
+				$this->translate->Insert(array(
 					'name' => $translate,
 					'value' => $translate,
 					'language' => _LANG,

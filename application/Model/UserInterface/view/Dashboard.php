@@ -2,20 +2,20 @@
 	<table class="table">
 		<thead>
 			<tr>
-				<th><?=$this->Language('User interface');?></th>
+				<th><?=_tr('User interface');?></th>
 			</tr>
 		</thead>
 		<tbody>
 		<tr class="content-row">
-			<td><a href="<?=$this->url(array('model' => 'User'));?>"><?=$this->Language('Users');?></a>
+			<td><a href="<?=$this->url(array('model' => 'User'));?>"><?=_tr('Users');?></a>
 				</td>
 		</tr>
 		<tr class="content-row">
-			<td><a href="<?=$this->url(array('model' => 'Role'));?>"><?=$this->Language('Roles');?></a>
+			<td><a href="<?=$this->url(array('model' => 'Role'));?>"><?=_tr('Roles');?></a>
 				</td>
 		</tr>
 		<tr class="content-row">
-			<td><a href="<?=$this->url(array('model' => 'Privilege'));?>"><?=$this->Language('Privileges');?></a>
+			<td><a href="<?=$this->url(array('model' => 'Privilege'));?>"><?=_tr('Privileges');?></a>
 				</td>
 		</tr>
 		</tbody>

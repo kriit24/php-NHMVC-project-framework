@@ -21,49 +21,49 @@ class Form extends \Library{
 		$form->addElem('form', '', array());
 
 		$form->addElem('text', 'folder', array(
-			'label' => $this->Language('Application folder'),
+			'label' => _tr('Application folder'),
 			'required' => 'true',
-			'required-label' => $this->Language( 'Application folder required' )
+			'required-label' => _tr( 'Application folder required' )
 		));
 
 		$form->addElem('select', 'create', array(
-			'label' => $this->Language('Create by template'),
+			'label' => _tr('Create by template'),
 			'option' => self::CREATE
 		))->selected( $_POST['create'] );
 
 		$form->addElem('select', 'model_name', array(
-			'label' => $this->Language('Model name'),
+			'label' => _tr('Model name'),
 			'' => '',
 		));
 
 		$form->addElem('text', 'name', array(
-			'label' => $this->Language('Name'),
+			'label' => _tr('Name'),
 			'required' => 'true',
-			'required-label' => $this->Language( 'Name required' )
+			'required-label' => _tr( 'Name required' )
 		));
 
 		$tables = array_merge(
-			array($this->Language( 'Select' )),
+			array(_tr( 'Select' )),
 			\Library\ArrayIterator::singleton()->arrayValues($sql->query("SHOW FULL TABLES WHERE Table_Type = 'BASE TABLE'")->fetchAll(), 'Tables_in_' . \Conf\Conf::_DB_CONN['_default']['_database'])
 		);
 
 		$form->addElem('select', 'table', array(
-			'label' => $this->Language('Table'),
+			'label' => _tr('Table'),
 			'option' => $tables,
 		))->selected($_POST['table']);
 
 		$form->addElem('span', 'table_column', array(
-			'label' => $this->Language('Table columns'),
+			'label' => _tr('Table columns'),
 			'class' => 'table-column',
 			'value' => '&nbsp;'
 		));
 
 		$form->addElem('submit', 'addTableColumns', array(
-			'value' => $this->Language('Add columns'),
+			'value' => _tr('Add columns'),
 		));
 
 		$form->addElem('submit', 'addMethod', array(
-			'value' => $this->Language('Add method'),
+			'value' => _tr('Add method'),
 		));
 
 		$form->errorLabel( $this->getError() );
@@ -82,7 +82,7 @@ class Form extends \Library{
 		));
 
 		$form->addElem('text', 'application_folder', array(
-			'label' => $this->Language('Application folder'),
+			'label' => _tr('Application folder'),
 			'' => '',
 		));
 

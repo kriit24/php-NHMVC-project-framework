@@ -14,7 +14,7 @@ abstract class addUser{
 		$client->user_id( $user->Insertid() );
 		$client->Insert($_POST);
 
-		new \Library\Component\Message( \Library::signleton()->Language( 'User added: ' . $data['name'] . '<br>Password: ' . $data['password_again'] ) );
+		new \Library\Component\Message( _tr( 'User added: ' . $data['name'] . '<br>Password: ' . $data['password_again'] ) );
 		return true;
 	}
 }

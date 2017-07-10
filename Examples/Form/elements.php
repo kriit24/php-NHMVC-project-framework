@@ -56,20 +56,20 @@ $form->toString( $attrList );//create form and table elements
 $form->addElem('form');
 
 $form->addElem('text', 'name', array(
-	'label' => $this->Language('Name'),
+	'label' => _tr('Name'),
 	'class' => 'some'
 ), array($some == true ? array('disabled' => 'disabled') : array())
 ))->attr(array('style' => 'none'));
 
 //second merge
 $form->addElem('text', 'name', array_merge(array(
-	'label' => $this->Language('Name'),
+	'label' => _tr('Name'),
 	'class' => 'some'
 ), array($some == true ? array('disabled' => 'disabled') : array())
 ))->attr(array('style' => 'none'));
 
 $form->addElem('select', 'role_id', array(
-	'label' => $this->Language('Role'),
+	'label' => _tr('Role'),
 	'label-attr' => array('class' => 'role'),
 	'option' => array(array(1, 's'), array(2, 'v'), array(3, 'x')),
 	'option-attr' => array('class' => 'option'),
@@ -79,7 +79,7 @@ $form->addElem('select', 'role_id', array(
 ->selected(2);
 
 $form->addElem('select', 'role_id2', array(
-	'label' => $this->Language('Role 2'),
+	'label' => _tr('Role 2'),
 	'label-attr' => array('class' => 'role'),
 	'optgroup' => array(
 		'optgroup 1' => array(array(1, 's'), array(2, 'v'), array(3, 'x')),
@@ -95,7 +95,7 @@ $form->addElem('select', 'role_id2', array(
 ->selected(20);
 
 $form->addElem('radio', 'radio_elem', array(
-	'label' => $this->Language('Radio'),
+	'label' => _tr('Radio'),
 	'value' => 1//this value will force all other values int this element
 ))->checked($_POST['radio_elem']);
 
@@ -104,12 +104,12 @@ $form->addElem('radio', 'radio_elem', array(
 ))->checked($_POST['radio_elem']);
 
 $form->addElem('checkbox', 'some[]', array(
-	'label' => $this->Language('Some'),
+	'label' => _tr('Some'),
 	'value' => 1
 ))->checked($_POST['some'][0])->after('Yes');
 
 $form->addElem('checkbox', 'some[]', array(
-	'label' => $this->Language('Some'),
+	'label' => _tr('Some'),
 	'value' => 2
 ))->checked($_POST['some'][1])->after('No');
 

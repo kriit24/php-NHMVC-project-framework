@@ -5,18 +5,18 @@
 
 	<?
 		echo '<div class="dropdown-menu'.(!$_GET['route'] ? ' active' : '').'">
-			<h6 class="dropdown-header"><a href="/">'.$this->Language('Firstpage').'</a></h6>';
+			<h6 class="dropdown-header"><a href="/">'._tr('Firstpage').'</a></h6>';
 		echo '</div>';
 
 		echo '<div class="dropdown-menu'.(in_array(strtolower($_GET['view']), array('api')) ? ' active' : '').'">
-			<h6 class="dropdown-header"><a href="'.$this->url(array('model' => 'Page', 'view' => 'Api')).'">'.$this->Language('Api').'</a></h6>';
+			<h6 class="dropdown-header"><a href="'.$this->url(array('model' => 'Page', 'view' => 'Api')).'">'._tr('Api').'</a></h6>';
 			//$this->Submenu('public/User_interface');
 			echo '</div>';
 
 		if( $this->permission(array('ADMIN', 'SUPERADMIN')) ){
 
 			echo '<div class="dropdown-menu">
-				<h6 class="dropdown-header"><a href="/admin" target="_blank">'.$this->Language('Admin').'</a></h6>';
+				<h6 class="dropdown-header"><a href="/admin" target="_blank">'._tr('Admin').'</a></h6>';
 			echo '</div>';
 		}
 	?>

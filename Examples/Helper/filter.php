@@ -40,7 +40,7 @@ END FOR EXAMPLE
 //echo preg_replace('/^((?!.).)*$/s', 'c.\\1', $a).'<br>';
 //exit;
 
-$language = new \Table\language;
+$translate = new \Table\translate;
 $user = new \Table\user;
 $client = new \Table\client;
 

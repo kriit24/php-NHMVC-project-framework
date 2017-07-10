@@ -75,7 +75,7 @@ abstract class createModel{
 		foreach($table_column as $column){
 
 			$ret .= $ret ? "\n\n\t\t" : '';
-			$ret .= '$form->addElem($type, \''.$column.'\', array('."\n\t\t\t".'\'label\' => $this->Language(\''.ucfirst(str_replace('_', ' ', $column)).'\'),'."\n\t\t\t".'\'\' => \'\','."\n\t\t".'));';
+			$ret .= '$form->addElem($type, \''.$column.'\', array('."\n\t\t\t".'\'label\' => _tr(\''.ucfirst(str_replace('_', ' ', $column)).'\'),'."\n\t\t\t".'\'\' => \'\','."\n\t\t".'));';
 		}
 		return $ret;
 	}

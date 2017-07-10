@@ -16,7 +16,7 @@ $attr = array(
 $form->addElem($elems, '', $attr);
 
 $form->addElem('submit', Form::SUBMIT['update'], array(
-	'value' => $this->Language(Form::SUBMIT['update'])
+	'value' => _tr(Form::SUBMIT['update'])
 ));
 
 //use next lines in view

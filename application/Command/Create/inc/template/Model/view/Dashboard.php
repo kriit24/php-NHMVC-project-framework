@@ -2,7 +2,7 @@
 	<table class="table">
 		<thead>
 			<tr>
-				<th><?=$this->Language('{name}');?> <a href="<?=$this->url(array('model' => '{name}'));?>"><?=$this->Language('manage');?></a></th>
+				<th><?=_tr('{name}');?> <a href="<?=$this->url(array('model' => '{name}'));?>"><?=_tr('manage');?></a></th>
 			</tr>
 		</thead>
 		<tbody>

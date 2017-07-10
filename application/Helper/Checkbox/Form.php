@@ -5,7 +5,7 @@ class Form{
 
 	/*$form = \Helper\Checkbox\Form::get( $form, 'create_form', 'select', array(
 		'value' => 1, 
-		'label' => $this->Language( 'Create form' ),
+		'label' => _tr( 'Create form' ),
 		'complete' => function($row){
 
 			return array('checked' => $row['is_checked'] ? true : false);

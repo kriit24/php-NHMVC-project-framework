@@ -22,22 +22,22 @@ class Form extends \Library{
 		$form = new \Library\Form( 'list' );
 		$form->addElem('form', '', array()/*ATTRIBUTES*/);
 		$form->addElem('data', 'delete', array(
-			'label' => $this->Language('Delete'),//if no labels then <thead> will not be created, if no label then current column label is empty,
+			'label' => _tr('Delete'),//if no labels then <thead> will not be created, if no label then current column label is empty,
 			'label-attr' => array(),
 			'value' => '<a href="?action=delete">Delete</a>'
 		));
 		$form->addElem('select', 'role_id', array(
-			'label' => $this->Language('Role'),
+			'label' => _tr('Role'),
 			'option' => $this->roles,
 			'option-attr' : array()
 		));
 		$form->addElem('select', 'route', array(
-			'label' => $this->Language('Route'),
+			'label' => _tr('Route'),
 			'option' => Form::ROUTE,
 			'option-attr' : array()
 		));
 		$form->addElem('select', 'class', array(
-			'label' => $this->Language('Class')
+			'label' => _tr('Class')
 		));
 
 		$form->addElem('submit', Form::SUBMIT['add'], 'Add privileges');
@@ -54,17 +54,17 @@ class Form extends \Library{
 
 		$form = new \Library\Form( 'row' );
 		$form->addElem('select', 'role_id', array(
-			'label' => $this->Language('Role'),
+			'label' => _tr('Role'),
 			'option' => $this->roles
 		));
 		$form->addElem('data', 'route', array(
-			'label' => $this->Language('Route')
+			'label' => _tr('Route')
 		));
 		$form->addElem('data', 'class', array(
-			'label' => $this->Language('Calss')
+			'label' => _tr('Calss')
 		));
 		$form->addElem('data', 'method', array(
-			'label' => $this->Language('Method')
+			'label' => _tr('Method')
 		));
 		$form->addElem('submit', Form::SUBMIT['update'], 'Update');
 		return $form;

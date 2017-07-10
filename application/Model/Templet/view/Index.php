@@ -21,7 +21,7 @@ var Project = { 'textSelect' : false };
 
 <div class="layout-content-copying-background" style="<?=($_POST['addContent'] ? 'display:block;' : 'display:none;');?>"></div>
 <div class="layout-content-copying" style="<?=($_POST['addContent'] ? 'display:block;' : 'display:none;');?>">
-	<div><?= ($this->Language( 'Copying ...' )); ?></div>
+	<div><?= (_tr( 'Copying ...' )); ?></div>
 </div>
 
 <div class="layout-content">
@@ -33,10 +33,10 @@ $form->addElem('form', '', array(
 ));
 
 $form->addElem('text', 'menu', array(
-	'label' => $this->Language('Content name'),
+	'label' => _tr('Content name'),
 	'class' => 'bootstrap-form-control',
 	'required' => 'true',
-	'required-label' => $this->Language( 'Content name required' ),
+	'required-label' => _tr( 'Content name required' ),
 	'autocomplete' => 'off'
 ));
 
@@ -53,7 +53,7 @@ $form->addElem('hidden', 'addContent', array(
 ))->after('menu');
 
 $form->addElem('submit', 'addContent', array(
-	'value' => $this->Language( 'Add content' ),
+	'value' => _tr( 'Add content' ),
 	'class' => 'bootstrap-submit-primary',
 	'style' => 'width:100%;'
 ));

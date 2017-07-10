@@ -5,14 +5,14 @@ trait Msg{
 
 	public function error($message, $replacement = array()){
 
-		$message = $this->Language($message);
+		$message = _tr($message);
 		$message = \Library\Replace::replace($message, $replacement);
 		new \Library\Component\Error($message, '', true);
 	}
 
 	public function message($message, $replacement = array()){
 
-		$message = $this->Language($message);
+		$message = _tr($message);
 		$message = \Library\Replace::replace($message, $replacement);
 		new \Library\Component\Message($message);
 	}

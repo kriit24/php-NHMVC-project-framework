@@ -20,7 +20,7 @@ foreach($formArray as $elemList){
 	echo '</div>';
 }
 ?>
-	<div class="form-group"><input type="submit" name="filter" class="btn btn-primary form-control" value="<?=$this->Language('Search');?>"> <a href="<?=($_SERVER['SCRIPT_URI'] ?? './');?>"><?=$this->Language('Clear');?></a></div>
+	<div class="form-group"><input type="submit" name="filter" class="btn btn-primary form-control" value="<?=_tr('Search');?>"> <a href="<?=($_SERVER['SCRIPT_URI'] ?? './');?>"><?=_tr('Clear');?></a></div>
 </div>
 
 <?

@@ -12,7 +12,7 @@
 	foreach($this->Links as $link)
 		echo $link;
 
-	//echo ($this->ShowDashboard ? '<a href="/admin" class="btn btn-primary" style="margin-left:20px;">'.$this->Language('Dashboard').'</a>' : '' );
+	//echo ($this->ShowDashboard ? '<a href="/admin" class="btn btn-primary" style="margin-left:20px;">'._tr('Dashboard').'</a>' : '' );
 	?>
 	</div>
 	<div style="clear:both;"></div>

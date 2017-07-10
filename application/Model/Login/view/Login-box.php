@@ -37,11 +37,11 @@
 				$this->Form->errorLabel( $this->getError() );
 			?>
 			<div class="form-group">
-				<input type="text" name="user" class="form-control" placeholder="<?=$this->Language( 'UserName' );?>" required="">
+				<input type="text" name="user" class="form-control" placeholder="<?=_tr( 'UserName' );?>" required="">
 			</div>
 			<div class="form-group">
-				<input type="password" name="password" class="form-control" placeholder="<?=$this->Language( 'Password' );?>" required="">
+				<input type="password" name="password" class="form-control" placeholder="<?=_tr( 'Password' );?>" required="">
 			</div>
-			<input type="submit" name="login" class="btn btn-primary block full-width m-b" value="<?=$this->Language( 'LOG IN' );?>">
+			<input type="submit" name="login" class="btn btn-primary block full-width m-b" value="<?=_tr( 'LOG IN' );?>">
 		</form>
 	</div>

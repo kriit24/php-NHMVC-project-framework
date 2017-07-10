@@ -14,7 +14,7 @@ class Index extends \Library{
 		$form = $this->Form( $form, 'text' );
 
 		$form->addElem('submit', 'add{uname}', array(
-			'value' => $this->Language('Add'),
+			'value' => _tr('Add'),
 			'' => '',
 		));
 

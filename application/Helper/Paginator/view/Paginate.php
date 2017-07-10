@@ -9,7 +9,7 @@ if( $GET['route'] == \Conf\Conf::_DEFAULT_ROUTE )
 echo '<div class="paginator_helper">';
 	
 	if( $this->showCount )
-		echo '<div class="paginator_counter">'.$this->Language( 'Objekte kokku:' ) .' <span>'. $this->q->rowsCount.'</span></div>';
+		echo '<div class="paginator_counter">'._tr( 'Objekte kokku:' ) .' <span>'. $this->q->rowsCount.'</span></div>';
 
 	if( !empty($this->pages) ){
 

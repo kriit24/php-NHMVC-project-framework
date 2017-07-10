@@ -10,10 +10,10 @@ abstract class delete{
 		pre($_POST);
 		*/
 
-		$name = \Table\language::singleton()->fetchColumn( 'name', array('id' => $_GET['id']) );
+		$name = \Table\translate::singleton()->fetchColumn( 'name', array('id' => $_GET['id']) );
 
 		if( $name )
-			\Table\language::singleton()->Delete( array('name LIKE ? ' => $name) );
+			\Table\translate::singleton()->Delete( array('name LIKE ? ' => $name) );
 	}
 }
 ?>

@@ -15,10 +15,10 @@ class Form extends \Library{
 		$form = new \Library\Form( 'list'/*row*/ );
 		$form->addElem('form');
 		$form->addElem('text', 'name', array(
-			'label' => $this->Language('Name')
+			'label' => _tr('Name')
 		));
 		$form->addElem('select', 'role_id', array(
-			'label' => $this->Language('Role'),
+			'label' => _tr('Role'),
 			'option' => self::roles
 		))
 		->selected($_POST['role_id']);

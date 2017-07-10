@@ -5,14 +5,14 @@ abstract class updateLanguage{
 
 	public static function init(){
 
-		$language = new \Table\language;
-		$language2 = new \Table\language;
-		$language3 = new \Table\language;
+		$translate = new \Table\translate;
+		$translate2 = new \Table\translate;
+		$translate3 = new \Table\translate;
 		$lang = $_GET['byLanguage'] ? $_GET['byLanguage'] : _LANG;
 		$_POST = \Library\Http::POST();
 		$redis = new \Library\Redis;
 		if( $redis->isConnected() )
-			$redis->delete('language');
+			$redis->delete('translate');
 
 		foreach(\Conf\Conf::LANGUAGE as $v){
 
@@ -25,11 +25,11 @@ abstract class updateLanguage{
 					if( $_POST['update_all_with_same_name'] )
 						$where = "name = '".$_POST['name']."' AND language = '".$v."' ";
 
-					$language->Select()
+					$translate->Select()
 						->where($where);
-					while($row = $language->fetch()){
+					while($row = $translate->fetch()){
 
-						$language2->Update(array('value' => stripslashes($_POST[$v])), array('id' => $row['id']));
+						$translate2->Update(array('value' => stripslashes($_POST[$v])), array('id' => $row['id']));
 					}
 				}
 				else{
@@ -39,24 +39,24 @@ abstract class updateLanguage{
 					if( $_POST['update_all_with_same_name'] )
 						$where = "name = '".$_POST['name']."' AND language = '".$lang."' ";
 
-					$language->Select()
+					$translate->Select()
 						->where($where);
-					while($row = $language->fetch()){
+					while($row = $translate->fetch()){
 
 						//select from other languages by name, model and language
-						$row2 = $language2->Select()
+						$row2 = $translate2->Select()
 							->where("name = '".$row['name']."' AND model = '".$row['model']."' AND language = '".$v."' ")
 							->fetch();
 
 						//if language not exists then insert
-						if( $language2->Numrows() == 0 ){
+						if( $translate2->Numrows() == 0 ){
 
-							$language3->Insert(array('name' => $row['name'], 'value' => stripslashes($_POST[$v]), 'language' => $v, 'model' => $row['model']));
+							$translate3->Insert(array('name' => $row['name'], 'value' => stripslashes($_POST[$v]), 'language' => $v, 'model' => $row['model']));
 						}
 						//if language exists then update
 						else{
 
-							$language3->Update(array('value' => stripslashes($_POST[$v])), array('id' => $row2['id']));
+							$translate3->Update(array('value' => stripslashes($_POST[$v])), array('id' => $row2['id']));
 						}
 					}
 				}

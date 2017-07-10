@@ -1,6 +1,6 @@
 <?
 \Model\Dashboard\Index::singleton()->title(
-	$this->Language('{uname}'),
+	_tr('{uname}'),
 	array('links')
 );
 ?>

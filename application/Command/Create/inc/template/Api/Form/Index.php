@@ -11,17 +11,17 @@ class Index extends \Library{
 		));
 
 		$form->addElem('text', 'name', array(
-			'label' => $this->Language('Name'),
+			'label' => _tr('Name'),
 			'value' => $_POST['name']
 		));
 
 		$form->addElem('submit', 'add', array(
-			'value' => $this->Language('Add')
+			'value' => _tr('Add')
 		));
 
 		$form->addElem('a', '', array(
 			'href' => './',
-			'value' => $this->Language('Cancel'),
+			'value' => _tr('Cancel'),
 			'style' => 'margin-left:20px;'
 		))->after('add');
 

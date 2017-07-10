@@ -11,7 +11,7 @@ class Form extends \Library{
 		));
 
 		$form->addElem('file', 'favicon', array(
-			'label' => $this->Language('Favicon')
+			'label' => _tr('Favicon')
 		));
 
 		if( is_dir(\Model\FileManager\Controller::UPLOAD_DIR) ){
@@ -67,7 +67,7 @@ class Form extends \Library{
 		}
 
 		$form->addElem('submit', 'update', array(
-			'value' => $this->Language( 'Update' )
+			'value' => _tr( 'Update' )
 		));
 
 		//$form->setData($data);
@@ -83,11 +83,11 @@ class Form extends \Library{
 
 		$form->addElem('text', 'new_file', array(
 			'style' => 'display:inline-block;width:80%;',
-			'placeholder' => $this->Language( 'Add file name or name with full path' )
+			'placeholder' => _tr( 'Add file name or name with full path' )
 		));
 
 		$form->addElem('submit', 'addFile', array(
-			'value' => $this->Language( 'Add file' ),
+			'value' => _tr( 'Add file' ),
 			'style' => 'margin-left:20px;',
 		))->after('new_file');
 
@@ -105,7 +105,7 @@ class Form extends \Library{
 
 			$form->addElem('a', 'deleteFile', array(
 				'href' => $this->url( array('action' => 'deleteFile') ) . '?file='.urlencode(str_replace('/Template/public/', '', $row['path']).'/'.$row['file']),
-				'value' => $this->Language( 'Delete file' ),
+				'value' => _tr( 'Delete file' ),
 				'style' => 'margin-left:20px;background-color:#ff0000;border-color:#ff0000;',
 				'class' => 'btn btn-primary deleteFile'
 			))->after('files[]');
@@ -117,7 +117,7 @@ class Form extends \Library{
 		}
 
 		$form->addElem('submit', 'updateFiles', array(
-			'value' => $this->Language( 'Update' )
+			'value' => _tr( 'Update' )
 		));
 
 		$form->errorLabel( $this->getError() );
@@ -135,7 +135,7 @@ class Form extends \Library{
 		));
 
 		$form->addElem('span', 'span_label', array(
-			'value' => $this->Language( 'Upload webdesign zip file, content must be in index.html file' )
+			'value' => _tr( 'Upload webdesign zip file, content must be in index.html file' )
 		));
 
 		$form->addElem('file', 'design_zip', array(
@@ -143,7 +143,7 @@ class Form extends \Library{
 		));
 
 		$form->addElem('submit', 'uploadZip', array(
-			'value' => $this->Language( 'Upload' )
+			'value' => _tr( 'Upload' )
 		));
 
 		$form->errorLabel( $this->getError() );
@@ -165,7 +165,7 @@ class Form extends \Library{
 		}
 
 		$form->addElem('text', 'from_url', array(
-			'placeholder' => $this->Language( 'Website url for downloading css, js and image files' ),
+			'placeholder' => _tr( 'Website url for downloading css, js and image files' ),
 		));
 
 		$form->addElem('textarea', 'content', array(
@@ -174,18 +174,18 @@ class Form extends \Library{
 		));
 
 		$form->addElem('submit', 'updateDesign', array(
-			'value' => $this->Language( 'Update' )
+			'value' => _tr( 'Update' )
 		));
 
 		$form->addElem('submit', 'reUpdateDesign', array(
-			'value' => $this->Language( 'Update from source' ),
+			'value' => _tr( 'Update from source' ),
 			'style' => 'margin-left:10px;'
 		))->after('updateDesign');
 
 		if( is_dir(_DIR . '/tmp/theme/origin') ){
 
 			$form->addElem('submit', 'restoreDesign', array(
-				'value' => $this->Language( 'Restore original' ),
+				'value' => _tr( 'Restore original' ),
 				'style' => 'margin-left:10px;'
 			))->after('updateDesign');
 		}
@@ -196,14 +196,14 @@ class Form extends \Library{
 			if( !empty($rows) && isset($rows[1]) && $rows[1]['link_name'] != 'UNDER CONSTRUCTION' ){
 
 				$form->addElem('submit', 'publishDesign', array(
-					'value' => $this->Language( 'Publish' ),
+					'value' => _tr( 'Publish' ),
 					'style' => 'margin-left:40px;'
 				))->after('updateDesign');
 			}
 			else{
 
 				$form->addElem('submit', 'publishDesign', array(
-					'value' => $this->Language( 'Publish' ),
+					'value' => _tr( 'Publish' ),
 					'style' => 'margin-left:40px;',
 					'disabled' => 'disabled'
 				))->after('updateDesign');
@@ -212,7 +212,7 @@ class Form extends \Library{
 			$form->addElem('a', 'previewDesign', array(
 				'href' => _URI . '/?present=true',
 				'target' => '_blank',
-				'value' => $this->Language( 'Preview' ),
+				'value' => _tr( 'Preview' ),
 				'style' => 'margin-left:10px;',
 				'class' => 'btn btn-primary'
 			))->after('updateDesign');
@@ -257,12 +257,12 @@ class Form extends \Library{
 		$form = new \Library\Form('row');
 
 		$form->addElem('data', 'name', array(
-			'label' => $this->Language('Directory')
+			'label' => _tr('Directory')
 		));
 
 		$form->addElem('a', 'restore', array(
 			'href' => $this->url( array('action' => 'restoreFromBackup', 'directory' => '{directory}') ),
-			'value' => $this->Language( 'Restore' ),
+			'value' => _tr( 'Restore' ),
 			'class' => 'btn btn-primary'
 		));
 

@@ -18,7 +18,7 @@ class Form extends \Library{
 		}
 		$form->addElem('text', 'user', array('value' => $_POST['user']));
 		$form->addElem('password', 'password');
-		$form->addElem('submit', 'login', $this->Language('Login'));
+		$form->addElem('submit', 'login', _tr('Login'));
 
 		$form->setData(array());
 

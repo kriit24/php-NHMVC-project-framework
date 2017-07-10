@@ -86,8 +86,6 @@ trait Validate{
 		if( !$this->validateData )
 			return true;
 
-		$language = new \Library\Language;
-
 		$isValid = true;
 		foreach($this->validateData as $v){
 
@@ -128,7 +126,7 @@ trait Validate{
 				
 				$content = $this->validMessage[$key][ substr($v['method'], 1) ];
 				if( $content )
-					new \Library\Component\Error($key, $language->Language($content), true);
+					new \Library\Component\Error($key, _tr($content), true);
 				else
 					new \Library\Component\Error($key, $key, true);
 				$isValid = $valid;

@@ -21,12 +21,12 @@ class Form extends \Library{
 		));
 
 		$form->addElem('submit', Form::SUBMIT['add'], array(
-			'value' => $this->Language(Form::SUBMIT['add'])
+			'value' => _tr(Form::SUBMIT['add'])
 		));
 
 		$form->addElem('a', '', array(
 			'href' => './',
-			'value' => $this->Language('Cancel')
+			'value' => _tr('Cancel')
 		))->after(Form::SUBMIT['add']);
 
 		//use next lines in view

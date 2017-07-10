@@ -13,7 +13,7 @@ class Index extends Controller{
 		$this->Form = new Form;
 		$this->Validate = new Validate;
 
-		$this->language = new \Table\language;
+		$this->translate = new \Table\translate;
 	}
 
 	protected function Index_Admin(){

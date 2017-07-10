@@ -4,7 +4,7 @@ $select = '<div class="select-language-box">' . $this->Form->SelectLanguage() . 
 //$select = $this->Form->SelectLanguage();
 
 \Model\Dashboard\Index::singleton()->title(
-	$this->Language('Translate'),
+	_tr('Translate'),
 	array($select)
 );
 
@@ -14,7 +14,7 @@ $this->Paginator->paginate(
 	$this->language
 );
 
-while($row = $this->language->fetch()){
+while($row = $this->translate->fetch()){
 
 	$form->setData( $row );
 	$attr['tbody']['tr'][] = array('class' => 'dialog', 'data-href' => $this->url(array('model' => 'Translate', 'method' => 'Edit', '?id='.$row['id'])), 'title' => 'Edit' );
@@ -31,6 +31,6 @@ $this->Filter->header(
 );
 
 
-$this->script('$(".truncate").confirm("'.$this->Language('Truncate language table ?').'");');
+$this->script('$(".truncate").confirm("'._tr('Truncate language table ?').'");');
 
 ?>

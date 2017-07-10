@@ -32,10 +32,10 @@ CREATE TABLE `client` (
 -- --------------------------------------------------------
 
 -- 
--- Table structure for table `language`
+-- Table structure for table `translate`
 -- 
 
-CREATE TABLE `language` (
+CREATE TABLE `translate` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` longtext,
   `value` longtext,

@@ -1,7 +1,7 @@
 <?
 
 $form = $this->Form->EditForm(
-	$this->language->fetch()
+	$this->translate->fetch()
 );
 
 

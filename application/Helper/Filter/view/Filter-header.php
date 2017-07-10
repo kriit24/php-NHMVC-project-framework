@@ -18,12 +18,12 @@ foreach($elemList as $k => $row){
 			(isset($_GET[$name]) ? 
 			'<div class="form-group">'.
 				'<label for="filterElemSubmit'.$k.'"></label>'.
-				'<input type="submit" name="filter" id="filterElemSubmit'.$k.'" class="btn btn-primary form-control" value="'.$this->Language('Search').'"/> <a href="" class="remove">'.$this->Language('Clear').'</a>'.
+				'<input type="submit" name="filter" id="filterElemSubmit'.$k.'" class="btn btn-primary form-control" value="'._tr('Search').'"/> <a href="" class="remove">'._tr('Clear').'</a>'.
 			'</div>'
 			:
 			'<div class="form-group">'.
 				'<label for="filterElemSubmit'.$k.'"></label>'.
-				'<input type="submit" name="filter" id="filterElemSubmit'.$k.'" class="btn btn-primary form-control" value="'.$this->Language('Search').'"/>'.
+				'<input type="submit" name="filter" id="filterElemSubmit'.$k.'" class="btn btn-primary form-control" value="'._tr('Search').'"/>'.
 			'</div>').
 		'</div>';
 	$filter .= $filter ? ','.$name : $name;

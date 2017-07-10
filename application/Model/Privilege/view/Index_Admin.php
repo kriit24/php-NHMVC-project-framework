@@ -1,6 +1,6 @@
 <?
 Model\Dashboard\Index::singleton()->title(
-	$this->Language('Privilege'), 
+	_tr('Privilege'), 
 	array()
 );
 
@@ -22,12 +22,12 @@ while($row = $this->role->fetch()){
 
 			<form method="post">
 			<div style="margin-bottom:20px;">
-			<h5 style="border-bottom:1px solid #025AA5;padding-bottom:10px;"><b><?=$this->Language( 'Select all' );?></b></h5>
+			<h5 style="border-bottom:1px solid #025AA5;padding-bottom:10px;"><b><?=_tr( 'Select all' );?></b></h5>
 			<div>
 				<div style="display:inline-block;vertical-align:top;padding:10px;">
 					<div style="margin-bottom:5px;">
 						<input type="checkbox" name="privilege[<?=($row['id']);?>][all]" value="1" id="<?=($row['id']);?>_all" class="select-all"> 
-						<label for="<?=($row['id']);?>_all" class="checkbox"><span></span><?=$this->Language( 'Select' );?></label>
+						<label for="<?=($row['id']);?>_all" class="checkbox"><span></span><?=_tr( 'Select' );?></label>
 					</div>
 				</div>
 			</div>
@@ -51,7 +51,7 @@ while($row = $this->role->fetch()){
 
 							<div style="margin-bottom:5px;">
 								<input type="checkbox" name="privilege[<?=($row['id']);?>][all]" value="1" id="<?=($row['id']);?>_<?=($route);?>_<?=($class['class']);?>_<?=($method);?>_group_all"> 
-								<label for="<?=($row['id']);?>_<?=($route);?>_<?=($class['class']);?>_<?=($method);?>_group_all" class="checkbox select-group"><span></span><?=$this->Language( 'Select all' );?></label>
+								<label for="<?=($row['id']);?>_<?=($route);?>_<?=($class['class']);?>_<?=($method);?>_group_all" class="checkbox select-group"><span></span><?=_tr( 'Select all' );?></label>
 							</div>
 							<?
 							foreach($class['methods'] as $method){
@@ -75,7 +75,7 @@ while($row = $this->role->fetch()){
 				}
 			}
 			?>
-			<input type="submit" name="updatePrivilege" value="<?=($this->Language( 'Update' ));?>" class="btn btn-primary">
+			<input type="submit" name="updatePrivilege" value="<?=(_tr( 'Update' ));?>" class="btn btn-primary">
 			</form>
 		</div>
 	</div>

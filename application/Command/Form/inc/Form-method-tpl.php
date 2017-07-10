@@ -5,7 +5,7 @@
 
 {method_columns}
 
-		$form->addElem('submit', self::FORM['add'], $this->Language(self::FORM['add']));
+		$form->addElem('submit', self::FORM['add'], _tr(self::FORM['add']));
 
 		$form->errorLabel( $this->getError() );
 		$form->messageLabel( $this->getMessage() );

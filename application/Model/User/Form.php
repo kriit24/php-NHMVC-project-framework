@@ -60,7 +60,7 @@ class Form extends \Library{
 
 		$form->addElem('submit', Form::SUBMIT['add'], array(
 			'class' => 'btn btn-primary',
-			'value' => $this->Language('Add user')
+			'value' => _tr('Add user')
 		));
 
 		unset($_POST['password']);
@@ -83,7 +83,7 @@ class Form extends \Library{
 		$form = new \Library\Form( 'list' );
 		$form->addElem('form', '', array('action' => $this->url( '?id='.$_GET['id'] )));
 		$form->addElem('data', 'name', array(
-			'label' => $this->Language('Name')
+			'label' => _tr('Name')
 		));
 		
 		$attr = self::FORM_ATTR;
@@ -96,7 +96,7 @@ class Form extends \Library{
 
 		$form->addElem('submit', Form::SUBMIT['update'], array(
 			'class' => 'btn btn-primary',
-			'value' => $this->Language('Update user')
+			'value' => _tr('Update user')
 		));
 
 		$form->errorLabel( $this->getError() );
@@ -114,33 +114,33 @@ class Form extends \Library{
 		$form = new \Library\Form( 'row' );
 		//$form->addElem('data', array('first_name', 'last_name', 'user_name', 'email', 'type', 'delete' => ''));
 		$form->addElem('data', 'first_name', array(
-			'label' => $this->Language('First name'),
+			'label' => _tr('First name'),
 			'label-attr' => array('class' => 'first_name')
 		));
 
 		$form->addElem('data', 'last_name', array(
-			'label' => $this->Language('Last name'),
+			'label' => _tr('Last name'),
 			'label-attr' => array('class' => 'last_name')
 		));
 
 		$form->addElem('data', 'user_name', array(
-			'label' => $this->Language('User name'),
+			'label' => _tr('User name'),
 			'label-attr' => array('class' => 'user_name')
 		));
 
 		$form->addElem('data', 'email', array(
-			'label' => $this->Language('Email'),
+			'label' => _tr('Email'),
 			'label-attr' => array('class' => 'email')
 		));
 
 		$form->addElem('data', 'type', array(
-			'label' => $this->Language('Type'),
+			'label' => _tr('Type'),
 			'label-attr' => array('class' => 'type')
 		));
 
 		$form->addElem('a', 'delete', array(
 			'class' => 'delete',
-			'value' => $this->Language( 'Delete' )
+			'value' => _tr( 'Delete' )
 		));
 		return $form;
 	}
@@ -160,7 +160,7 @@ class Form extends \Library{
 
 		$form->addElem('submit', self::SUBMIT['updateAccount'], array(
 			'class' => 'btn btn-primary',
-			'value' => $this->Language('Update account')
+			'value' => _tr('Update account')
 		));
 
 		$form->setData( $row );
@@ -170,13 +170,13 @@ class Form extends \Library{
 	public function userFilter(){
 
 		$form = new \Library\Form( 'list' );
-		$form->addElem('text', 'first_name', array('label' => $this->Language('First name')));
-		$form->addElem('text', 'last_name', array('label' => $this->Language('Last name')));
-		$form->addElem('text', 'user_name', array('label' => $this->Language('User name')));
-		$form->addElem('text', 'email', array('label' => $this->Language('Email')));
+		$form->addElem('text', 'first_name', array('label' => _tr('First name')));
+		$form->addElem('text', 'last_name', array('label' => _tr('Last name')));
+		$form->addElem('text', 'user_name', array('label' => _tr('User name')));
+		$form->addElem('text', 'email', array('label' => _tr('Email')));
 		$form->addElem('select', 'type', array(
 			'option' => $this->arrayValues($this->roles, 'name'),
-			'label' => $this->Language('Type')
+			'label' => _tr('Type')
 		));
 		return $form;
 	}

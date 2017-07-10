@@ -1,6 +1,6 @@
 <div class="filter_helper_form filter_helper_form_group" style="text-align:center;">
 <div class="filter_dropdown_box">
-<div class="filter_dropdown_title"><span><?=$this->Language('Filter');?></span><i class="fa fa-sort-desc dropdown"></i></div>
+<div class="filter_dropdown_title"><span><?=_tr('Filter');?></span><i class="fa fa-sort-desc dropdown"></i></div>
 <div class="filter_dropdown_content" style="<?=$_GET['filter'] ? 'display:block;' : '';?>">
 
 <?
@@ -24,7 +24,7 @@ foreach($formArray as $elemList){
 	echo '</div>';
 }
 ?>
-	<div class="form-group"><input type="submit" name="filter" class="btn btn-primary form-control" value="<?=$this->Language('Search');?>"> <a href="<?=($_SERVER['SCRIPT_URI'] ?? './');?>"><?=$this->Language('Clear');?></a></div>
+	<div class="form-group"><input type="submit" name="filter" class="btn btn-primary form-control" value="<?=_tr('Search');?>"> <a href="<?=($_SERVER['SCRIPT_URI'] ?? './');?>"><?=_tr('Clear');?></a></div>
 </div>
 </div>
 </div>
